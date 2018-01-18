@@ -51,10 +51,43 @@ public class LocatedChar {
 	// delegates
 	
 	public boolean isLowerCase() {
-		return Character.isLowerCase(character) || (character == '_');
+		return Character.isLowerCase(character);
+	}
+	public boolean isUnderline() {
+		return (character=='_');
+	}
+	public boolean isDollar() {
+		return (character=='$');
+	}
+	public boolean isUpperCase() {
+		return Character.isUpperCase(character);
 	}
 	public boolean isDigit() {
 		return Character.isDigit(character);
+	}
+	public boolean isDoublequote(){
+		return (character=='"');
+	}
+	public boolean isNewline(){
+		return (character=='\n');
+	}
+	public boolean isCircumflex(){
+		return (character=='^');
+	}
+	public boolean isHashSign(){
+		return (character=='#');
+	}
+	public boolean isSignSymbol(){
+		return (character=='+')||(character=='-');
+	}
+	public boolean isDecimalPoint(){
+		return (character=='.');
+	}
+	public boolean isPlus(){
+		return (character=='+');
+	}
+	public boolean isMinus(){
+		return (character=='-');
 	}
 	public boolean isWhitespace() {
 		return Character.isWhitespace(character);

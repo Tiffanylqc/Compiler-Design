@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class LocatedCharString {
 	private static final int STARTING_SIZE = 6;
 	

@@ -15,6 +15,7 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.FloatingConstantNode;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
@@ -256,7 +257,7 @@ public class Parser {
 		}
 		
 		ParseNode left = parseMultiplicativeExpression();
-		while(nowReading.isLextant(Punctuator.ADD)) {
+		while(nowReading.isLextant(Punctuator.ADD,Punctuator.SUBTRACT)) {
 			Token additiveToken = nowReading;
 			readToken();
 			ParseNode right = parseMultiplicativeExpression();
@@ -300,7 +301,8 @@ public class Parser {
 		return startsLiteral(token);
 	}
 	
-	// literal -> number | identifier | booleanConstant
+	// change literal -> number | identifier | booleanConstant in pika-0
+	// to literal-> integerConstant | floatingConstant | booleanConstant characterConstant |stringConstant | identifier in pika-1
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");
@@ -308,6 +310,9 @@ public class Parser {
 		
 		if(startsIntNumber(nowReading)) {
 			return parseIntNumber();
+		}
+		if(startsFloatNumber(nowReading)) {
+			return parseFloatNumber();
 		}
 		if(startsIdentifier(nowReading)) {
 			return parseIdentifier();
@@ -319,7 +324,7 @@ public class Parser {
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		return startsIntNumber(token) || startsIdentifier(token) || startsBooleanConstant(token);
+		return startsIntNumber(token) || startsFloatNumber(token) ||startsIdentifier(token) || startsBooleanConstant(token);
 	}
 
 	// number (terminal)
@@ -330,8 +335,18 @@ public class Parser {
 		readToken();
 		return new IntegerConstantNode(previouslyRead);
 	}
+	private ParseNode parseFloatNumber() {
+		if(!startsFloatNumber(nowReading)) {
+			return syntaxErrorNode("integer constant");
+		}
+		readToken();
+		return new FloatingConstantNode(previouslyRead);
+	}
 	private boolean startsIntNumber(Token token) {
-		return token instanceof NumberToken;
+		return token instanceof IntegerConstantToken;
+	}
+	private boolean startsFloatNumber(Token token) {
+		return token instanceof FloatingConstantToken;
 	}
 
 	// identifier (terminal)
