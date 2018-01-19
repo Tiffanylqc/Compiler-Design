@@ -4,8 +4,10 @@ import java.util.Arrays;
 
 import logging.PikaLogger;
 import parseTree.*;
+import parseTree.nodeTypes.AssignStatementNode;
 import parseTree.nodeTypes.BinaryOperatorNode;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
@@ -15,6 +17,9 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.StringConstantNode;
+import parseTree.nodeTypes.TabNode;
+import parseTree.nodeTypes.TypeNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import tokens.*;
 import lexicalAnalyzer.Keyword;
@@ -93,7 +98,7 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | printStmt | blockStmt
+	// statement-> declaration | printStmt | blockStmt | assignStmt
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -118,17 +123,19 @@ public class Parser {
 			   startsMainBlock(token)||
 			   startsAssignStatement(token);
 	}
+	
 	//assignmentStmt -> target:=expression
 	private ParseNode parseAssignStatement(){
-		if(!startsIdentifier(nowReading)){
+		if(!startsAssignStatement(nowReading)){
 			return syntaxErrorNode("assignmentStatement");
 		}
 		ParseNode identifier = parseIdentifier();
+		Token assignToken=nowReading;
 		expect(Punctuator.ASSIGN);
 		ParseNode initializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 		
-		return AssignStatementNode.withChildren(identifier, initializer);
+		return AssignStatementNode.withChildren(assignToken,identifier, initializer);
 	}
 	
 	private boolean startsAssignStatement(Token token){
@@ -178,10 +185,15 @@ public class Parser {
 			ParseNode child = new NewlineNode(previouslyRead);
 			parent.appendChild(child);
 		}
+		else if(nowReading.isLextant(Keyword.TAB)) {
+			readToken();
+			ParseNode child = new TabNode(previouslyRead);
+			parent.appendChild(child);
+		}
 		// else we interpret the printExpression as epsilon, and do nothing
 	}
 	private boolean startsPrintExpression(Token token) {
-		return startsExpression(token) || token.isLextant(Keyword.NEWLINE) ;
+		return startsExpression(token) || token.isLextant(Keyword.NEWLINE) ||token.isLextant(Keyword.TAB);
 	}
 	
 	
@@ -212,7 +224,6 @@ public class Parser {
 		return token.isLextant(Punctuator.SEPARATOR, Punctuator.SPACE) ;
 	}
 	
-	
 	// declaration -> CONST identifier := expression .
 	//				  VAR identifier := expression .
 	private ParseNode parseDeclaration() {
@@ -234,26 +245,45 @@ public class Parser {
 				token.isLextant(Keyword.VAR);
 	}
 
-
-	
 	///////////////////////////////////////////////////////////
 	// expressions
+	// expr                     ->( expression )
+	// expr                     ->[expression | type ]
 	// expr                     -> comparisonExpression
 	// comparisonExpression     -> additiveExpression [> additiveExpression]?
 	// additiveExpression       -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
 	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
 	// atomicExpression         -> literal
-	// literal                  -> intNumber | identifier | booleanConstant
+	// literal                  -> integerConstant | floatingConstant | booleanConstant | characterConstant |stringConstant | identifier
 
 	// expr  -> comparisonExpression
 	private ParseNode parseExpression() {		
 		if(!startsExpression(nowReading)) {
 			return syntaxErrorNode("expression");
 		}
-		return parseComparisonExpression();
+		else if(startsComparisonExpression(nowReading))
+			return parseComparisonExpression();
+		else if(nowReading.isLextant(Punctuator.OPEN_PARENTHESE)){
+			expect(Punctuator.OPEN_PARENTHESE);
+			ParseNode result=parseExpression();
+			expect(Punctuator.CLOSE_PARENTHESE);
+			return result;
+		}
+		else //if(nowReading.isLextant(Punctuator.OPEN_BRACKET))
+		{
+			expect(Punctuator.OPEN_BRACKET);
+			ParseNode result=parseExpression();
+			Token castToken=nowReading;
+			readToken();
+			if(!startsType(nowReading))
+				return syntaxErrorNode("type");
+			ParseNode type=parseType();
+			expect(Punctuator.CLOSE_BRACKET);
+			return BinaryOperatorNode.withChildren(castToken, result, type);
+		}
 	}
 	private boolean startsExpression(Token token) {
-		return startsComparisonExpression(token);
+		return startsComparisonExpression(token)||token.isLextant(Punctuator.OPEN_PARENTHESE)||token.isLextant(Punctuator.OPEN_BRACKET);
 	}
 
 	// comparisonExpression -> additiveExpression [> additiveExpression]?
@@ -262,11 +292,12 @@ public class Parser {
 			return syntaxErrorNode("comparison expression");
 		}
 		
-		ParseNode left = parseAdditiveExpression();
-		if(nowReading.isLextant(Punctuator.GREATER)) {
+		ParseNode left = parseAdditiveSubtractiveExpression();
+		if(nowReading.isLextant(Punctuator.GREATER,Punctuator.GREATER_EQUAL,Punctuator.LESS,
+				Punctuator.LESS_EQUAL,Punctuator.NOT_EQUAL,Punctuator.EQUAL)) {
 			Token compareToken = nowReading;
 			readToken();
-			ParseNode right = parseAdditiveExpression();
+			ParseNode right = parseAdditiveSubtractiveExpression();
 			
 			return BinaryOperatorNode.withChildren(compareToken, left, right);
 		}
@@ -274,46 +305,46 @@ public class Parser {
 
 	}
 	private boolean startsComparisonExpression(Token token) {
-		return startsAdditiveExpression(token);
+		return startsAdditiveSubtractiveExpression(token);
 	}
 
-	// additiveExpression -> multiplicativeExpression [+ multiplicativeExpression]*  (left-assoc)
-	private ParseNode parseAdditiveExpression() {
-		if(!startsAdditiveExpression(nowReading)) {
-			return syntaxErrorNode("additiveExpression");
+	// additivesubtractiveExpression -> multiplicativedividingExpression [+/- multiplicativedividingExpression]*  (left-assoc)
+	private ParseNode parseAdditiveSubtractiveExpression() {
+		if(!startsAdditiveSubtractiveExpression(nowReading)) {
+			return syntaxErrorNode("additive and subtractive Expression");
 		}
 		
-		ParseNode left = parseMultiplicativeExpression();
+		ParseNode left = parseMultiplicativeDividingExpression();
 		while(nowReading.isLextant(Punctuator.ADD,Punctuator.SUBTRACT)) {
-			Token additiveToken = nowReading;
+			Token additivesubtractiveToken = nowReading;
 			readToken();
-			ParseNode right = parseMultiplicativeExpression();
+			ParseNode right = parseMultiplicativeDividingExpression();
 			
-			left = BinaryOperatorNode.withChildren(additiveToken, left, right);
+			left = BinaryOperatorNode.withChildren(additivesubtractiveToken, left, right);
 		}
 		return left;
 	}
-	private boolean startsAdditiveExpression(Token token) {
+	private boolean startsAdditiveSubtractiveExpression(Token token) {
 		return startsLiteral(token);
 	}	
 
-	// multiplicativeExpression -> atomicExpression [MULT atomicExpression]*  (left-assoc)
-	private ParseNode parseMultiplicativeExpression() {
-		if(!startsMultiplicativeExpression(nowReading)) {
-			return syntaxErrorNode("multiplicativeExpression");
+	// multiplicativedividingExpression -> atomicExpression [MULT/DIVIDE atomicExpression]*  (left-assoc)
+	private ParseNode parseMultiplicativeDividingExpression() {
+		if(!startsMultiplicativeDividingExpression(nowReading)) {
+			return syntaxErrorNode("multiplicative and dividing Expression");
 		}
 		
 		ParseNode left = parseAtomicExpression();
-		while(nowReading.isLextant(Punctuator.MULTIPLY)) {
-			Token multiplicativeToken = nowReading;
+		while(nowReading.isLextant(Punctuator.MULTIPLY,Punctuator.DIVIDE)) {
+			Token multiplicativedividingToken = nowReading;
 			readToken();
 			ParseNode right = parseAtomicExpression();
 			
-			left = BinaryOperatorNode.withChildren(multiplicativeToken, left, right);
+			left = BinaryOperatorNode.withChildren(multiplicativedividingToken, left, right);
 		}
 		return left;
 	}
-	private boolean startsMultiplicativeExpression(Token token) {
+	private boolean startsMultiplicativeDividingExpression(Token token) {
 		return startsAtomicExpression(token);
 	}
 	
@@ -328,8 +359,7 @@ public class Parser {
 		return startsLiteral(token);
 	}
 	
-	// change literal -> number | identifier | booleanConstant in pika-0
-	// to literal-> integerConstant | floatingConstant | booleanConstant characterConstant |stringConstant | identifier in pika-1
+	//literal-> integerConstant | floatingConstant | booleanConstant characterConstant |stringConstant | identifier in pika-1
 	private ParseNode parseLiteral() {
 		if(!startsLiteral(nowReading)) {
 			return syntaxErrorNode("literal");
@@ -347,11 +377,18 @@ public class Parser {
 		if(startsBooleanConstant(nowReading)) {
 			return parseBooleanConstant();
 		}
+		if(startsStringConstant(nowReading)){
+			return parseStringConstant();
+		}
+		if(startsCharacterConstant(nowReading)){
+			return parseCharacterConstant();
+		}
 
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		return startsIntNumber(token) || startsFloatNumber(token) ||startsIdentifier(token) || startsBooleanConstant(token);
+		return startsIntNumber(token) || startsFloatNumber(token) ||startsIdentifier(token) ||
+			   startsBooleanConstant(token) || startsStringConstant(token) || startsCharacterConstant(token);
 	}
 
 	// number (terminal)
@@ -364,7 +401,7 @@ public class Parser {
 	}
 	private ParseNode parseFloatNumber() {
 		if(!startsFloatNumber(nowReading)) {
-			return syntaxErrorNode("integer constant");
+			return syntaxErrorNode("Floating constant");
 		}
 		readToken();
 		return new FloatingConstantNode(previouslyRead);
@@ -375,7 +412,30 @@ public class Parser {
 	private boolean startsFloatNumber(Token token) {
 		return token instanceof FloatingConstantToken;
 	}
-
+	//string
+	private ParseNode parseStringConstant(){
+		if(!startsStringConstant(nowReading)){
+			return syntaxErrorNode("String constant"); 
+		}
+		readToken();
+		return new StringConstantNode(previouslyRead);
+	}
+	private boolean startsStringConstant(Token token){
+		return token instanceof StringConstantToken;
+	}
+	
+	//character
+	private ParseNode parseCharacterConstant(){
+		if(!startsCharacterConstant(nowReading)){
+			return syntaxErrorNode("Character constant"); 
+		}
+		readToken();
+		return new CharacterConstantNode(previouslyRead);
+	}
+	private boolean startsCharacterConstant(Token token){
+		return token instanceof CharacterConstantToken;
+	}
+	
 	// identifier (terminal)
 	private ParseNode parseIdentifier() {
 		if(!startsIdentifier(nowReading)) {
@@ -398,6 +458,18 @@ public class Parser {
 	}
 	private boolean startsBooleanConstant(Token token) {
 		return token.isLextant(Keyword.TRUE, Keyword.FALSE);
+	}
+	
+	// type 
+	private ParseNode parseType(){
+		if(!startsType(nowReading)) {
+			return syntaxErrorNode("type constant");
+		}
+		readToken();
+		return new TypeNode(previouslyRead);
+	}
+	private boolean startsType(Token token) {
+		return token.isLextant(Keyword.BOOL, Keyword.INT,Keyword.FLOAT,Keyword.CHAR,Keyword.STRING);
 	}
 
 	private void readToken() {

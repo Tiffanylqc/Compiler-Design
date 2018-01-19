@@ -18,7 +18,6 @@ public class DeclarationNode extends ParseNode {
 		super(node);
 	}
 	
-	
 	////////////////////////////////////////////////////////////
 	// attributes
 	
