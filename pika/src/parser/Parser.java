@@ -93,7 +93,7 @@ public class Parser {
 	///////////////////////////////////////////////////////////
 	// statements
 	
-	// statement-> declaration | printStmt
+	// statement-> declaration | printStmt | blockStmt
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -104,12 +104,37 @@ public class Parser {
 		if(startsPrintStatement(nowReading)) {
 			return parsePrintStatement();
 		}
+		if(startsMainBlock(nowReading)){
+			return parseMainBlock();
+		}
+		if(startsAssignStatement(nowReading)){
+			return parseAssignStatement();
+		}
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
 		return startsPrintStatement(token) ||
-			   startsDeclaration(token);
+			   startsDeclaration(token)||
+			   startsMainBlock(token)||
+			   startsAssignStatement(token);
 	}
+	//assignmentStmt -> target:=expression
+	private ParseNode parseAssignStatement(){
+		if(!startsIdentifier(nowReading)){
+			return syntaxErrorNode("assignmentStatement");
+		}
+		ParseNode identifier = parseIdentifier();
+		expect(Punctuator.ASSIGN);
+		ParseNode initializer = parseExpression();
+		expect(Punctuator.TERMINATOR);
+		
+		return AssignStatementNode.withChildren(identifier, initializer);
+	}
+	
+	private boolean startsAssignStatement(Token token){
+		return startsIdentifier(token);
+	}
+
 	
 	// printStmt -> PRINT printExpressionList .
 	private ParseNode parsePrintStatement() {
@@ -189,6 +214,7 @@ public class Parser {
 	
 	
 	// declaration -> CONST identifier := expression .
+	//				  VAR identifier := expression .
 	private ParseNode parseDeclaration() {
 		if(!startsDeclaration(nowReading)) {
 			return syntaxErrorNode("declaration");
@@ -204,7 +230,8 @@ public class Parser {
 		return DeclarationNode.withChildren(declarationToken, identifier, initializer);
 	}
 	private boolean startsDeclaration(Token token) {
-		return token.isLextant(Keyword.CONST);
+		return token.isLextant(Keyword.CONST)||
+				token.isLextant(Keyword.VAR);
 	}
 
 

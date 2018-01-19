@@ -29,6 +29,21 @@ public class PushbackCharStream extends LocatedCharStream {
 		pushback(result);
 		return result;
 	}
+	public boolean hasSecondNext(){
+		LocatedChar next;
+		if(hasNext()){
+			next=next();
+			if(hasNext()){
+				pushback(next);
+				return true;
+			}
+			else{
+				pushback(next);
+				return false;
+			}
+		}
+		return false;
+	}
 	public LocatedChar peekSecondNext(){
 		LocatedChar next=next();
 		LocatedChar secondNext=next();
