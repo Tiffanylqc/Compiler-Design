@@ -16,7 +16,6 @@ public class SymbolTable {
 		table = new HashMap<String, Binding>();
 	}
 	
-	
 	////////////////////////////////////////////////////////////////
 	// installation and lookup of identifiers
 

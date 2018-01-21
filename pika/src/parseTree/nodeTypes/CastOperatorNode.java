@@ -5,13 +5,14 @@ import parseTree.ParseNodeVisitor;
 import semanticAnalyzer.signatures.FunctionSignature;
 import tokens.Token;
 
-public class AssignStatementNode extends ParseNode{
+public class CastOperatorNode extends ParseNode {
 	private FunctionSignature signature = FunctionSignature.nullInstance();
-	public AssignStatementNode(Token token) {
-		super(token);
+	public CastOperatorNode(Token token) {
+		super(token);//if correct, token shoule be bar
+//		assert(token instanceof LextantToken);
 	}
 
-	public AssignStatementNode(ParseNode node) {
+	public CastOperatorNode(ParseNode node) {
 		super(node);
 	}
 	
@@ -23,19 +24,29 @@ public class AssignStatementNode extends ParseNode{
 	}
 	
 	////////////////////////////////////////////////////////////
+	// attributes
+	
+	public ParseNode getExpression(){
+		return super.child(0);
+	}
+	public ParseNode getCastType(){
+		return super.child(1);
+	}
+	
+	////////////////////////////////////////////////////////////
 	// convenience factory
 	
-	public static AssignStatementNode withChildren(Token token, ParseNode declaredName, ParseNode initializer) {
-		AssignStatementNode node = new AssignStatementNode(token);//if no error, token should be :=
-		node.appendChild(declaredName);
-		node.appendChild(initializer);
+	public static CastOperatorNode withChildren(Token token, ParseNode expression, ParseNode type) {
+		CastOperatorNode node = new CastOperatorNode(token);
+		node.appendChild(expression);
+		node.appendChild(type);
 		return node;
 	}
 	
 	
 	///////////////////////////////////////////////////////////
 	// boilerplate for visitors
-	
+			
 	public void accept(ParseNodeVisitor visitor) {
 		visitor.visitEnter(this);
 		visitChildren(visitor);

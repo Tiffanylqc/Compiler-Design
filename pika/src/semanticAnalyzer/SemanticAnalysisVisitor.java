@@ -1,14 +1,20 @@
 package semanticAnalyzer;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
 import logging.PikaLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
+import parseTree.nodeTypes.AssignStatementNode;
 import parseTree.nodeTypes.BinaryOperatorNode;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.CastOperatorNode;
+import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
@@ -19,6 +25,9 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.StringConstantNode;
+import parseTree.nodeTypes.TabNode;
+import parseTree.nodeTypes.TypeNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
@@ -29,6 +38,12 @@ import tokens.LextantToken;
 import tokens.Token;
 
 class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
+	private Map<String, Boolean> mutableTable;
+	
+	public SemanticAnalysisVisitor(){
+		mutableTable=new HashMap<String, Boolean>();
+	}
+	
 	@Override
 	public void visitLeave(ParseNode node) {
 		throw new RuntimeException("Node class unimplemented in SemanticAnalysisVisitor: " + node.getClass());
@@ -80,8 +95,45 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		identifier.setType(declarationType);
 		addBinding(identifier, declarationType);
+		
+		if(node.getToken().isLextant(Keyword.CONST)){
+			mutableTable.put(identifier.getToken().getLexeme(), false);
+		}
+		else if(node.getToken().isLextant(Keyword.VAR))
+			mutableTable.put(identifier.getToken().getLexeme(), true);
 	}
-
+	///////////////////////////////////////////////////////////////////////////
+	// assignment
+	@Override
+	public void visitLeave(AssignStatementNode node) {
+		assert node.nChildren() == 2;
+		IdentifierNode left  = (IdentifierNode)node.child(0);
+		if(mutableTable.get(left.getToken().getLexeme())==false){
+			ImmutableError(left);
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		
+		ParseNode right = node.child(1);
+		List<Type> childTypes = Arrays.asList(left.getType(), right.getType());
+		
+		Lextant operator = operatorFor(node);
+		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
+		FunctionSignature signature = signatures.acceptingSignature(childTypes);
+		
+		if(signature.accepts(childTypes)) {
+			node.setType(signature.resultType());
+			node.setSignature(signature);
+		}
+		else {
+			typeCheckError(node, childTypes);
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+	private Lextant operatorFor(AssignStatementNode node) {
+		LextantToken token = (LextantToken) node.getToken();
+		return token.getLextant();
+	}
 	///////////////////////////////////////////////////////////////////////////
 	// expressions
 	@Override
@@ -108,8 +160,33 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
 	}
-
-
+	///////////////////////////////////////////////////////////////////////////
+	// cast expression
+	@Override
+	public void visitLeave(CastOperatorNode node){
+		assert node.nChildren() == 2;
+		ParseNode expression  = node.child(0);
+		ParseNode type = node.child(1);
+		List<Type> childTypes = Arrays.asList(expression.getType(), type.getType());
+		
+		Lextant operator = operatorFor(node);
+		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
+		FunctionSignature signature = signatures.acceptingSignature(childTypes);
+		
+		if(signature.accepts(childTypes)) {
+			node.setType(signature.resultType());
+			node.setSignature(signature);
+		}
+		else {
+			typeCheckError(node, childTypes);
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+	private Lextant operatorFor(CastOperatorNode node) {
+		LextantToken token = (LextantToken) node.getToken();
+		return token.getLextant();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////
 	// simple leaf nodes
 	@Override
@@ -128,12 +205,36 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visit(FloatingConstantNode node) {
 		node.setType(PrimitiveType.FLOATING);
 	}
+	@Override
+	public void visit(CharacterConstantNode node) {
+		node.setType(PrimitiveType.CHARACTER);
+	}
+	@Override
+	public void visit(StringConstantNode node) {
+		node.setType(PrimitiveType.STRING);
+	}
+	
+	public void visit(TypeNode node){
+		Token token=node.getToken();
+		if(token.isLextant(Keyword.BOOL))
+			node.setType(PrimitiveType.BOOLEAN);
+		if(token.isLextant(Keyword.INT))
+			node.setType(PrimitiveType.INTEGER);
+		if(token.isLextant(Keyword.FLOAT))
+			node.setType(PrimitiveType.FLOATING);
+		if(token.isLextant(Keyword.CHAR))
+			node.setType(PrimitiveType.CHARACTER);
+		if(token.isLextant(Keyword.STRING))
+			node.setType(PrimitiveType.STRING);
+	}
 	
 	@Override
 	public void visit(NewlineNode node) {
 	}
 	@Override
 	public void visit(SpaceNode node) {
+	}
+	public void visit(TabNode node) {
 	}
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
@@ -165,6 +266,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		logError("operator " + token.getLexeme() + " not defined for types " 
 				 + operandTypes  + " at " + token.getLocation());	
+	}
+	private void ImmutableError(ParseNode node) {
+		Token token = node.getToken();
+		
+		logError("identifier " + token.getLexeme() + " is defined as const(immutable) at " + token.getLocation());	
 	}
 	private void logError(String message) {
 		PikaLogger log = PikaLogger.getLogger("compiler.semanticAnalyzer");

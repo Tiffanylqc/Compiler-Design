@@ -19,7 +19,8 @@ public class ParseNode {
 	protected Token token;
 	Type type;					// used for expressions
 	private Scope scope;		// the scope created by this node, if any.
-
+	private boolean mutable=true;
+	
 	public ParseNode(Token token) {
 		this.token = token;
 		this.type = PrimitiveType.NO_TYPE;
@@ -32,6 +33,7 @@ public class ParseNode {
 		this.token = node.token;
 		this.type = node.type;
 		this.scope = node.scope;
+		this.mutable=node.mutable;
 	}
 	public Token getToken() {
 		return token;
@@ -47,7 +49,13 @@ public class ParseNode {
 	public Type getType() {
 		return type;
 	}
-
+	public void setMutable(boolean mutable){
+		this.mutable=mutable;
+		
+	}
+	public boolean getMutable(){
+		return this.mutable;
+	}
 	
 ////////////////////////////////////////////////////////////////////////////////////
 // scopes and bindings 

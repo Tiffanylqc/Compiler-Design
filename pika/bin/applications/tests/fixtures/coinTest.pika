@@ -1,35 +1,3 @@
-!
-" I am a string "
-
-IamAnIdentifier_$1
-iamAnIdentifier_$2
-_IIamAnIdentifier_$3
-I
-i
-_
-
-^.^
-#test of comment inline #
-	# test of comment whole line
-	# test of comment in the front of line# var expense := -1.23;
-
-	const boot := _true_.
-	const boof := _false_.
-	print boot; boof, _t_.
-
-" I am not a string
-IAMASUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUERLONGSTRING:=5.
-var Int1 := -12.
-var Int2 := +13.
-var Int3 :=12.
-var Int4:=12.
-
-const float1:=-.9$
-const float2:=-.2.
-const float3:=-12.8.
-const float4:=-12.2E-12.
-const float5:=+12334.5E-12.
-const float6:=-123.45E+.
-
-< | <= | == | != | > | >=; | , | . | { | } | ( | ) | [ | ] | := #
-+=abckde
+exec {
+	int1:=([^.^|int]+ 3)*8.
+}

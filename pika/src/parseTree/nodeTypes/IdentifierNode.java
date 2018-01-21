@@ -11,7 +11,7 @@ import tokens.Token;
 public class IdentifierNode extends ParseNode {
 	private Binding binding;
 	private Scope declarationScope;
-
+	
 	public IdentifierNode(Token token) {
 		super(token);
 		assert(token instanceof IdentifierToken);
