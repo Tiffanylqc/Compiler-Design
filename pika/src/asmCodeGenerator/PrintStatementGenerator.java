@@ -9,6 +9,7 @@ import parseTree.ParseNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.SpaceNode;
+import parseTree.nodeTypes.TabNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import asmCodeGenerator.ASMCodeGenerator.CodeVisitor;
@@ -28,7 +29,7 @@ public class PrintStatementGenerator {
 
 	public void generate(PrintStatementNode node) {
 		for(ParseNode child : node.getChildren()) {
-			if(child instanceof NewlineNode || child instanceof SpaceNode) {
+			if(child instanceof NewlineNode || child instanceof SpaceNode ||child instanceof TabNode) {
 				ASMCodeFragment childCode = visitor.removeVoidCode(child);
 				code.append(childCode);
 			}
@@ -71,6 +72,8 @@ public class PrintStatementGenerator {
 		case INTEGER:	return RunTime.INTEGER_PRINT_FORMAT;
 		case FLOATING: return RunTime.FLOATING_PRINT_FORMAT;
 		case BOOLEAN:	return RunTime.BOOLEAN_PRINT_FORMAT;
+		case CHARACTER: return RunTime.CHARACTER_PRINT_FORMAT;
+		case STRING: return RunTime.STRING_PRINT_FORMAT;
 		default:		
 			assert false : "Type " + type + " unimplemented in PrintStatementGenerator.printFormat()";
 			return "";
