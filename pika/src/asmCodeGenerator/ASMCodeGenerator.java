@@ -12,6 +12,7 @@ import parseTree.*;
 import parseTree.nodeTypes.AssignStatementNode;
 import parseTree.nodeTypes.BinaryOperatorNode;
 import parseTree.nodeTypes.BooleanConstantNode;
+import parseTree.nodeTypes.CastOperatorNode;
 import parseTree.nodeTypes.CharacterConstantNode;
 import parseTree.nodeTypes.MainBlockNode;
 import parseTree.nodeTypes.DeclarationNode;
@@ -259,16 +260,29 @@ public class ASMCodeGenerator {
 		public void visitLeave(BinaryOperatorNode node) {
 			Lextant operator = node.getOperator();
 
-			if(operator == Punctuator.GREATER||operator==Punctuator.GREATER_EQUAL||operator==Punctuator.LESS||
-				operator==Punctuator.LESS_EQUAL||operator==Punctuator.EQUAL||operator==Punctuator.NOT_EQUAL) {
-				visitComparisonOperatorNode(node, operator);
+			if(operator == Punctuator.GREATER) {
+				visitGreaterOperatorNode(node, operator);
+			}
+			else if(operator==Punctuator.LESS){
+				visitLessOperatorNode(node, operator);
+			}
+			else if(operator==Punctuator.GREATER_EQUAL){
+				visitGreaterEqualOperatorNode(node,operator);
+			}
+			else if(operator==Punctuator.LESS_EQUAL){
+				visitLessEqualOperatorNode(node,operator);
+			}
+			else if(operator==Punctuator.EQUAL){
+				visitEqualOperatorNode(node,operator);
+			}
+			else if(operator==Punctuator.NOT_EQUAL){
+				visitNotEqualOperatorNode(node,operator);
 			}
 			else {
 				visitNormalBinaryOperatorNode(node);
 			}
 		}
-		private void visitComparisonOperatorNode(BinaryOperatorNode node,
-				Lextant operator) {
+		private void visitGreaterOperatorNode(BinaryOperatorNode node, Lextant operator) {
 
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
@@ -282,26 +296,341 @@ public class ASMCodeGenerator {
 			String falseLabel = labeller.newLabel("false");
 			String joinLabel  = labeller.newLabel("join");
 			
-			newValueCode(node);
-			code.add(Label, startLabel);
-			code.append(arg1);
-			code.add(Label, arg2Label);
-			code.append(arg2);
-			code.add(Label, subLabel);
-			code.add(Subtract);
 			
-			code.add(JumpPos, trueLabel);
-			code.add(Jump, falseLabel);
-
-			code.add(Label, trueLabel);
-			code.add(PushI, 1);
-			code.add(Jump, joinLabel);
-			code.add(Label, falseLabel);
-			code.add(PushI, 0);
-			code.add(Jump, joinLabel);
-			code.add(Label, joinLabel);
-
+			if(node.child(0).getType()==PrimitiveType.FLOATING){
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(FSubtract);//[...arg1-arg2]
+				
+				code.add(JumpFPos, trueLabel);//if arg1-arg2>0
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
+			{
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(Subtract);//[...arg1-arg2]
+				
+				code.add(JumpPos, trueLabel);//if arg1-arg2>0
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}		
 		}
+		private void visitLessOperatorNode(BinaryOperatorNode node, Lextant operator) {
+
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+			
+			Labeller labeller = new Labeller("compare");
+			
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String subLabel   = labeller.newLabel("sub");
+			String trueLabel  = labeller.newLabel("true");
+			String falseLabel = labeller.newLabel("false");
+			String joinLabel  = labeller.newLabel("join");
+			
+			
+			if(node.child(0).getType()==PrimitiveType.FLOATING){
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(FSubtract);//[...arg1-arg2]
+				
+				code.add(JumpFNeg, trueLabel);//if arg1-arg2<0
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
+			{
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(Subtract);//[...arg1-arg2]
+				
+				code.add(JumpNeg, trueLabel);//if arg1-arg2<0
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}	
+		}
+		
+		private void visitGreaterEqualOperatorNode(BinaryOperatorNode node, Lextant operator) {
+
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+			
+			Labeller labeller = new Labeller("compare");
+			
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String subLabel   = labeller.newLabel("sub");
+			String trueLabel  = labeller.newLabel("true");
+			String falseLabel = labeller.newLabel("false");
+			String joinLabel  = labeller.newLabel("join");
+			
+			
+			if(node.child(0).getType()==PrimitiveType.FLOATING){
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(FSubtract);//[...arg1-arg2]
+				
+				code.add(JumpFNeg, falseLabel);//if arg1-arg2<0
+				code.add(Jump, trueLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
+			{
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(Subtract);//[...arg1-arg2]
+				
+				code.add(JumpNeg, falseLabel);//if arg1-arg2<0
+				code.add(Jump,trueLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+		}
+		
+		private void visitLessEqualOperatorNode(BinaryOperatorNode node, Lextant operator) {
+
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+			
+			Labeller labeller = new Labeller("compare");
+			
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String subLabel   = labeller.newLabel("sub");
+			String trueLabel  = labeller.newLabel("true");
+			String falseLabel = labeller.newLabel("false");
+			String joinLabel  = labeller.newLabel("join");
+			
+			
+			if(node.child(0).getType()==PrimitiveType.FLOATING){
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(FSubtract);//[...arg1-arg2]
+				
+				code.add(JumpFPos, falseLabel);//if arg1-arg2>0 then false
+				code.add(Jump, trueLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
+			{
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(Subtract);//[...arg1-arg2]
+				
+				code.add(JumpPos, falseLabel);//if arg1-arg2>0 then false
+				code.add(Jump, trueLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}	
+		}
+		
+		private void visitEqualOperatorNode(BinaryOperatorNode node, Lextant operator) {
+
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+			
+			Labeller labeller = new Labeller("compare");
+			
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String subLabel   = labeller.newLabel("sub");
+			String trueLabel  = labeller.newLabel("true");
+			String falseLabel = labeller.newLabel("false");
+			String joinLabel  = labeller.newLabel("join");
+			
+			
+			if(node.child(0).getType()==PrimitiveType.FLOATING){
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(FSubtract);//[...arg1-arg2]
+				
+				code.add(JumpFalse, trueLabel);//if arg1-arg2==0 then true
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER
+				//node.child(0).getType()==PrimitiveType.STRING||node.child(0).getType()==PrimitiveType.BOOLEAN)
+			{
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(Subtract);//[...arg1-arg2]
+				
+				code.add(JumpFalse, trueLabel);//if arg1-arg2==0 then true
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}	
+		}
+		
+		private void visitNotEqualOperatorNode(BinaryOperatorNode node, Lextant operator) {
+
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			ASMCodeFragment arg2 = removeValueCode(node.child(1));
+			
+			Labeller labeller = new Labeller("compare");
+			
+			String startLabel = labeller.newLabel("arg1");
+			String arg2Label  = labeller.newLabel("arg2");
+			String subLabel   = labeller.newLabel("sub");
+			String trueLabel  = labeller.newLabel("true");
+			String falseLabel = labeller.newLabel("false");
+			String joinLabel  = labeller.newLabel("join");
+			
+			
+			if(node.child(0).getType()==PrimitiveType.FLOATING){
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(FSubtract);//[...arg1-arg2]
+				
+				code.add(JumpTrue, trueLabel);//if arg1-arg2!=0 then true
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER
+				//node.child(0).getType()==PrimitiveType.STRING||node.child(0).getType()==PrimitiveType.BOOLEAN)
+			{
+				newValueCode(node);
+				code.add(Label, startLabel);
+				code.append(arg1);//[...arg1]
+				code.add(Label, arg2Label);
+				code.append(arg2);//[...arg1,arg2]
+				code.add(Label, subLabel);
+				code.add(Subtract);//[...arg1-arg2]
+				
+				code.add(JumpTrue, trueLabel);//if arg1-arg2!=0 then true
+				code.add(Jump, falseLabel);
+	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+		}
+		
 		private void visitNormalBinaryOperatorNode(BinaryOperatorNode node) {
 			newValueCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
@@ -310,11 +639,11 @@ public class ASMCodeGenerator {
 			code.append(arg1);
 			code.append(arg2);
 			Object variant = node.getSignature().getVariant();
-			if(variant instanceof ASMOpcode) {
+			if(variant instanceof ASMOpcode) {//+ - *
 				ASMOpcode opcode = (ASMOpcode)variant;
 				code.add(opcode);
 			}
-			else if(variant instanceof SimpleCodeGenerator) {
+			else if(variant instanceof SimpleCodeGenerator) {// division
 				SimpleCodeGenerator generator =(SimpleCodeGenerator)variant;
 				ASMCodeFragment fragment = generator.generate(node);
 				code.append(fragment);
@@ -328,18 +657,52 @@ public class ASMCodeGenerator {
 //			ASMOpcode opcode = opcodeForOperator(node.getOperator());
 //			code.add(opcode);							// type-dependent! (opcode is different for floats and for ints)
 		}
-		private ASMOpcode opcodeForOperator(Lextant lextant) {
-			assert(lextant instanceof Punctuator);
-			Punctuator punctuator = (Punctuator)lextant;
-			switch(punctuator) {
-			case ADD: 	   		return Add;				// type-dependent!
-			case MULTIPLY: 		return Multiply;		// type-dependent!
-			default:
-				assert false : "unimplemented operator in opcodeForOperator";
-			}
-			return null;
-		}
+		
+//		private ASMOpcode opcodeForOperator(Lextant lextant) {
+//			assert(lextant instanceof Punctuator);
+//			Punctuator punctuator = (Punctuator)lextant;
+//			switch(punctuator) {
+//			case ADD: 	   		return Add;				// type-dependent!
+//			case MULTIPLY: 		return Multiply;		// type-dependent!
+//			default:
+//				assert false : "unimplemented operator in opcodeForOperator";
+//			}
+//			return null;
+//		}
 
+		public void visitLeave(CastOperatorNode node){
+			newValueCode(node);
+			Type expressionType=node.getExpression().getType();
+			Type targetType=node.getCastType().getType();
+			
+			if(expressionType==targetType)
+				return;
+			if(expressionType==PrimitiveType.INTEGER && targetType==PrimitiveType.FLOATING)
+				code.add(ConvertF);
+			else if(expressionType==PrimitiveType.FLOATING && targetType==PrimitiveType.INTEGER)
+				code.add(ConvertI);
+			else if(expressionType==PrimitiveType.CHARACTER && targetType==PrimitiveType.INTEGER){
+				CharToIntCodeGenerator generator=new CharToIntCodeGenerator();
+				ASMCodeFragment fragment=generator.generate(node);
+				code.append(fragment);
+			}
+			else if(expressionType==PrimitiveType.INTEGER && targetType==PrimitiveType.CHARACTER){
+				IntToCharCodeGenerator generator=new IntToCharCodeGenerator();
+				ASMCodeFragment fragment=generator.generate(node);
+				code.append(fragment);
+			}
+			else if(expressionType==PrimitiveType.INTEGER && targetType==PrimitiveType.BOOLEAN){
+				IntToBoolCodeGenerator generator=new IntToBoolCodeGenerator();
+				ASMCodeFragment fragment=generator.generate(node);
+				code.append(fragment);
+			}
+			else if(expressionType==PrimitiveType.CHARACTER && targetType==PrimitiveType.BOOLEAN){
+				CharToBoolCodeGenerator generator=new CharToBoolCodeGenerator();
+				ASMCodeFragment fragment=generator.generate(node);
+				code.append(fragment);
+			}
+		}
+		
 		///////////////////////////////////////////////////////////////////////////
 		// leaf nodes (ErrorNode not necessary)
 		public void visit(BooleanConstantNode node) {
@@ -366,10 +729,13 @@ public class ASMCodeGenerator {
 			code.add(PushI, ascii);
 		}
 		public void visit(StringConstantNode node) {
-			newAddressCode(node);
-			Binding binding = node.getBinding();
+			Labeller labeller=new Labeller("string");
+			String label=labeller.newLabel(node.getValue());
 			
-			binding.generateAddress(code);
+			newValueCode(node);
+			code.add(DLabel,label);
+			code.add(DataS,node.getValue());
+			code.add(PushD,label);
 		}
 	}
 
