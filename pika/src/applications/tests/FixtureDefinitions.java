@@ -15,4 +15,7 @@ public class FixtureDefinitions {
 
 	public static final String SEMANTIC_INPUT_FILENAME          = FIXTURE_DIRECTORY + "coinTest.pika";
 	public static final String SEMANTIC_EXPECTED_FILENAME       = FIXTURE_DIRECTORY + "coinTestSemantics.txt";
+	
+	public static final String CODEGENERATION_INPUT_FILENAME	= FIXTURE_DIRECTORY + "coinTest.pika";
+	public static final String CODEGENERATION_EXPECTED_FILENAME	= FIXTURE_DIRECTORY + "coinTestCodeGeneration.txt";
 }

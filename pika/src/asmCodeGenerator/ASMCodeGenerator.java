@@ -25,6 +25,7 @@ import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
+import parseTree.nodeTypes.TypeNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -537,7 +538,7 @@ public class ASMCodeGenerator {
 				code.add(Label, subLabel);
 				code.add(FSubtract);//[...arg1-arg2]
 				
-				code.add(JumpFalse, trueLabel);//if arg1-arg2==0 then true
+				code.add(JumpFZero, trueLabel);//if arg1-arg2==0 then true
 				code.add(Jump, falseLabel);
 	
 				code.add(Label, trueLabel);
@@ -596,14 +597,14 @@ public class ASMCodeGenerator {
 				code.add(Label, subLabel);
 				code.add(FSubtract);//[...arg1-arg2]
 				
-				code.add(JumpTrue, trueLabel);//if arg1-arg2!=0 then true
-				code.add(Jump, falseLabel);
+				code.add(JumpFZero, falseLabel);//if arg1-arg2==0 then false
+				code.add(Jump, trueLabel);
 	
-				code.add(Label, trueLabel);
-				code.add(PushI, 1);
-				code.add(Jump, joinLabel);
 				code.add(Label, falseLabel);
 				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
 				code.add(Jump, joinLabel);
 				code.add(Label, joinLabel);
 			}
@@ -675,9 +676,14 @@ public class ASMCodeGenerator {
 			Type expressionType=node.getExpression().getType();
 			Type targetType=node.getCastType().getType();
 			
-			if(expressionType==targetType)
-				return;
-			if(expressionType==PrimitiveType.INTEGER && targetType==PrimitiveType.FLOATING)
+			ASMCodeFragment arg1 = removeValueCode(node.child(0));
+			code.append(arg1);
+			
+			if(expressionType==targetType){
+				code.add(Nop);
+			}
+				
+			else if(expressionType==PrimitiveType.INTEGER && targetType==PrimitiveType.FLOATING)
 				code.add(ConvertF);
 			else if(expressionType==PrimitiveType.FLOATING && targetType==PrimitiveType.INTEGER)
 				code.add(ConvertI);
@@ -736,6 +742,9 @@ public class ASMCodeGenerator {
 			code.add(DLabel,label);
 			code.add(DataS,node.getValue());
 			code.add(PushD,label);
+		}
+		public void visit(TypeNode node){
+			
 		}
 	}
 

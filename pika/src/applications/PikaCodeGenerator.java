@@ -1,10 +1,8 @@
 package applications;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-
 import asmCodeGenerator.ASMCodeGenerator;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import lexicalAnalyzer.LexicalAnalyzer;
@@ -76,6 +74,8 @@ public class PikaCodeGenerator extends PikaApplication {
 			throws FileNotFoundException {
 		File file = new File(filename);
 		PrintStream out = new PrintStream(file);
+
+		System.out.println(code);
 		out.print(code);
 		out.close();
 	}

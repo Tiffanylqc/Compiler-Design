@@ -96,10 +96,6 @@ public class Parser {
 		return mainBlock;
 	}
 	private boolean startsMainBlock(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token.isLextant(Punctuator.OPEN_BRACE);
 	}
 	
@@ -127,10 +123,6 @@ public class Parser {
 		return syntaxErrorNode("statement");
 	}
 	private boolean startsStatement(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsPrintStatement(token) ||
 			   startsDeclaration(token)||
 			   startsMainBlock(token)||
@@ -151,10 +143,6 @@ public class Parser {
 	}
 	
 	private boolean startsAssignStatement(Token token){
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsIdentifier(token);
 	}
 
@@ -173,10 +161,6 @@ public class Parser {
 		return result;
 	}
 	private boolean startsPrintStatement(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token.isLextant(Keyword.PRINT);
 	}	
 
@@ -213,10 +197,6 @@ public class Parser {
 		// else we interpret the printExpression as epsilon, and do nothing
 	}
 	private boolean startsPrintExpression(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsExpression(token) || token.isLextant(Keyword.NEWLINE) ||token.isLextant(Keyword.TAB);
 	}
 	
@@ -245,10 +225,6 @@ public class Parser {
 		}
 	}
 	private boolean startsPrintSeparator(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token.isLextant(Punctuator.SEPARATOR, Punctuator.SPACE) ;
 	}
 	
@@ -269,10 +245,6 @@ public class Parser {
 		return DeclarationNode.withChildren(declarationToken, identifier, initializer);
 	}
 	private boolean startsDeclaration(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token.isLextant(Keyword.CONST)||
 				token.isLextant(Keyword.VAR);
 	}
@@ -298,10 +270,6 @@ public class Parser {
 	}
 	
 	private boolean startsExpression(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsComparisonExpression(token);
 	}
 
@@ -312,22 +280,18 @@ public class Parser {
 		}
 		
 		ParseNode left = parseAdditiveSubtractiveExpression();
-		if(nowReading.isLextant(Punctuator.GREATER,Punctuator.GREATER_EQUAL,Punctuator.LESS,
+		while(nowReading.isLextant(Punctuator.GREATER,Punctuator.GREATER_EQUAL,Punctuator.LESS,
 				Punctuator.LESS_EQUAL,Punctuator.NOT_EQUAL,Punctuator.EQUAL)) {
 			Token compareToken = nowReading;
 			readToken();
 			ParseNode right = parseAdditiveSubtractiveExpression();
 			
-			return BinaryOperatorNode.withChildren(compareToken, left, right);
+			left= BinaryOperatorNode.withChildren(compareToken, left, right);
 		}
 		return left;
 
 	}
 	private boolean startsComparisonExpression(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsAdditiveSubtractiveExpression(token);
 	}
 
@@ -348,10 +312,6 @@ public class Parser {
 		return left;
 	}
 	private boolean startsAdditiveSubtractiveExpression(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsMultiplicativeDividingExpression(token);
 	}	
 
@@ -372,10 +332,6 @@ public class Parser {
 		return left;
 	}
 	private boolean startsMultiplicativeDividingExpression(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsParenCastExpression(token);
 	}
 	
@@ -405,11 +361,6 @@ public class Parser {
 		}
 	}
 	private boolean startsParenCastExpression(Token token){
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
-		
 		return token.isLextant(Punctuator.OPEN_BRACKET, Punctuator.OPEN_PARENTHESE)||startsAtomicExpression(token);
 	}
 	
@@ -421,10 +372,6 @@ public class Parser {
 		return parseLiteral();
 	}
 	private boolean startsAtomicExpression(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsLiteral(token);
 	}
 	
@@ -456,10 +403,6 @@ public class Parser {
 		return syntaxErrorNode("literal");
 	}
 	private boolean startsLiteral(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return startsIntNumber(token) || startsFloatNumber(token) ||startsIdentifier(token) ||
 			   startsBooleanConstant(token) || startsStringConstant(token) || startsCharacterConstant(token);
 	}
@@ -480,17 +423,9 @@ public class Parser {
 		return new FloatingConstantNode(previouslyRead);
 	}
 	private boolean startsIntNumber(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token instanceof IntegerConstantToken;
 	}
 	private boolean startsFloatNumber(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token instanceof FloatingConstantToken;
 	}
 	//string
@@ -502,10 +437,6 @@ public class Parser {
 		return new StringConstantNode(previouslyRead);
 	}
 	private boolean startsStringConstant(Token token){
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token instanceof StringConstantToken;
 	}
 	
@@ -518,10 +449,6 @@ public class Parser {
 		return new CharacterConstantNode(previouslyRead);
 	}
 	private boolean startsCharacterConstant(Token token){
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token instanceof CharacterConstantToken;
 	}
 	
@@ -534,10 +461,6 @@ public class Parser {
 		return new IdentifierNode(previouslyRead);
 	}
 	private boolean startsIdentifier(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token instanceof IdentifierToken;
 	}
 
@@ -550,10 +473,6 @@ public class Parser {
 		return new BooleanConstantNode(previouslyRead);
 	}
 	private boolean startsBooleanConstant(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token.isLextant(Keyword.TRUE, Keyword.FALSE);
 	}
 	
@@ -566,16 +485,14 @@ public class Parser {
 		return new TypeNode(previouslyRead);
 	}
 	private boolean startsType(Token token) {
-		while(token instanceof CommentToken){
-			readToken();
-			token=nowReading;
-		}
 		return token.isLextant(Keyword.BOOL, Keyword.INT,Keyword.FLOAT,Keyword.CHAR,Keyword.STRING);
 	}
 
 	private void readToken() {
 		previouslyRead = nowReading;
 		nowReading = scanner.next();
+		while(nowReading instanceof CommentToken)
+			nowReading=scanner.next();
 	}	
 	
 	// if the current token is one of the given lextants, read the next token.

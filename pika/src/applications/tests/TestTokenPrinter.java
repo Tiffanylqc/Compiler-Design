@@ -16,7 +16,7 @@ public class TestTokenPrinter extends FileFixturesTestCase {
 	public void testTokenPrinter() throws Exception {
 		String actualOutput =	tokenPrinterOutput(TOKEN_PRINTER_INPUT_FILENAME);
 		String expectedOutput = getContents(TOKEN_PRINTER_EXPECTED_FILENAME);
-//		System.out.println("actual Output");
+		System.out.println("actual Output");
 		System.out.println(actualOutput);
 //		assertEquals(expectedOutput, actualOutput);
 	}
