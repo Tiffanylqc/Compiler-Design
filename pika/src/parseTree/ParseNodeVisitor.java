@@ -1,23 +1,27 @@
 package parseTree;
 
+import parseTree.nodeTypes.ArrayTypeNode;
 import parseTree.nodeTypes.AssignStatementNode;
 import parseTree.nodeTypes.BinaryOperatorNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CastOperatorNode;
 import parseTree.nodeTypes.CharacterConstantNode;
-import parseTree.nodeTypes.MainBlockNode;
+import parseTree.nodeTypes.BlockStatementNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.IdentifierNode;
+import parseTree.nodeTypes.IfStatementNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.ReleaseStatementNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
-import parseTree.nodeTypes.TypeNode;
+import parseTree.nodeTypes.WhileStatementNode;
+import parseTree.nodeTypes.PrimitiveTypeNode;
 
 // Visitor pattern with pre- and post-order visits
 public interface ParseNodeVisitor {
@@ -26,8 +30,8 @@ public interface ParseNodeVisitor {
 	void visitEnter(BinaryOperatorNode node);
 	void visitLeave(BinaryOperatorNode node);
 	
-	void visitEnter(MainBlockNode node);
-	void visitLeave(MainBlockNode node);
+	void visitEnter(BlockStatementNode node);
+	void visitLeave(BlockStatementNode node);
 
 	void visitEnter(DeclarationNode node);
 	void visitLeave(DeclarationNode node);
@@ -47,9 +51,22 @@ public interface ParseNodeVisitor {
 	void visitEnter(CastOperatorNode node);
 	void visitLeave(CastOperatorNode node);
 
+	void visitEnter(IfStatementNode node);
+	void visitLeave(IfStatementNode node);
+	
+	void visitEnter(WhileStatementNode node);
+	void visitLeave(WhileStatementNode node);
+	
+	void visitEnter(ReleaseStatementNode node);
+	void visitLeave(ReleaseStatementNode node);
+	
+	void visitEnter(ArrayTypeNode node);
+	void visitLeave(ArrayTypeNode node);
+	
 	// leaf nodes: visitLeaf only
 	void visit(BooleanConstantNode node);
-	void visit(TypeNode node);
+	void visit(PrimitiveTypeNode node);
+//	void visit(ArrayTypeNode node);
 	void visit(ErrorNode node);
 	void visit(IdentifierNode node);
 	void visit(IntegerConstantNode node);
@@ -72,6 +89,27 @@ public interface ParseNodeVisitor {
 		}		
 		public void defaultVisitForLeaf(ParseNode node) {
 			defaultVisit(node);
+		}
+		
+		public void visitEnter(WhileStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(WhileStatementNode node) {
+			defaultVisitLeave(node);
+		}
+		
+		public void visitEnter(ReleaseStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ReleaseStatementNode node) {
+			defaultVisitLeave(node);
+		}
+		
+		public void visitEnter(IfStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(IfStatementNode node) {
+			defaultVisitLeave(node);
 		}
 		
 		public void visitEnter(CastOperatorNode node) {
@@ -99,10 +137,10 @@ public interface ParseNodeVisitor {
 		public void visitLeave(AssignStatementNode node) {
 			defaultVisitLeave(node);
 		}
-		public void visitEnter(MainBlockNode node) {
+		public void visitEnter(BlockStatementNode node) {
 			defaultVisitEnter(node);
 		}
-		public void visitLeave(MainBlockNode node) {
+		public void visitLeave(BlockStatementNode node) {
 			defaultVisitLeave(node);
 		}				
 		public void visitEnter(ParseNode node) {
@@ -124,11 +162,20 @@ public interface ParseNodeVisitor {
 			defaultVisitLeave(node);
 		}
 		
+		public void visitEnter(ArrayTypeNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ArrayTypeNode node) {
+			defaultVisitLeave(node);
+		}
 
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);
 		}
-		public void visit(TypeNode node) {
+//		public void visit(ArrayTypeNode node) {
+//			defaultVisitForLeaf(node);
+//		}
+		public void visit(PrimitiveTypeNode node) {
 			defaultVisitForLeaf(node);
 		}
 		public void visit(ErrorNode node) {

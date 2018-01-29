@@ -6,12 +6,12 @@ import lexicalAnalyzer.Keyword;
 import tokens.LextantToken;
 import tokens.Token;
 
-public class TypeNode extends ParseNode {
-	public TypeNode(Token token) {
+public class PrimitiveTypeNode extends ParseNode {
+	public PrimitiveTypeNode(Token token) {
 		super(token);
-		assert(token.isLextant(Keyword.BOOL, Keyword.INT,Keyword.FLOAT,Keyword.CHAR,Keyword.STRING));
+		assert(token.isLextant(Keyword.BOOL, Keyword.INT,Keyword.FLOAT,Keyword.CHAR,Keyword.STRING,Keyword.RAT));
 	}
-	public TypeNode(ParseNode node) {
+	public PrimitiveTypeNode(ParseNode node) {
 		super(node);
 	}
 

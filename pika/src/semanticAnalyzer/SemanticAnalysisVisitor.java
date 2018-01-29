@@ -15,7 +15,7 @@ import parseTree.nodeTypes.BinaryOperatorNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CastOperatorNode;
 import parseTree.nodeTypes.CharacterConstantNode;
-import parseTree.nodeTypes.MainBlockNode;
+import parseTree.nodeTypes.BlockStatementNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.IdentifierNode;
@@ -27,7 +27,7 @@ import parseTree.nodeTypes.ProgramNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
-import parseTree.nodeTypes.TypeNode;
+import parseTree.nodeTypes.PrimitiveTypeNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
 import semanticAnalyzer.types.PrimitiveType;
@@ -58,9 +58,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	public void visitLeave(ProgramNode node) {
 		leaveScope(node);
 	}
-	public void visitEnter(MainBlockNode node) {
+	public void visitEnter(BlockStatementNode node) {
+		enterSubscope(node);
 	}
-	public void visitLeave(MainBlockNode node) {
+	public void visitLeave(BlockStatementNode node) {
+		leaveScope(node);
 	}
 	
 	
@@ -214,7 +216,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(PrimitiveType.STRING);
 	}
 	
-	public void visit(TypeNode node){
+	public void visit(PrimitiveTypeNode node){
 		Token token=node.getToken();
 		if(token.isLextant(Keyword.BOOL))
 			node.setType(PrimitiveType.BOOLEAN);
