@@ -1,5 +1,6 @@
 package semanticAnalyzer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -7,11 +8,13 @@ import java.util.Map;
 
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Lextant;
+import lexicalAnalyzer.Punctuator;
 import logging.PikaLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
+import parseTree.nodeTypes.ArrayTypeNode;
 import parseTree.nodeTypes.AssignStatementNode;
-import parseTree.nodeTypes.BinaryOperatorNode;
+import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CastOperatorNode;
 import parseTree.nodeTypes.CharacterConstantNode;
@@ -19,17 +22,21 @@ import parseTree.nodeTypes.BlockStatementNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ErrorNode;
 import parseTree.nodeTypes.IdentifierNode;
+import parseTree.nodeTypes.IfStatementNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.FloatingConstantNode;
 import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.ProgramNode;
+import parseTree.nodeTypes.ReleaseStatementNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.StringConstantNode;
 import parseTree.nodeTypes.TabNode;
+import parseTree.nodeTypes.WhileStatementNode;
 import parseTree.nodeTypes.PrimitiveTypeNode;
 import semanticAnalyzer.signatures.FunctionSignature;
 import semanticAnalyzer.signatures.FunctionSignatures;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import symbolTable.Binding;
@@ -38,10 +45,8 @@ import tokens.LextantToken;
 import tokens.Token;
 
 class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
-	private Map<String, Boolean> mutableTable;
 	
 	public SemanticAnalysisVisitor(){
-		mutableTable=new HashMap<String, Boolean>();
 	}
 	
 	@Override
@@ -72,7 +77,7 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		Scope scope = Scope.createProgramScope();
 		node.setScope(scope);
 	}	
-	@SuppressWarnings("unused")
+
 	private void enterSubscope(ParseNode node) {
 		Scope baseScope = node.getLocalScope();
 		Scope scope = baseScope.createSubscope();
@@ -96,39 +101,61 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		node.setType(declarationType);
 		
 		identifier.setType(declarationType);
-		addBinding(identifier, declarationType);
 		
 		if(node.getToken().isLextant(Keyword.CONST)){
-			mutableTable.put(identifier.getToken().getLexeme(), false);
+			addBinding(identifier, declarationType, false);
 		}
 		else if(node.getToken().isLextant(Keyword.VAR))
-			mutableTable.put(identifier.getToken().getLexeme(), true);
+			addBinding(identifier, declarationType, true);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// ArrayNode
+//	@Override
+//	public void visitLeave(ArrayNode node){
+//		node.setType(new Array(node.child(0).getType()));
+//	}
+	///////////////////////////////////////////////////////////////////////////
+	// ArrayTypeNode
+	@Override
+	public void visitLeave(ArrayTypeNode node){
+		node.setType(new Array(node.child(0).getType()));
 	}
 	///////////////////////////////////////////////////////////////////////////
 	// assignment
 	@Override
 	public void visitLeave(AssignStatementNode node) {
 		assert node.nChildren() == 2;
-		IdentifierNode left  = (IdentifierNode)node.child(0);
-		if(mutableTable.get(left.getToken().getLexeme())==false){
-			ImmutableError(left);
-			node.setType(PrimitiveType.ERROR);
-			return;
-		}
 		
+		if(node.child(0) instanceof IdentifierNode){
+			IdentifierNode left  = (IdentifierNode)node.child(0);
+			Binding binding = left.findVariableBinding();
+			if(binding.getMutable()==false){
+				ImmutableError(left);
+				node.setType(PrimitiveType.ERROR);
+				return;
+			}
+		}
+		else if(!(node.child(0).getToken().isLextant(Punctuator.ARRAY_INDEXING)))//illegal type
+			return;
+		else//array indexing no need to do type check
+			;
+		
+		ParseNode left = node.child(0);
 		ParseNode right = node.child(1);
-		List<Type> childTypes = Arrays.asList(left.getType(), right.getType());
+		List<Type> childTypes = Arrays.asList(right.getType(),left.getType());
 		
 		Lextant operator = operatorFor(node);
 		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
 		FunctionSignature signature = signatures.acceptingSignature(childTypes);
 		
-		if(signature.accepts(childTypes)) {
+//		if(signature.accepts(childTypes)) 
+		if(!signature.isNull()){
 			node.setType(signature.resultType());
 			node.setSignature(signature);
 		}
 		else {
-			typeCheckError(node, childTypes);
+			typeCheckError(node, Arrays.asList(left.getType(),right.getType()));
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
@@ -137,19 +164,132 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		return token.getLextant();
 	}
 	///////////////////////////////////////////////////////////////////////////
+	// while 
+	@Override
+	public void visitLeave(WhileStatementNode node){
+		assert node.nChildren()==2;
+		ParseNode condition=node.child(0);
+		if(condition.getType()!=PrimitiveType.BOOLEAN){
+			typeCheckError(node, Arrays.asList(condition.getType()));
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// If 
+	@Override
+	public void visitLeave(IfStatementNode node){
+		assert node.nChildren()==2||node.nChildren()==3;
+		ParseNode condition=node.child(0);
+		if(condition.getType()!=PrimitiveType.BOOLEAN){
+			typeCheckError(node, Arrays.asList(condition.getType()));
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////
+	// Release
+	@Override
+	public void visitLeave(ReleaseStatementNode node){
+		assert node.nChildren()==1;
+		
+		if((node.child(0).getType()!=PrimitiveType.STRING) && !((node.child(0).getType() instanceof Array ))){
+			typeCheckError(node, Arrays.asList(node.child(0).getType()));
+			node.setType(PrimitiveType.ERROR);
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////
+	// ArrayIndexing
+//	@Override
+//	public void visitLeave(ArrayIndexingNode node){
+//		ParseNode array=node.child(0);
+//		ParseNode index=node.child(1);
+//		if(!(array.getType() instanceof Array)){
+//			typeCheckError(node, Arrays.asList(array.getType()));
+//			node.setType(PrimitiveType.ERROR);
+//			return;
+//		}
+//		if(index.getType()!=PrimitiveType.INTEGER){
+//			typeCheckError(node, Arrays.asList(index.getType()));
+//			node.setType(PrimitiveType.ERROR);
+//			return;
+//		}
+//	}
+	
+	///////////////////////////////////////////////////////////////////////////
 	// expressions
 	@Override
-	public void visitLeave(BinaryOperatorNode node) {
-		assert node.nChildren() == 2;
-		ParseNode left  = node.child(0);
-		ParseNode right = node.child(1);
-		List<Type> childTypes = Arrays.asList(left.getType(), right.getType());
-		
+	public void visitLeave(OperatorNode node) {
+		assert (node.nChildren()>=1);
+		List<Type> childTypes=new ArrayList<Type>();
+		if(node.getToken().isLextant(Punctuator.OPEN_BRACKET)){//populate array creation type check promotion
+			boolean convertable;
+			List<Type> finalTypes=new ArrayList<Type>();
+			for(ParseNode child1:node.getChildren()){
+				convertable=true;
+				
+				for(ParseNode child2:node.getChildren()){
+					if(!FunctionSignature.canConvert(child2.getType(),child1.getType())){
+						convertable=false;
+						break;
+					}	
+				}
+				if(convertable==true){
+					boolean exist=false;
+					for(int i=0;i<finalTypes.size();i++){
+						if(finalTypes.get(i).equivalent(child1.getType().getConcreteType())){
+							exist=true;
+							break;
+						}
+					}
+					if(exist==false)
+						finalTypes.add(child1.getType().getConcreteType());					
+				}
+			}
+			if(finalTypes.size()==0){
+				typeCheckError(node, childTypes);
+				node.setType(PrimitiveType.ERROR);
+				return;
+			}
+			else if(finalTypes.size()==1){
+				
+				childTypes=new ArrayList<Type>();
+				childTypes.add(finalTypes.get(0));
+			}
+			else{
+				if(finalTypes.contains(PrimitiveType.CHARACTER)){
+					childTypes=new ArrayList<Type>();
+					childTypes.add(PrimitiveType.CHARACTER);
+				}
+				else if(finalTypes.contains(PrimitiveType.INTEGER)){
+					childTypes=new ArrayList<Type>();
+					childTypes.add(PrimitiveType.INTEGER);
+				}
+				else if(finalTypes.contains(PrimitiveType.FLOATING)){
+					childTypes=new ArrayList<Type>();
+					childTypes.add(PrimitiveType.FLOATING);
+				}
+				else //(finalTypes.contains(PrimitiveType.RATIONAL))
+				{
+					childTypes=new ArrayList<Type>();
+					childTypes.add(PrimitiveType.RATIONAL);
+				}
+			}
+		}
+		else if(node.nChildren()==2){//binary operator
+			ParseNode left  = node.child(0);
+			ParseNode right = node.child(1);
+			childTypes = Arrays.asList(left.getType(), right.getType());
+		}
+		else{//unary operator
+			ParseNode child=node.child(0);
+			childTypes = Arrays.asList(child.getType());
+		}
 		Lextant operator = operatorFor(node);
 		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
 		FunctionSignature signature = signatures.acceptingSignature(childTypes);
 		
-		if(signature.accepts(childTypes)) {
+//		if(signature.accepts(childTypes)) {
+		if(!signature.isNull()){
 			node.setType(signature.resultType());
 			node.setSignature(signature);
 		}
@@ -158,10 +298,12 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.ERROR);
 		}
 	}
-	private Lextant operatorFor(BinaryOperatorNode node) {
+	private Lextant operatorFor(OperatorNode node) {
 		LextantToken token = (LextantToken) node.getToken();
 		return token.getLextant();
 	}
+	///////////////////////////////////////////////////////////////////////////
+	// expressions
 	///////////////////////////////////////////////////////////////////////////
 	// cast expression
 	@Override
@@ -173,9 +315,11 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		Lextant operator = operatorFor(node);
 		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
-		FunctionSignature signature = signatures.acceptingSignature(childTypes);
+		FunctionSignature signature = signatures.acceptingSignatureStrict(childTypes);
 		
-		if(signature.accepts(childTypes)) {
+//		if(signature.accepts(childTypes)) 
+		if(!signature.isNull())
+		{
 			node.setType(signature.resultType());
 			node.setSignature(signature);
 		}
@@ -228,6 +372,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			node.setType(PrimitiveType.CHARACTER);
 		if(token.isLextant(Keyword.STRING))
 			node.setType(PrimitiveType.STRING);
+		if(token.isLextant(Keyword.RAT))
+			node.setType(PrimitiveType.RATIONAL);
 	}
 	
 	@Override
@@ -254,9 +400,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		ParseNode parent = node.getParent();
 		return (parent instanceof DeclarationNode) && (node == parent.child(0));
 	}
-	private void addBinding(IdentifierNode identifierNode, Type type) {
+	private void addBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createBinding(identifierNode, type);
+		Binding binding = scope.createBinding(identifierNode, type, mutable);
 		identifierNode.setBinding(binding);
 	}
 	

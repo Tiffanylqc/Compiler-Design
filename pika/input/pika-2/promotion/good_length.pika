@@ -1,0 +1,7 @@
+exec{
+	var a:= new[int](10).
+	var b:=4.
+	b:=length a.
+	var c:=12.3.
+	c:=length a.
+}

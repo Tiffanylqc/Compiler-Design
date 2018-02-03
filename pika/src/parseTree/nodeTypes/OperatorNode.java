@@ -7,14 +7,14 @@ import lexicalAnalyzer.Lextant;
 import tokens.LextantToken;
 import tokens.Token;
 
-public class BinaryOperatorNode extends ParseNode {
+public class OperatorNode extends ParseNode {
 	private FunctionSignature signature = FunctionSignature.nullInstance();
-	public BinaryOperatorNode(Token token) {
+	public OperatorNode(Token token) {
 		super(token);
 		assert(token instanceof LextantToken);
 	}
 
-	public BinaryOperatorNode(ParseNode node) {
+	public OperatorNode(ParseNode node) {
 		super(node);
 	}
 	
@@ -34,17 +34,21 @@ public class BinaryOperatorNode extends ParseNode {
 		return (LextantToken)token;
 	}	
 	
-	
 	////////////////////////////////////////////////////////////
 	// convenience factory
 	
-	public static BinaryOperatorNode withChildren(Token token, ParseNode left, ParseNode right) {
-		BinaryOperatorNode node = new BinaryOperatorNode(token);
+	public static OperatorNode withChildren(Token token, ParseNode left, ParseNode right) {
+		OperatorNode node = new OperatorNode(token);
 		node.appendChild(left);
 		node.appendChild(right);
 		return node;
 	}
 	
+	public static OperatorNode withChild(Token token,ParseNode right) {
+		OperatorNode node = new OperatorNode(token);
+		node.appendChild(right);
+		return node;
+	}
 	
 	///////////////////////////////////////////////////////////
 	// boilerplate for visitors

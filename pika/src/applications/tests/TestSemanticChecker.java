@@ -22,7 +22,7 @@ public class TestSemanticChecker extends FileFixturesTestCase {
 		ParseTreePrinter.setPrintLevel(level);
 		Tokens.setPrintLevel(tokenLevel);
 		String actualOutput =	tokenPrinterOutput(SEMANTIC_INPUT_FILENAME);
-		String expectedOutput = getContents(string);
+//		String expectedOutput = getContents(string);
 		System.out.println(actualOutput);
 //		assertEquals(expectedOutput, actualOutput);
 	}

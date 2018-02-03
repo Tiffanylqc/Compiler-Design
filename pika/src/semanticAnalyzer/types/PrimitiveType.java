@@ -6,7 +6,8 @@ public enum PrimitiveType implements Type {
 	CHARACTER(1),
 	INTEGER(4),
 	STRING(4),
-	FLOATING(8),	
+	FLOATING(8),
+	RATIONAL(8),
 	ERROR(0),			// use as a value when a syntax error has occurred
 	NO_TYPE(0, "");		// use as a value when no type has been assigned.
 	
@@ -26,5 +27,13 @@ public enum PrimitiveType implements Type {
 	}
 	public String infoString() {
 		return infoString;
+	}
+	@Override
+	public boolean equivalent(Type type) {
+		return this == type;
+	}
+	@Override
+	public Type getConcreteType() {
+		return this;
 	}
 }

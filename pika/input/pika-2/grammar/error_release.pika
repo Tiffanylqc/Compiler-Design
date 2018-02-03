@@ -1,0 +1,11 @@
+exec{
+	var a:= ^c^.
+	var b:=[1,2,3,4].
+	var c:=1.
+	var d:=1.2.
+	var e:=1//2.
+	var f:= _true_.
+#	release a.
+#	release b[1].
+	release f.
+}

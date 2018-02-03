@@ -1,0 +1,5 @@
+exec{
+	var a:=[].
+	var e:= [1.2,3,^c^,3//4].
+	var f:= ["first","second","third",_true_,_false_].
+}

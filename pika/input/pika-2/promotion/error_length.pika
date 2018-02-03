@@ -1,0 +1,8 @@
+exec{
+	var a:= new[int](10).
+	var b:=^c^.
+	b:=length a.
+	var c:=new[[int]](10).
+	var d:= 10.
+	d:=length c.
+}

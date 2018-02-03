@@ -1,0 +1,15 @@
+exec{
+	var a:= new[int](10).
+	var b:= [1,2,3].
+	var c:= "test_string".
+	var d:= new [[int]] (10).
+	var e:= [a,b].
+	var f:= new [[[int]]](10).
+	release a.
+	release b.
+	release c.
+	release d.
+	release e.
+	release d[0].
+	release f[1][2].
+}

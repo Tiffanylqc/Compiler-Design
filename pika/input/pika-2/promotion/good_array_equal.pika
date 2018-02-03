@@ -1,0 +1,8 @@
+exec{
+	var a:= new[int](2).
+	var b:=[3,4,5].
+	var c:= new [[int]](3).
+	var d:=c.
+	var e:=a==b.
+	var f:=c!=d.
+}

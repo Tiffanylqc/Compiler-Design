@@ -2,7 +2,7 @@ package parseTree;
 
 import parseTree.nodeTypes.ArrayTypeNode;
 import parseTree.nodeTypes.AssignStatementNode;
-import parseTree.nodeTypes.BinaryOperatorNode;
+import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.BooleanConstantNode;
 import parseTree.nodeTypes.CastOperatorNode;
 import parseTree.nodeTypes.CharacterConstantNode;
@@ -27,8 +27,8 @@ import parseTree.nodeTypes.PrimitiveTypeNode;
 public interface ParseNodeVisitor {
 	
 	// non-leaf nodes: visitEnter and visitLeave
-	void visitEnter(BinaryOperatorNode node);
-	void visitLeave(BinaryOperatorNode node);
+	void visitEnter(OperatorNode node);
+	void visitLeave(OperatorNode node);
 	
 	void visitEnter(BlockStatementNode node);
 	void visitLeave(BlockStatementNode node);
@@ -66,7 +66,6 @@ public interface ParseNodeVisitor {
 	// leaf nodes: visitLeaf only
 	void visit(BooleanConstantNode node);
 	void visit(PrimitiveTypeNode node);
-//	void visit(ArrayTypeNode node);
 	void visit(ErrorNode node);
 	void visit(IdentifierNode node);
 	void visit(IntegerConstantNode node);
@@ -77,7 +76,6 @@ public interface ParseNodeVisitor {
 	void visit(TabNode node);
 	void visit(SpaceNode node);
 
-	
 	public static class Default implements ParseNodeVisitor
 	{
 		public void defaultVisit(ParseNode node) {	}
@@ -90,6 +88,7 @@ public interface ParseNodeVisitor {
 		public void defaultVisitForLeaf(ParseNode node) {
 			defaultVisit(node);
 		}
+		
 		
 		public void visitEnter(WhileStatementNode node) {
 			defaultVisitEnter(node);
@@ -119,10 +118,10 @@ public interface ParseNodeVisitor {
 			defaultVisitLeave(node);
 		}
 		
-		public void visitEnter(BinaryOperatorNode node) {
+		public void visitEnter(OperatorNode node) {
 			defaultVisitEnter(node);
 		}
-		public void visitLeave(BinaryOperatorNode node) {
+		public void visitLeave(OperatorNode node) {
 			defaultVisitLeave(node);
 		}
 		public void visitEnter(DeclarationNode node) {
@@ -172,9 +171,7 @@ public interface ParseNodeVisitor {
 		public void visit(BooleanConstantNode node) {
 			defaultVisitForLeaf(node);
 		}
-//		public void visit(ArrayTypeNode node) {
-//			defaultVisitForLeaf(node);
-//		}
+
 		public void visit(PrimitiveTypeNode node) {
 			defaultVisitForLeaf(node);
 		}

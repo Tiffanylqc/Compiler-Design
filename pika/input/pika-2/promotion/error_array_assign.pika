@@ -1,0 +1,6 @@
+exec{
+	const intArray:=[7,5].
+	const charArray:=[^a^,^z^].
+	var R:=intArray.
+	R:=charArray.
+}
