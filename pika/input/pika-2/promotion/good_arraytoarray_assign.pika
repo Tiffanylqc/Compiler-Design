@@ -1,0 +1,7 @@
+exec{
+
+	var a:=[[1.2,2,2.2,3],new[float](10)].
+	var b:=new[float](10).
+	a[0]:=b.
+	var c:=a[1].
+}

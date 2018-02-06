@@ -199,7 +199,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		new FunctionSignatures(Keyword.NEW,
 				new FunctionSignature(
-						new ArrayEmptyCreationCodeGenerator(),
+						1,
 						setS,
 						new Array(S),PrimitiveType.INTEGER,new Array(S)
 				));

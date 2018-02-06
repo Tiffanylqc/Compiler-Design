@@ -9,7 +9,7 @@ import tokens.Token;
 public class PrimitiveTypeNode extends ParseNode {
 	public PrimitiveTypeNode(Token token) {
 		super(token);
-		assert(token.isLextant(Keyword.BOOL, Keyword.INT,Keyword.FLOAT,Keyword.CHAR,Keyword.STRING,Keyword.RAT));
+//		assert(token.isLextant(Keyword.BOOL, Keyword.INT,Keyword.FLOAT,Keyword.CHAR,Keyword.STRING,Keyword.RAT));
 	}
 	public PrimitiveTypeNode(ParseNode node) {
 		super(node);

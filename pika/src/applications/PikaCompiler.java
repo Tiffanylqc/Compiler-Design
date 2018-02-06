@@ -34,12 +34,13 @@ public class PikaCompiler extends PikaApplication {
 	public static void compile(String filename) throws FileNotFoundException {
 		Scanner scanner         = LexicalAnalyzer.make(filename);
 		ParseNode syntaxTree    = Parser.parse(scanner);
-		if(!thereAreErrors()){
-			ParseNode decoratedTree = SemanticAnalyzer.analyze(syntaxTree);
-			generateCodeIfNoErrors(filename, decoratedTree);
-		}
-//		System.out.println(decoratedTree);
-		
+		ParseNode decoratedTree = SemanticAnalyzer.analyze(syntaxTree);
+
+		generateCodeIfNoErrors(filename, decoratedTree);
+//		if(!thereAreErrors()){
+//			ParseNode decoratedTree = SemanticAnalyzer.analyze(syntaxTree);
+//			generateCodeIfNoErrors(filename, decoratedTree);
+//		}
 	}
 
 	private static void generateCodeIfNoErrors(String filename, ParseNode decoratedTree)

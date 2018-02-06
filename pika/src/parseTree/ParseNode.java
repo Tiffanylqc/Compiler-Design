@@ -100,7 +100,7 @@ public class ParseNode {
 	public ParseNode getParent() {
 		return parent;
 	}
-	protected void setParent(ParseNode parent) {
+	public void setParent(ParseNode parent) {
 		this.parent = parent;
 	}
 	public List<ParseNode> getChildren() {

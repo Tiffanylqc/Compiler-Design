@@ -151,6 +151,34 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 //		if(signature.accepts(childTypes)) 
 		if(!signature.isNull()){
+			if(left.getType()!=signature.getParamTypes()[1]&&!(left.getType() instanceof Array)){
+				CastOperatorNode insertedNode=new CastOperatorNode(left.getToken());
+				PrimitiveTypeNode type=new PrimitiveTypeNode(left.getToken());
+				type.setType(signature.getParamTypes()[1]);
+					
+				insertedNode.appendChild(left);
+				insertedNode.appendChild(type);
+				insertedNode.setType(signature.getParamTypes()[1]);
+				node.getChildren().remove(0);
+				node.getChildren().add(0, insertedNode);
+				insertedNode.setParent(node);
+//				node.replaceChild(node.child(0), insertedNode);
+			}
+			
+			if(right.getType()!=signature.getParamTypes()[0]&&!(right.getType() instanceof Array)){
+				
+				CastOperatorNode insertedNode=new CastOperatorNode(right.getToken());
+				PrimitiveTypeNode type=new PrimitiveTypeNode(right.getToken());
+				type.setType(signature.getParamTypes()[0]);
+					
+				insertedNode.appendChild(right);
+				insertedNode.appendChild(type);
+				insertedNode.setType(signature.getParamTypes()[0]);
+				node.getChildren().remove(1);
+				node.getChildren().add(1, insertedNode);
+				insertedNode.setParent(node);
+//				node.replaceChild(node.child(1), insertedNode);
+			}
 			node.setType(signature.resultType());
 			node.setSignature(signature);
 		}
@@ -274,6 +302,8 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 					childTypes.add(PrimitiveType.RATIONAL);
 				}
 			}
+			
+			
 		}
 		else if(node.nChildren()==2){//binary operator
 			ParseNode left  = node.child(0);
@@ -290,6 +320,67 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 //		if(signature.accepts(childTypes)) {
 		if(!signature.isNull()){
+			if(node.nChildren()==2&&!node.getToken().isLextant(Punctuator.OPEN_BRACKET)){
+				if(node.child(0).getType()!=signature.getParamTypes()[0]&&!(node.child(0).getType() instanceof Array)){
+					CastOperatorNode insertedNode=new CastOperatorNode(node.child(0).getToken());
+					PrimitiveTypeNode type=new PrimitiveTypeNode(node.child(0).getToken());
+					type.setType(signature.getParamTypes()[0]);
+					
+					insertedNode.appendChild(node.child(0));
+					insertedNode.appendChild(type);
+					insertedNode.setType(signature.getParamTypes()[0]);
+					node.getChildren().remove(0);
+					node.getChildren().add(0, insertedNode);
+					insertedNode.setParent(node);
+//					node.replaceChild(node.child(0), insertedNode);
+				}
+				if(node.child(1).getType()!=signature.getParamTypes()[1]&&!(node.child(1).getType() instanceof Array)){
+					CastOperatorNode insertedNode=new CastOperatorNode(node.child(1).getToken());
+					PrimitiveTypeNode type=new PrimitiveTypeNode(node.child(1).getToken());
+					type.setType(signature.getParamTypes()[1]);
+					
+					insertedNode.appendChild(node.child(1));
+					insertedNode.appendChild(type);
+					insertedNode.setType(signature.getParamTypes()[1]);
+					node.getChildren().remove(1);
+					node.getChildren().add(1, insertedNode);
+					insertedNode.setParent(node);
+//					node.replaceChild(node.child(1), insertedNode);
+				}
+			}
+			else if(node.nChildren()==1&&!node.getToken().isLextant(Punctuator.OPEN_BRACKET)){
+				if(node.child(0).getType()!=signature.getParamTypes()[0]&&!(node.child(0).getType() instanceof Array)){
+					CastOperatorNode insertedNode=new CastOperatorNode(node.child(0).getToken());
+					PrimitiveTypeNode type=new PrimitiveTypeNode(node.child(0).getToken());
+					type.setType(signature.getParamTypes()[0]);
+					
+					insertedNode.appendChild(node.child(0));
+					insertedNode.appendChild(type);
+					insertedNode.setType(signature.getParamTypes()[0]);
+					
+					node.getChildren().remove(0);
+					node.getChildren().add(0, insertedNode);
+					insertedNode.setParent(node);			
+//					node.replaceChild(node.child(0), insertedNode);
+				}
+			}
+			else {
+				for(int i=0;i<node.nChildren();i++){
+					if(node.getChildren().get(i).getType()!=childTypes.get(0)&&!(node.getChildren().get(i).getType() instanceof Array)){
+						ParseNode child=node.getChildren().get(i);
+						CastOperatorNode insertedNode=new CastOperatorNode(child.getToken());
+						PrimitiveTypeNode type=new PrimitiveTypeNode(child.getToken());
+						type.setType(childTypes.get(0));
+						
+						insertedNode.appendChild(node.child(i));
+						insertedNode.appendChild(type);
+						insertedNode.setType(childTypes.get(0));
+						node.getChildren().remove(i);
+						node.getChildren().add(i, insertedNode);
+						insertedNode.setParent(node);
+					}
+				}
+			}
 			node.setType(signature.resultType());
 			node.setSignature(signature);
 		}
@@ -320,6 +411,9 @@ class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 //		if(signature.accepts(childTypes)) 
 		if(!signature.isNull())
 		{
+			expression.setType(signature.getParamTypes()[0]);
+			type.setType(signature.getParamTypes()[1]);
+			
 			node.setType(signature.resultType());
 			node.setSignature(signature);
 		}

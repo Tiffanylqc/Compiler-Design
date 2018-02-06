@@ -299,11 +299,20 @@ public class ASMCodeGenerator {
 //			else if(operator==Keyword.LENGTH){
 //				visitLengthOperatorNode(node,operator);
 //			}
+			else if(operator==Keyword.NEW){
+				visitEmptyArrayCreationNode(node,operator);
+			}
+//			else if(operator==Punctuator.OPEN_BRACKET){
+//				visitArrayPopulateCreationNode(node,operator);
+//			}
 			else {
 				visitNormalBinaryOperatorNode(node);
 			}
 		}
-		
+		private void visitEmptyArrayCreationNode(OperatorNode node,Lextant operator){
+			newVoidCode(node);
+			new ArrayEmptyCreationCodeGenerator(code, this).generate(node);
+		}
 		private void visitBoolNotOperatorNode(OperatorNode node, Lextant operator){
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			Labeller labeller = new Labeller("compare-boolNot");
@@ -792,51 +801,13 @@ public class ASMCodeGenerator {
 		// While
 		public void visitLeave(WhileStatementNode node){
 			newVoidCode(node);
-			
-			ASMCodeFragment condition = removeValueCode(node.child(0));
-			ASMCodeFragment loopBody = removeVoidCode(node.child(1));
-			
-			Labeller labeller = new Labeller("while");
-			
-			String startLabel = labeller.newLabel("condition");
-			String loopLabel  = labeller.newLabel("loopBody");
-			String trueLabel  = labeller.newLabel("true");
-			String falseLabel = labeller.newLabel("false");
-			String joinLabel  = labeller.newLabel("join");
-			
-			code.add(Label, startLabel);
-			code.append(condition);
-			code.add(JumpTrue,trueLabel);
-			code.add(Jump,falseLabel);
-			code.add(Label, trueLabel);
-			code.append(loopBody);
-			code.add(Jump,startLabel);
-			code.add(Label, falseLabel);
-			code.add(Jump, joinLabel);
-			code.add(Label,joinLabel);
+			new WhileCodeGenerator(code, this).generate(node);
 		}
+		//////////////////////////////////////////////////////////////////////////
+		// If
 		public void visitLeave(IfStatementNode node){
 			newVoidCode(node);
-			ASMCodeFragment condition = removeValueCode(node.child(0));
-			ASMCodeFragment ifBody = removeVoidCode(node.child(1));
-			
-			Labeller labeller = new Labeller("if");
-			String startLabel = labeller.newLabel("condition");
-			String ifLabel = labeller.newLabel("ifBody");
-			String elseLabel = labeller.newLabel("elseBody");
-			String joinLabel  = labeller.newLabel("join");
-			
-			code.add(Label,startLabel);
-			code.append(condition);
-			code.add(JumpTrue,ifLabel);
-			code.add(Jump,elseLabel);
-			code.add(Label,ifLabel);
-			code.append(ifBody);
-			code.add(Jump, joinLabel);
-			code.add(Label,elseLabel);
-			if(node.nChildren()==3)
-				code.append(removeVoidCode(node.child(2)));
-			code.add(Label,joinLabel);
+			new IfCodeGenerator(code, this).generate(node);
 		}
 		
 		//////////////////////////////////////////////////////////////////////////
@@ -898,6 +869,7 @@ public class ASMCodeGenerator {
 		public void visit(FloatingConstantNode node) {
 			newValueCode(node);		
 			code.add(PushF, node.getValue());
+//			code.add(PStack);
 		}
 		public void visit(CharacterConstantNode node){
 			int ascii=(int)node.getToken().getLexeme().charAt(0);
