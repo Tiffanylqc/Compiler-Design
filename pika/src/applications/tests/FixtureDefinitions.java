@@ -15,10 +15,10 @@ public class FixtureDefinitions {
 	public static final String AST_EXPECTED_TOKEN_ONLY_FILENAME = FIXTURE_DIRECTORY + "coinTestTokenOnlyAST.txt";
 
 //	public static final String SEMANTIC_INPUT_FILENAME          = FIXTURE_DIRECTORY + "coinTest.pika";
-	public static final String SEMANTIC_INPUT_FILENAME          = FIXTURE_DIRECTORY + "ifStmt.pika";
+	public static final String SEMANTIC_INPUT_FILENAME          = FIXTURE_DIRECTORY + "populate_array.pika";
 	public static final String SEMANTIC_EXPECTED_FILENAME       = FIXTURE_DIRECTORY + "coinTestSemantics.txt";
 	
-	public static final String CODEGENERATION_INPUT_FILENAME	= FIXTURE_DIRECTORY + "ifStmt.pika";
+	public static final String CODEGENERATION_INPUT_FILENAME	= FIXTURE_DIRECTORY + "print_string_record.pika";
 	public static final String CODEGENERATION_EXPECTED_FILENAME	= FIXTURE_DIRECTORY + "coinTestCodeGeneration.txt";
 }
    

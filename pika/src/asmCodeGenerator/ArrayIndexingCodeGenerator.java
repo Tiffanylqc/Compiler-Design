@@ -7,11 +7,9 @@ import parseTree.ParseNode;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.*;
 import static asmCodeGenerator.runtime.RunTime.*;
+import static asmCodeGenerator.runtime.Record.*;
 
 public class ArrayIndexingCodeGenerator implements SimpleCodeGenerator {
-
-	private static final int ARRAY_RECORD_LENGTH_OFFSET=12;
-	private static final int ARRAY_HEADER_SIZE=16;
 	
 	public ArrayIndexingCodeGenerator() {
 		// TODO Auto-generated constructor stub
@@ -29,16 +27,19 @@ public class ArrayIndexingCodeGenerator implements SimpleCodeGenerator {
 		frag.add(JumpFalse, NULL_ARRAY_RUNTIME_ERROR);// [… ]
 		
 		Macros.loadIFrom(frag, ARRAY_INDEXING_INDEX);// [… index]
+		
 		frag.add(JumpNeg, INDEX_OUT_OF_BOUNDS_RUNTIME_ERROR);// [… ]
 		
 		Macros.loadIFrom(frag, ARRAY_INDEXING_INDEX);
 		Macros.loadIFrom(frag, ARRAY_INDEXING_ARRAY);
-		Macros.readIOffset(frag, ARRAY_RECORD_LENGTH_OFFSET);
-		
+//		frag.add(PStack);
+		Macros.readIOffset(frag, ARRAY_LENGTH_OFFSET);
+//		frag.add(PStack);
 		frag.add(Subtract);
 		
 		Labeller labeller=new Labeller("array-indexing");
 		String label = labeller.newLabel("in-bounds");
+//		frag.add(PStack);
 		frag.add(JumpNeg,label);
 		frag.add(Jump,INDEX_OUT_OF_BOUNDS_RUNTIME_ERROR);
 		frag.add(Label,label);

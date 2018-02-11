@@ -6,13 +6,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import asmCodeGenerator.ArrayCloneCodeGenerator;
 import asmCodeGenerator.ArrayEmptyCreationCodeGenerator;
 import asmCodeGenerator.ArrayIndexingCodeGenerator;
-import asmCodeGenerator.ArrayLengthCodeGenerator;
 import asmCodeGenerator.ArrayPopulateCreationCodeGenerator;
+import asmCodeGenerator.CharIntToRationalCodeGenerator;
+import asmCodeGenerator.CharToBoolCodeGenerator;
+import asmCodeGenerator.CharToIntCodeGenerator;
+import asmCodeGenerator.CloneCodeGenerator;
 import asmCodeGenerator.FloatDivideCodeGenerator;
+import asmCodeGenerator.FloatingExpressOverCodeGenerator;
+import asmCodeGenerator.FloatingRationalizeCodeGenerator;
+import asmCodeGenerator.FloatingToRationalCodeGenerator;
+import asmCodeGenerator.FormRationalCodeGenerator;
+import asmCodeGenerator.IntToBoolCodeGenerator;
+import asmCodeGenerator.IntToCharCodeGenerator;
 import asmCodeGenerator.IntegerDivideCodeGenerator;
+import asmCodeGenerator.RationalAddCodeGenerator;
+import asmCodeGenerator.RationalDivideCodeGenerator;
+import asmCodeGenerator.RationalExpressOverCodeGenerator;
+import asmCodeGenerator.RationalMultiplyCodeGenerator;
+import asmCodeGenerator.RationalRationalizeCodeGenerator;
+import asmCodeGenerator.RationalSubtractCodeGenerator;
+import asmCodeGenerator.RationalToFloatCodeGenerator;
+import asmCodeGenerator.RationalToIntCodeGenerator;
+import asmCodeGenerator.ShortCircuitAndCodeGenerator;
+import asmCodeGenerator.ShortCircuitOrCodeGenerator;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
@@ -199,19 +217,19 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		new FunctionSignatures(Keyword.NEW,
 				new FunctionSignature(
-						1,
+						new ArrayEmptyCreationCodeGenerator(),
 						setS,
 						new Array(S),PrimitiveType.INTEGER,new Array(S)
 				));
 		new FunctionSignatures(Keyword.LENGTH,
 				new FunctionSignature(
-						new ArrayLengthCodeGenerator(),
+						1,
 						setS,
 						new Array(S),PrimitiveType.INTEGER
 				));
 		new FunctionSignatures(Keyword.CLONE,
 				new FunctionSignature(
-						new ArrayCloneCodeGenerator(),
+						new CloneCodeGenerator(),
 						setS,
 						new Array(S),new Array(S)
 				));
@@ -222,11 +240,11 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 						S,new Array(S)));
 		//BOOL_AND
 		new FunctionSignatures(Punctuator.BOOL_AND,
-				new FunctionSignature(ASMOpcode.And, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new ShortCircuitAndCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
 		//BOOL_OR
 		new FunctionSignatures(Punctuator.BOOL_OR,
-				new FunctionSignature(ASMOpcode.Or, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
+				new FunctionSignature(new ShortCircuitOrCodeGenerator(), PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN)
 		);
 		//BOOL_NOT
 		new FunctionSignatures(Punctuator.BOOL_NOT,
@@ -234,17 +252,17 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		);
 		//Over-> //
 		new FunctionSignatures(Punctuator.OVER,
-				new FunctionSignature(1,PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.RATIONAL)
+				new FunctionSignature(new FormRationalCodeGenerator(),PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.RATIONAL)
 		);
 		//express over -> ///
 		new FunctionSignatures(Punctuator.EXPRESS_OVER,
-				new FunctionSignature(1,PrimitiveType.RATIONAL,PrimitiveType.INTEGER, PrimitiveType.INTEGER),
-				new FunctionSignature(1,PrimitiveType.FLOATING,PrimitiveType.INTEGER, PrimitiveType.INTEGER)
+				new FunctionSignature(new RationalExpressOverCodeGenerator(),PrimitiveType.RATIONAL,PrimitiveType.INTEGER, PrimitiveType.INTEGER),
+				new FunctionSignature(new FloatingExpressOverCodeGenerator(),PrimitiveType.FLOATING,PrimitiveType.INTEGER, PrimitiveType.INTEGER)
 		);
 		//rationalize ->////
 		new FunctionSignatures(Punctuator.RATIONALIZE,
-				new FunctionSignature(1,PrimitiveType.RATIONAL,PrimitiveType.INTEGER,PrimitiveType.RATIONAL),
-				new FunctionSignature(1,PrimitiveType.FLOATING,PrimitiveType.INTEGER,PrimitiveType.RATIONAL)
+				new FunctionSignature(new RationalRationalizeCodeGenerator(),PrimitiveType.RATIONAL,PrimitiveType.INTEGER,PrimitiveType.RATIONAL),
+				new FunctionSignature(new FloatingRationalizeCodeGenerator(),PrimitiveType.FLOATING,PrimitiveType.INTEGER,PrimitiveType.RATIONAL)
 		);
 		
 		//assignment signatures
@@ -260,47 +278,47 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		//cast signature functionsignature(1,preType,afterType)
 		new FunctionSignatures(Punctuator.BAR,
-			new FunctionSignature(1,PrimitiveType.INTEGER,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
-			new FunctionSignature(1,PrimitiveType.FLOATING,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
-			new FunctionSignature(1,PrimitiveType.CHARACTER,PrimitiveType.CHARACTER,PrimitiveType.CHARACTER),
-			new FunctionSignature(1,PrimitiveType.STRING,PrimitiveType.STRING,PrimitiveType.STRING),
-			new FunctionSignature(1,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
+			new FunctionSignature(ASMOpcode.Nop,PrimitiveType.INTEGER,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.Nop,PrimitiveType.FLOATING,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
+			new FunctionSignature(ASMOpcode.Nop,PrimitiveType.CHARACTER,PrimitiveType.CHARACTER,PrimitiveType.CHARACTER),
+			new FunctionSignature(ASMOpcode.Nop,PrimitiveType.STRING,PrimitiveType.STRING,PrimitiveType.STRING),
+			new FunctionSignature(ASMOpcode.Nop,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
 			
-			new FunctionSignature(1,PrimitiveType.CHARACTER,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
-			new FunctionSignature(1,PrimitiveType.INTEGER,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
-			new FunctionSignature(1,PrimitiveType.INTEGER,PrimitiveType.CHARACTER,PrimitiveType.CHARACTER),
-			new FunctionSignature(1,PrimitiveType.FLOATING,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
-			new FunctionSignature(1,PrimitiveType.INTEGER,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
-			new FunctionSignature(1,PrimitiveType.CHARACTER,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
-			new FunctionSignature(1,PrimitiveType.CHARACTER,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
-			new FunctionSignature(1,PrimitiveType.INTEGER,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
-			new FunctionSignature(1,PrimitiveType.FLOATING,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
-			new FunctionSignature(1,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
-			new FunctionSignature(1,PrimitiveType.RATIONAL,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
-			new FunctionSignature(1,PrimitiveType.RATIONAL,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
-			new FunctionSignature(1,setS,S,S,S)
+			new FunctionSignature(new CharToIntCodeGenerator(),PrimitiveType.CHARACTER,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.ConvertF,PrimitiveType.INTEGER,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
+			new FunctionSignature(new IntToCharCodeGenerator(),PrimitiveType.INTEGER,PrimitiveType.CHARACTER,PrimitiveType.CHARACTER),
+			new FunctionSignature(ASMOpcode.ConvertI,PrimitiveType.FLOATING,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
+			new FunctionSignature(new IntToBoolCodeGenerator(),PrimitiveType.INTEGER,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
+			new FunctionSignature(new CharToBoolCodeGenerator(),PrimitiveType.CHARACTER,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
+			new FunctionSignature(new CharIntToRationalCodeGenerator(),PrimitiveType.CHARACTER,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
+			new FunctionSignature(new CharIntToRationalCodeGenerator(),PrimitiveType.INTEGER,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
+			new FunctionSignature(new FloatingToRationalCodeGenerator(),PrimitiveType.FLOATING,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
+			new FunctionSignature(ASMOpcode.Nop,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
+			new FunctionSignature(new RationalToFloatCodeGenerator(),PrimitiveType.RATIONAL,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
+			new FunctionSignature(new RationalToIntCodeGenerator(),PrimitiveType.RATIONAL,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.Nop,setS,S,S,S)
 		);
 		
 		new FunctionSignatures(Punctuator.ADD,
 		    new FunctionSignature(ASMOpcode.Add, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 		    new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOATING, PrimitiveType.FLOATING, PrimitiveType.FLOATING),
-		    new FunctionSignature(1, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
+		    new FunctionSignature(new RationalAddCodeGenerator(), PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
 		);
 		
 		new FunctionSignatures(Punctuator.MULTIPLY,
 			new FunctionSignature(ASMOpcode.Multiply,PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 			new FunctionSignature(ASMOpcode.FMultiply,PrimitiveType.FLOATING, PrimitiveType.FLOATING, PrimitiveType.FLOATING),
-			new FunctionSignature(1, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
+			new FunctionSignature(new RationalMultiplyCodeGenerator(), PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
 		);
 		new FunctionSignatures(Punctuator.SUBTRACT,
 			new FunctionSignature(ASMOpcode.Subtract, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 			new FunctionSignature(ASMOpcode.FSubtract, PrimitiveType.FLOATING, PrimitiveType.FLOATING, PrimitiveType.FLOATING),
-			new FunctionSignature(1, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
+			new FunctionSignature(new RationalSubtractCodeGenerator(), PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
 		);
 		new FunctionSignatures(Punctuator.DIVIDE,
 			new FunctionSignature(new IntegerDivideCodeGenerator(), PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 			new FunctionSignature(new FloatDivideCodeGenerator(), PrimitiveType.FLOATING, PrimitiveType.FLOATING, PrimitiveType.FLOATING),
-			new FunctionSignature(1, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
+			new FunctionSignature(new RationalDivideCodeGenerator(), PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
 		);
 		Punctuator []comparisons = { Punctuator.GREATER, Punctuator.GREATER_EQUAL, Punctuator.LESS, Punctuator.LESS_EQUAL,
 									 Punctuator.EQUAL,Punctuator.NOT_EQUAL };

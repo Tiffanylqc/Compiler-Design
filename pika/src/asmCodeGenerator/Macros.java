@@ -23,10 +23,19 @@ public class Macros {
 		frag.add(PushD, location);
 		frag.add(LoadI);
 	}
+	public static void loadCFrom(ASMCodeFragment frag, String location) {
+		frag.add(PushD, location);
+		frag.add(LoadC);
+	}
 	public static void storeITo(ASMCodeFragment frag, String location) {
 		frag.add(PushD, location);
 		frag.add(Exchange);
 		frag.add(StoreI);
+	}
+	public static void storeCTo(ASMCodeFragment frag, String location) {
+		frag.add(PushD, location);
+		frag.add(Exchange);
+		frag.add(StoreC);
 	}
 	public static void declareI(ASMCodeFragment frag, String variableName) {
 		frag.add(DLabel, variableName);
@@ -72,8 +81,31 @@ public class Macros {
 		frag.add(Exchange);			// [base+off datum]
 		frag.add(StoreC);			// []
 	}
-	
-	
+	public static void writeCPBaseOffset(ASMCodeFragment frag, String base, int offset, int datum ){
+		frag.add(PushI,datum);
+		loadIFrom(frag, base);
+		frag.add(PushI, offset);	// [datum base offset]
+		frag.add(Add);				// [datum base+off]
+		frag.add(Exchange);			// [base+off datum]
+//		frag.add(PStack);
+		frag.add(StoreC);			// []
+	}
+	public static void writeIPBaseOffset(ASMCodeFragment frag, String base, int offset, int datum ){
+		frag.add(PushI,datum);
+		loadIFrom(frag, base);
+		frag.add(PushI, offset);	// [datum base offset]
+		frag.add(Add);				// [datum base+off]
+		frag.add(Exchange);			// [base+off datum]
+		frag.add(StoreI);			// []
+	}
+	public static void writeIPtrOffset(ASMCodeFragment frag, String base, int offset){
+		loadIFrom(frag, base);
+		frag.add(PushI, offset);	// [datum base offset]
+		
+		frag.add(Add);				// [datum base+off]
+		frag.add(Exchange);			// [base+off datum]
+		frag.add(StoreI);			// []
+	}
 	////////////////////////////////////////////////////////////////////
     // debugging aids
 

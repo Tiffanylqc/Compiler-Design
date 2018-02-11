@@ -1,0 +1,56 @@
+exec{
+	var a:=12//13.
+	print a,_n_.
+
+	a:=-12//13.
+	print a,_n_.
+
+	a:=12//-13.
+	print a,_n_.
+
+
+	a:=-12//-13.
+	print a,_n_.
+
+	a:=0//5.
+	print a,_n_.
+
+	a:=14//49.
+	print a,_n_.
+
+	a:=-14//49.
+	print a,_n_.
+
+	a:=14//-49.
+	print a,_n_.
+
+	a:=-14//-49.
+	print a,_n_.
+
+	a:=18//3.
+	print a,_n_.
+
+	a:=-18//3.
+	print a,_n_.
+
+	a:=18//-3.
+	print a,_n_.
+
+	a:=-18//-3.
+	print a,_n_.
+
+	a:=125//35.
+	print a,_n_.
+
+	a:=-125//35.
+	print a,_n_.
+
+	a:=125//-35.
+	print a,_n_.
+
+	a:=-125//-35.
+	print a,_n_.
+
+	a:=0//5.
+	print a,_n_.
+}
