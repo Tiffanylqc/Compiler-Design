@@ -7,10 +7,13 @@ import parseTree.nodeTypes.NewlineNode;
 import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.TabNode;
+import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import asmCodeGenerator.ASMCodeGenerator.CodeVisitor;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
+import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
+import asmCodeGenerator.runtime.Record;
 import asmCodeGenerator.runtime.RunTime;
 import static asmCodeGenerator.Macros.*;
 
@@ -45,153 +48,54 @@ public class PrintStatementGenerator {
 		else if(node.getType()==PrimitiveType.STRING){
 			printString(node);
 		}
+		else if(node.getType() instanceof Array){
+			printArray(node);
+		}
 		else{
 			String format = printFormat(node.getType());
-			convertToStringIfBoolean(node);
+			if(node.getType() == PrimitiveType.BOOLEAN)
+				convertToStringIfBoolean(node);
 			code.add(PushD, format);
 			code.add(Printf);
+		}	
+	}
+	
+	private void printArray(ParseNode node){
+		Array type=(Array)node.getType();
+		if(type.getSubtype() instanceof Array){
+			type=(Array) type.getSubtype();
 		}
+		Type oneDimType=type.getSubtype();
+		if(oneDimType==PrimitiveType.INTEGER)
+			code.add(PushI,1);
+		else if(oneDimType==PrimitiveType.FLOATING)
+			code.add(PushI,2);
+		else if(oneDimType==PrimitiveType.CHARACTER)
+			code.add(PushI,3);
+		else if(oneDimType==PrimitiveType.STRING)
+			code.add(PushI,4);
+		else if(oneDimType==PrimitiveType.RATIONAL)
+			code.add(PushI,5);
+		else if(oneDimType==PrimitiveType.BOOLEAN)
+			code.add(PushI,6);
 		
+		//[...arrAddr typeNum]
+		code.add(Call,RunTime.PRINT_ARRAY);
 	}
 	
 	private void printString(ParseNode node){
-		if(node.getType()!=PrimitiveType.STRING)
-			return;
-		
-		Labeller labeller = new Labeller("print-string");
-		String loopLabel=labeller.newLabel("loop-start");
-		String endLabel=labeller.newLabel("end");
-		
-		//[..strAddr]
-		code.add(Duplicate);
-		code.add(PushI,STRING_HEADER_SIZE);
-		code.add(Add);
-		storeITo(code,RunTime.PRINT_STRING_TEMP);
-		readIOffset(code,STRING_LENGTH_OFFSET);
-		storeITo(code,RunTime.PRINT_STRING_LENGTH);
-		
-		code.add(Label,loopLabel);
-		loadIFrom(code,RunTime.PRINT_STRING_LENGTH);
-		code.add(JumpFalse,endLabel);
-		loadIFrom(code,RunTime.PRINT_STRING_TEMP);
-		code.add(LoadC);
-		code.add(PushD,RunTime.CHARACTER_PRINT_FORMAT);
-		code.add(Printf);
-		incrementInteger(code,RunTime.PRINT_STRING_TEMP);
-		
-		decrementInteger(code,RunTime.PRINT_STRING_LENGTH);
-		code.add(Jump,loopLabel);
-		code.add(Label,endLabel);
-		
+		code.add(Call,RunTime.PRINT_STRING);
+	}
+	private void printRational(ParseNode node){
+		code.add(Call,RunTime.PRINT_RATIONAL);
 	}
 	
-	private void printRational(ParseNode node){
-		if(node.getType()!=PrimitiveType.RATIONAL)
-			return;
-		
-		Labeller labeller = new Labeller("print-rational");
-		String numeratorPos = labeller.newLabel("numerator-pos");
-		String denominatorPos = labeller.newLabel("denominator-pos");
-		String rationalPos=labeller.newLabel("rational-pos");
-		String endLabel=labeller.newLabel("end");
-		String fracLabel=labeller.newLabel("fraction");
-		String zeroNumerator=labeller.newLabel("zero-numerator");
-		code.add(PushI,1);
-		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);//sign=1
-		//[...numerator denominator]
-		
-		code.add(Duplicate);
-		code.add(JumpPos,denominatorPos);
-		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);
-		code.add(Negate);
-		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);
-		code.add(Negate);
-		code.add(Label,denominatorPos);
-		storeITo(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
-		
-		code.add(Duplicate);
-		code.add(Duplicate);
-		code.add(JumpFalse,zeroNumerator);
-		code.add(JumpPos,numeratorPos);
-		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);
-		code.add(Negate);
-		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);
-		code.add(Negate);
-		code.add(Label,numeratorPos);
-		storeITo(code, RunTime.RATIONAL_NUMERATOR_TEMP);
-		
-		loadIFrom(code, RunTime.RATIONAL_NUMERATOR_TEMP);
-		loadIFrom(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
-		
-		//[...abs(numerator) abs(denominator)]
-		code.add(Remainder);//[...numerator%denominator]
-		loadIFrom(code, RunTime.RATIONAL_NUMERATOR_TEMP);
-		loadIFrom(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
-		//[...numerator/denominator numerator denominator]
-		code.add(Divide);//[...numerator%denominator numerator/denominator]
-		storeITo(code,RunTime.RATIONAL_PRINT_INT_PART);
-		storeITo(code,RunTime.RATIONAL_PRINT_REMAINDER);
-		
-		loadIFrom(code,RunTime.RATIONAL_PRINT_REMAINDER);
-		loadIFrom(code,RunTime.RATIONAL_PRINT_INT_PART);
-		
-		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);
-		code.add(JumpPos,rationalPos);
-		code.add(PushD,RunTime.MINUS_SIGN_STRING);
-		code.add(PushD,RunTime.STRING_PRINT_FORMAT);
-		code.add(Printf);
-		code.add(Label,rationalPos);
-		
-		code.add(JumpFalse,fracLabel);
-		loadIFrom(code,RunTime.RATIONAL_PRINT_INT_PART);
-		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
-		code.add(Printf);
-		
-		code.add(Label,fracLabel);
-		code.add(JumpFalse,endLabel);
-		code.add(PushD,RunTime.DASH_PRINT_STRING);
-		code.add(PushD,RunTime.STRING_PRINT_FORMAT);
-		code.add(Printf);
-		
-		loadIFrom(code,RunTime.RATIONAL_PRINT_REMAINDER);
-		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
-		code.add(Printf);
-		
-		code.add(PushD,RunTime.DIVIDE_SIGN_STRING);
-		code.add(PushD,RunTime.STRING_PRINT_FORMAT);
-		code.add(Printf);
-		
-		loadIFrom(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
-		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
-		code.add(Printf);
-		code.add(Jump,endLabel);
-		
-		code.add(Label,zeroNumerator);
-		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
-		code.add(Printf);
-		code.add(Pop);
-		
-		code.add(Label,endLabel);
-	}
 	private void convertToStringIfBoolean(ParseNode node) {
-		if(node.getType() != PrimitiveType.BOOLEAN) {
-			return;
-		}
-		
-		Labeller labeller = new Labeller("print-boolean");
-		String trueLabel = labeller.newLabel("true");
-		String endLabel = labeller.newLabel("join");
-
-		code.add(JumpTrue, trueLabel);
-		code.add(PushD, RunTime.BOOLEAN_FALSE_STRING);
-		code.add(Jump, endLabel);
-		code.add(Label, trueLabel);
-		code.add(PushD, RunTime.BOOLEAN_TRUE_STRING);
-		code.add(Label, endLabel);
+		code.add(Call,RunTime.CONVERT_TO_STRING_IF_BOOL);
 	}
-
 
 	private static String printFormat(Type type) {
+		
 		assert type instanceof PrimitiveType;
 		
 		switch((PrimitiveType)type) {

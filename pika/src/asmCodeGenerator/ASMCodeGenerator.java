@@ -293,14 +293,11 @@ public class ASMCodeGenerator {
 				
 				code.add(PushI,4);//[...numerator denominator &lvalue 4]
 				code.add(Add);//[...numerator denominator &lvalue+4]
-//				code.add(PStack);
 				code.add(Exchange);//[...numerator &lvalue+4 denominator]
 				code.add(StoreI);//[...numerator]
 				loadIFrom(code,baseAddrLabel);//[...numerator &lvalue]
-//				code.add(PStack);
 				code.add(Exchange);//[... &lvalue numerator]
 				code.add(StoreI);//[...]
-//				code.add(PStack);
 			}
 			else{
 				code.append(lvalue);
@@ -375,9 +372,9 @@ public class ASMCodeGenerator {
 			else if(operator==Keyword.LENGTH){
 				visitLengthOperatorNode(node);
 			}
-//			else if(operator==Punctuator.OPEN_BRACKET){
-//				visitArrayPopulateCreationNode(node,operator);
-//			}
+			else if(operator==Punctuator.OPEN_BRACKET){
+				visitArrayPopulateCreationNode(node);
+			}
 			else {
 				visitNormalBinaryOperatorNode(node);
 			}
@@ -800,9 +797,23 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			ASMCodeFragment arg = removeValueCode(node.child(0));
 			code.append(arg);
-//			code.add(PStack);
 			readIOffset(code,Record.ARRAY_LENGTH_OFFSET);
-//			code.add(PStack);
+		}
+		
+		private void visitArrayPopulateCreationNode(OperatorNode node){
+			newValueCode(node);
+			ASMCodeFragment[] args=new ASMCodeFragment[node.nChildren()];
+			for(int i=0;i<node.nChildren();i++){
+				args[i]=removeValueCode(node.child(i));
+			}
+			Object variant = node.getSignature().getVariant();
+			FullCodeGenerator generator = (FullCodeGenerator)variant;
+			ASMCodeFragment fragment = generator.generate(node,args);
+			code.append(fragment);
+			if(fragment.isAddress()) {
+				code.markAsAddress();
+			}
+			
 		}
 		
 		//////////////////////////////////////////////////////////////////////////
@@ -901,7 +912,11 @@ public class ASMCodeGenerator {
 		//////////////////////////////////////////////////////////////////////////
 		// release Stmt
 		public void visitLeave(ReleaseStatementNode node){
-			;
+			newVoidCode(node);
+			ASMCodeFragment arg=removeValueCode(node.child(0));
+			code.append(arg);
+			//[...recordPtr]
+			code.append(new ReleaseCodeGenerator().generate(node));	
 		}
 		
 		///////////////////////////////////////////////////////////////////////////

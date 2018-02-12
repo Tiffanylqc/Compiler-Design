@@ -1,12 +1,20 @@
 package asmCodeGenerator.runtime;
+import asmCodeGenerator.PrintStatementGenerator.*;
 import static asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType.*;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
+import static asmCodeGenerator.runtime.Record.ARRAY_HEADER_SIZE;
+import static asmCodeGenerator.runtime.Record.STRING_HEADER_SIZE;
+import static asmCodeGenerator.runtime.Record.STRING_LENGTH_OFFSET;
 
 import asmCodeGenerator.Labeller;
 import asmCodeGenerator.Macros;
 import static asmCodeGenerator.Macros.*;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
+import parseTree.ParseNode;
+import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.PrimitiveType;
+import semanticAnalyzer.types.Type;
 public class RunTime {
 	public static final String EAT_LOCATION_ZERO      = "$eat-location-zero";		// helps us distinguish null pointers from real ones.
 	public static final String INTEGER_PRINT_FORMAT   = "$print-format-integer";
@@ -25,6 +33,9 @@ public class RunTime {
 	public static final String DASH_PRINT_STRING	="$dash-string";
 	public static final String DIVIDE_SIGN_STRING	="$divide-sign-string";
 	public static final String MINUS_SIGN_STRING="$minus-sign-string";
+	public static final String OPEN_BRACKET_STRING = "$open-bracket-string";
+	public static final String CLOSE_BRACKET_STRING = "$close-bracket-string";
+	public static final String COMMA_STRING = "$comma-string";
 	
 	public static final String GENERAL_RUNTIME_ERROR = "$$general-runtime-error";
 	public static final String INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$i-divide-by-zero";
@@ -72,6 +83,22 @@ public class RunTime {
 	
 	public static final String PRINT_STRING_TEMP = "$print-string-temp";
 	public static final String PRINT_STRING_LENGTH = "$print-string-length";
+		
+	public static final String PRINT_RATIONAL = "$print-rational";
+	public static final String PRINT_RATIONAL_RETURN_ADDRESS = "$print-rational-return-address";
+	
+	public static final String PRINT_STRING = "$print-string";
+	public static final String PRINT_STRING_RETURN_ADDRESS = "$print-string-return-address";
+	
+	public static final String PRINT_ARRAY_RETURN_ADDRESS = "$print-array-return-address";
+	public static final String PRINT_ARRAY = "$print-array-subroutine";
+	
+	public static final String CONVERT_TO_STRING_IF_BOOL_RETURN_ADDRESS = "$convert-to-string-if-bool-return-address";
+	public static final String CONVERT_TO_STRING_IF_BOOL = "$convert-to-string-if-bool-subroutine";
+	
+	public static final String RELEASE_RECORD = "$release-record";
+	public static final String RELEASE_RECORD_RETURN_ADDRESS = "$release-record-return-address";
+	
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
 		result.append(jumpToMain());
@@ -80,6 +107,11 @@ public class RunTime {
 		result.append(temporaryVariables());
 		result.append(gcdSubroutine());
 		result.append(clearNBytes());
+		result.append(printArrayRecursive());
+		result.append(printRational());
+		result.append(printString());
+		result.append(convertToStringIfBoolean());
+		result.append(releaseRecordRecursive());
 		
 		result.add(DLabel, USABLE_MEMORY_START);
 		return result;
@@ -146,6 +178,12 @@ public class RunTime {
 		frag.add(DataS,"/");
 		frag.add(DLabel,MINUS_SIGN_STRING);
 		frag.add(DataS,"-");
+		frag.add(DLabel,OPEN_BRACKET_STRING);
+		frag.add(DataS,"[");
+		frag.add(DLabel,CLOSE_BRACKET_STRING);
+		frag.add(DataS,"]");
+		frag.add(DLabel,COMMA_STRING);
+		frag.add(DataS,",");
 		
 		return frag;
 	}
@@ -305,7 +343,7 @@ public class RunTime {
 		code.add(Call, CLEAR_N_BYTES);
 		
 		writeIPBaseOffset(code,RECORD_CREATION_TEMP,Record.ARRAY_SUBTYPE_SIZE_OFFSET,subtypeSize);
-		// [... length]
+		// [... nElems]
 		writeIPtrOffset(code,RECORD_CREATION_TEMP,Record.ARRAY_LENGTH_OFFSET); // [...]
 	}
 	
@@ -389,6 +427,460 @@ public class RunTime {
 		loadIFrom(code,RECORD_CREATION_TEMP);
 	}
 	
+	private ASMCodeFragment printArrayRecursive(){
+		ASMCodeFragment frag=new ASMCodeFragment(CodeType.GENERATES_VOID);
+		
+		frag.add(Label, RunTime.PRINT_ARRAY);
+		
+		Labeller labeller=new Labeller("print-array-recursive");
+		String lengthLabel=labeller.newLabel("length");
+		String elemLabel=labeller.newLabel("element");
+		String oneDimArrayLabel=labeller.newLabel("one-dim");
+		String endLabel=labeller.newLabel("end");
+		String loopLabel=labeller.newLabel("loop-start");
+		String loop2Label=labeller.newLabel("loop-start-2");
+		String returnAddressLabel=labeller.newLabel("return-address");
+		String elemSizeLabel=labeller.newLabel("elem-size");
+		String typeLabel=labeller.newLabel("type");
+		String joinLabel=labeller.newLabel("join-label");
+		String intLabel=labeller.newLabel("int-label");
+		String floatLabel=labeller.newLabel("float-label");
+		String boolLabel=labeller.newLabel("bool-label");
+		String charLabel=labeller.newLabel("char-label");
+		String ratLabel=labeller.newLabel("rat-label");
+		String strLabel=labeller.newLabel("string-label");
+		
+		declareI(frag,returnAddressLabel);
+		storeITo(frag,returnAddressLabel);
+		declareI(frag,typeLabel);
+		storeITo(frag,typeLabel);
+		declareI(frag,elemLabel);
+		declareI(frag,lengthLabel);
+		declareI(frag,elemSizeLabel);
+		
+		//[...arrAddr]->[...arrAddr]
+		//store the length of array and start address of elements
+		frag.add(Duplicate);
+		frag.add(Duplicate);
+		frag.add(Duplicate);
+		frag.add(PushI,ARRAY_HEADER_SIZE);
+		frag.add(Add);
+		storeITo(frag,elemLabel);
+		readIOffset(frag,Record.ARRAY_LENGTH_OFFSET);
+		storeITo(frag,lengthLabel);
+		readIOffset(frag,Record.ARRAY_SUBTYPE_SIZE_OFFSET);
+		storeITo(frag,elemSizeLabel);
+		
+		frag.add(PushD,RunTime.OPEN_BRACKET_STRING);
+		frag.add(PushD,STRING_PRINT_FORMAT);
+		frag.add(Printf);
+		
+		//[...arrAddr]
+		readIOffset(frag,Record.RECORD_STATUS_OFFSET);//[...status]
+		frag.add(PushI,2);
+		frag.add(BTAnd);//[...status&0x0010]
+		frag.add(JumpFalse,oneDimArrayLabel);
+		
+		//subtype is reference type for each element call PRINT_ARRAY again
+		frag.add(Label,loopLabel);
+		loadIFrom(frag,lengthLabel);
+		frag.add(JumpFalse,endLabel);
+		
+		
+		loadIFrom(frag,returnAddressLabel);
+		loadIFrom(frag,typeLabel);
+		loadIFrom(frag,elemLabel);
+		loadIFrom(frag,lengthLabel);
+		loadIFrom(frag,elemSizeLabel);
+		
+		loadIFrom(frag,elemLabel);
+		frag.add(LoadI);
+		
+		loadIFrom(frag,typeLabel);
+		frag.add(Call,PRINT_ARRAY);
+		
+		storeITo(frag,elemSizeLabel);
+		storeITo(frag,lengthLabel);
+		storeITo(frag,elemLabel);
+		storeITo(frag,typeLabel);
+		storeITo(frag,returnAddressLabel);
+		
+		loadIFrom(frag,elemSizeLabel);
+		addITo(frag,elemLabel);
+		decrementInteger(frag,lengthLabel);
+		
+		loadIFrom(frag,lengthLabel);
+		frag.add(PushI,0);
+		frag.add(Subtract);
+		frag.add(JumpFalse,loopLabel);
+		frag.add(PushD,RunTime.COMMA_STRING);
+		frag.add(PushD,STRING_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(PushD,RunTime.SPACE_PRINT_FORMAT);
+		frag.add(PushD,STRING_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(Jump,loopLabel);
+		
+		//print each element
+		frag.add(Label,oneDimArrayLabel);
+		frag.add(Label,loop2Label);
+		loadIFrom(frag,lengthLabel);
+		frag.add(JumpFalse,endLabel);
+		loadIFrom(frag,elemLabel);//[...arrAddr elemAddr]
+		
+		loadIFrom(frag,typeLabel);
+		frag.add(PushI,1);
+		frag.add(Subtract);
+		frag.add(JumpFalse,intLabel);
+		loadIFrom(frag,typeLabel);
+		frag.add(PushI,2);
+		frag.add(Subtract);
+		frag.add(JumpFalse,floatLabel);
+		loadIFrom(frag,typeLabel);
+		frag.add(PushI,3);
+		frag.add(Subtract);
+		frag.add(JumpFalse,charLabel);
+		loadIFrom(frag,typeLabel);
+		frag.add(PushI,4);
+		frag.add(Subtract);
+		frag.add(JumpFalse,strLabel);
+		loadIFrom(frag,typeLabel);
+		frag.add(PushI,5);
+		frag.add(Subtract);
+		frag.add(JumpFalse,ratLabel);
+		loadIFrom(frag,typeLabel);
+		frag.add(PushI,6);
+		frag.add(Subtract);
+		frag.add(JumpFalse,boolLabel);
+		
+		frag.add(Label,intLabel);
+		frag.add(LoadI);
+		frag.add(PushD, INTEGER_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(Jump,joinLabel);
+		
+		frag.add(Label,floatLabel);
+		frag.add(LoadF);
+		frag.add(PushD, FLOATING_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(Jump,joinLabel);
+		
+		frag.add(Label,charLabel);
+		frag.add(LoadC);
+		frag.add(PushD, CHARACTER_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(Jump,joinLabel);
+		
+		frag.add(Label,ratLabel);
+		frag.add(Duplicate);
+		frag.add(LoadI);
+		frag.add(Exchange);
+		frag.add(PushI,4);
+		frag.add(LoadI);
+		frag.add(Call,PRINT_RATIONAL);
+		frag.add(Jump,joinLabel);
+		
+		frag.add(Label,boolLabel);
+		frag.add(LoadI);
+		frag.add(Call,CONVERT_TO_STRING_IF_BOOL);
+		frag.add(PushD, BOOLEAN_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(Jump,joinLabel);
+		
+		frag.add(Label,strLabel);
+		frag.add(LoadI);
+		frag.add(Call,PRINT_STRING);
+		frag.add(Jump,joinLabel);
+		
+		frag.add(Label,joinLabel);
+		
+		loadIFrom(frag,elemSizeLabel);
+		addITo(frag,elemLabel);
+		decrementInteger(frag,lengthLabel);
+		loadIFrom(frag,lengthLabel);
+		frag.add(PushI,0);
+		frag.add(Subtract);
+		frag.add(JumpFalse,loop2Label);
+		frag.add(PushD,RunTime.COMMA_STRING);
+		frag.add(PushD,STRING_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(PushD,RunTime.SPACE_PRINT_FORMAT);
+		frag.add(PushD,STRING_PRINT_FORMAT);
+		frag.add(Printf);
+		frag.add(Jump,loop2Label);
+		
+		frag.add(Label,endLabel);
+		
+		frag.add(PushD,RunTime.CLOSE_BRACKET_STRING);
+		frag.add(PushD,STRING_PRINT_FORMAT);
+		frag.add(Printf);
+		
+		loadIFrom(frag,returnAddressLabel);
+		frag.add(Return);
+		
+		return frag;
+	}
+
+	private ASMCodeFragment releaseRecordRecursive(){
+		ASMCodeFragment frag=new ASMCodeFragment(CodeType.GENERATES_VOID);
+		
+		Labeller labeller = new Labeller("release-record");
+		String endLabel=labeller.newLabel("end");
+		String releaseLabel=labeller.newLabel("release");
+		String lengthLabel=labeller.newLabel("length");
+		String elemSizeLabel=labeller.newLabel("element-size");
+		String stringLabel=labeller.newLabel("string-record");
+		String joinLabel=labeller.newLabel("join");
+		String loopLabel=labeller.newLabel("loop-start");
+		String elemLabel=labeller.newLabel("element");
+		declareI(frag,lengthLabel);
+		declareI(frag,elemSizeLabel);
+		declareI(frag,elemLabel);
+		
+		frag.add(Label,RELEASE_RECORD);
+		declareI(frag,RELEASE_RECORD_RETURN_ADDRESS);
+		storeITo(frag,RELEASE_RECORD_RETURN_ADDRESS);
+		//[...recordPtr]
+		//check the is-deleted status and permanent status
+		frag.add(Duplicate);
+		readIOffset(frag,Record.RECORD_STATUS_OFFSET);//[...recordPtr status]
+		frag.add(Duplicate);
+		frag.add(Duplicate);
+		frag.add(PushI,4);
+		frag.add(BTAnd);
+		frag.add(JumpTrue,endLabel);
+		frag.add(PushI,8);
+		frag.add(BTAnd);
+		frag.add(JumpTrue,endLabel);
+		//check subtype-is-reference
+		frag.add(PushI,2);
+		frag.add(BTAnd);
+		frag.add(JumpFalse,releaseLabel);
+		//[...recordPtr]
+		frag.add(Duplicate);
+		readIOffset(frag,Record.RECORD_TYPEID_OFFSET);
+		frag.add(PushI,6);
+		frag.add(Subtract);
+		frag.add(JumpFalse,stringLabel);
+		
+		frag.add(Duplicate);
+		frag.add(Duplicate);
+//		frag.add(Duplicate);
+		readIOffset(frag,Record.ARRAY_LENGTH_OFFSET);
+		storeITo(frag,lengthLabel);
+		readIOffset(frag,Record.ARRAY_SUBTYPE_SIZE_OFFSET);
+		storeITo(frag,elemSizeLabel);
+		frag.add(PushI,ARRAY_HEADER_SIZE);
+		frag.add(Add);
+		storeITo(frag,elemLabel);
+		frag.add(Jump,joinLabel);
+		
+		frag.add(Label,stringLabel);
+		frag.add(Duplicate);
+//		frag.add(Duplicate);
+		readIOffset(frag,Record.STRING_LENGTH_OFFSET);
+		storeITo(frag,lengthLabel);
+		frag.add(PushI,1);
+		storeITo(frag,elemSizeLabel);
+		frag.add(PushI,STRING_HEADER_SIZE);
+		frag.add(Add);
+		storeITo(frag,elemLabel);
+		
+		frag.add(Label,joinLabel);
+		
+		frag.add(Label,loopLabel);
+		loadIFrom(frag,lengthLabel);
+		frag.add(JumpFalse,endLabel);
+		
+		loadIFrom(frag,elemLabel);
+		loadIFrom(frag,lengthLabel);
+		loadIFrom(frag,elemSizeLabel);
+		loadIFrom(frag,RELEASE_RECORD_RETURN_ADDRESS);
+		
+		loadIFrom(frag,elemLabel);
+		frag.add(LoadI);
+		frag.add(Call,RELEASE_RECORD);
+		
+		storeITo(frag,RELEASE_RECORD_RETURN_ADDRESS);
+		storeITo(frag,elemSizeLabel);
+		storeITo(frag,lengthLabel);
+		storeITo(frag,elemLabel);
+		
+		loadIFrom(frag,elemSizeLabel);
+		addITo(frag,elemLabel);
+		decrementInteger(frag,lengthLabel);
+		frag.add(Jump,loopLabel);
+		
+		frag.add(Label,releaseLabel);
+		frag.add(Duplicate);
+		frag.add(Duplicate);
+		frag.add(PStack);
+		readIOffset(frag, Record.RECORD_STATUS_OFFSET);
+		frag.add(PushI,4);
+		frag.add(Add);
+		frag.add(Exchange);
+		writeIOffset(frag,Record.RECORD_STATUS_OFFSET);
+		
+		frag.add(Call,MemoryManager.MEM_MANAGER_DEALLOCATE);
+		frag.add(Label,endLabel);
+		loadIFrom(frag,RELEASE_RECORD_RETURN_ADDRESS);
+		frag.add(Return);
+		return frag;
+	}
+	
+	private ASMCodeFragment convertToStringIfBoolean(){
+		ASMCodeFragment code=new ASMCodeFragment(CodeType.GENERATES_VOID);
+		
+		Labeller labeller = new Labeller("print-boolean");
+		String trueLabel = labeller.newLabel("true");
+		String endLabel = labeller.newLabel("join");
+		code.add(Label,CONVERT_TO_STRING_IF_BOOL);
+		declareI(code,CONVERT_TO_STRING_IF_BOOL_RETURN_ADDRESS);
+		storeITo(code,CONVERT_TO_STRING_IF_BOOL_RETURN_ADDRESS);
+		
+		code.add(JumpTrue, trueLabel);
+		code.add(PushD, RunTime.BOOLEAN_FALSE_STRING);
+		code.add(Jump, endLabel);
+		code.add(Label, trueLabel);
+		code.add(PushD, RunTime.BOOLEAN_TRUE_STRING);
+		code.add(Label, endLabel);
+		
+		loadIFrom(code,CONVERT_TO_STRING_IF_BOOL_RETURN_ADDRESS);
+		code.add(Return);
+		return code;
+	}
+	
+	private ASMCodeFragment printString(){
+		ASMCodeFragment code=new ASMCodeFragment(CodeType.GENERATES_VOID);
+		Labeller labeller = new Labeller("print-string");
+		String loopLabel=labeller.newLabel("loop-start");
+		String endLabel=labeller.newLabel("end");
+		code.add(Label,PRINT_STRING);
+		
+		declareI(code,PRINT_STRING_RETURN_ADDRESS);
+		storeITo(code,PRINT_STRING_RETURN_ADDRESS);
+		//[..strAddr]
+		code.add(Duplicate);
+		code.add(PushI,STRING_HEADER_SIZE);
+		code.add(Add);
+		storeITo(code,RunTime.PRINT_STRING_TEMP);
+		readIOffset(code,STRING_LENGTH_OFFSET);
+		storeITo(code,RunTime.PRINT_STRING_LENGTH);
+		
+		code.add(Label,loopLabel);
+		loadIFrom(code,RunTime.PRINT_STRING_LENGTH);
+		code.add(JumpFalse,endLabel);
+		loadIFrom(code,RunTime.PRINT_STRING_TEMP);
+		code.add(LoadC);
+		code.add(PushD,RunTime.CHARACTER_PRINT_FORMAT);
+		code.add(Printf);
+		incrementInteger(code,RunTime.PRINT_STRING_TEMP);
+		
+		decrementInteger(code,RunTime.PRINT_STRING_LENGTH);
+		code.add(Jump,loopLabel);
+		code.add(Label,endLabel);
+		
+		loadIFrom(code,PRINT_STRING_RETURN_ADDRESS);
+		code.add(Return);
+		return code;
+	}
+
+	private ASMCodeFragment printRational(){
+		ASMCodeFragment code=new ASMCodeFragment(CodeType.GENERATES_VOID);
+		
+		Labeller labeller = new Labeller("print-rational");
+		String numeratorPos = labeller.newLabel("numerator-pos");
+		String denominatorPos = labeller.newLabel("denominator-pos");
+		String rationalPos=labeller.newLabel("rational-pos");
+		String endLabel=labeller.newLabel("end");
+		String fracLabel=labeller.newLabel("fraction");
+		String zeroNumerator=labeller.newLabel("zero-numerator");
+		
+		code.add(Label,PRINT_RATIONAL);
+		declareI(code,PRINT_RATIONAL_RETURN_ADDRESS);
+		storeITo(code,PRINT_RATIONAL_RETURN_ADDRESS);
+		
+		code.add(PushI,1);
+		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);//sign=1
+		//[...numerator denominator]
+		
+		code.add(Duplicate);
+		code.add(JumpPos,denominatorPos);
+		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);
+		code.add(Negate);
+		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);
+		code.add(Negate);
+		code.add(Label,denominatorPos);
+		storeITo(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
+		
+		code.add(Duplicate);
+		code.add(Duplicate);
+		code.add(JumpFalse,zeroNumerator);
+		code.add(JumpPos,numeratorPos);
+		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);
+		code.add(Negate);
+		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);
+		code.add(Negate);
+		code.add(Label,numeratorPos);
+		storeITo(code, RunTime.RATIONAL_NUMERATOR_TEMP);
+		
+		loadIFrom(code, RunTime.RATIONAL_NUMERATOR_TEMP);
+		loadIFrom(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
+		
+		//[...abs(numerator) abs(denominator)]
+		code.add(Remainder);//[...numerator%denominator]
+		loadIFrom(code, RunTime.RATIONAL_NUMERATOR_TEMP);
+		loadIFrom(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
+		//[...numerator/denominator numerator denominator]
+		code.add(Divide);//[...numerator%denominator numerator/denominator]
+		storeITo(code,RunTime.RATIONAL_PRINT_INT_PART);
+		storeITo(code,RunTime.RATIONAL_PRINT_REMAINDER);
+		
+		loadIFrom(code,RunTime.RATIONAL_PRINT_REMAINDER);
+		loadIFrom(code,RunTime.RATIONAL_PRINT_INT_PART);
+		
+		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);
+		code.add(JumpPos,rationalPos);
+		code.add(PushD,RunTime.MINUS_SIGN_STRING);
+		code.add(PushD,RunTime.STRING_PRINT_FORMAT);
+		code.add(Printf);
+		code.add(Label,rationalPos);
+		
+		code.add(JumpFalse,fracLabel);
+		loadIFrom(code,RunTime.RATIONAL_PRINT_INT_PART);
+		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
+		code.add(Printf);
+		
+		code.add(Label,fracLabel);
+		code.add(JumpFalse,endLabel);
+		code.add(PushD,RunTime.DASH_PRINT_STRING);
+		code.add(PushD,RunTime.STRING_PRINT_FORMAT);
+		code.add(Printf);
+		
+		loadIFrom(code,RunTime.RATIONAL_PRINT_REMAINDER);
+		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
+		code.add(Printf);
+		
+		code.add(PushD,RunTime.DIVIDE_SIGN_STRING);
+		code.add(PushD,RunTime.STRING_PRINT_FORMAT);
+		code.add(Printf);
+		
+		loadIFrom(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
+		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
+		code.add(Printf);
+		code.add(Jump,endLabel);
+		
+		code.add(Label,zeroNumerator);
+		code.add(PushD,RunTime.INTEGER_PRINT_FORMAT);
+		code.add(Printf);
+		code.add(Pop);
+		
+		code.add(Label,endLabel);
+		loadIFrom(code,PRINT_RATIONAL_RETURN_ADDRESS);
+		code.add(Return);
+		
+		return code;
+	}
 	private ASMCodeFragment clearNBytes(){
 		ASMCodeFragment frag=new ASMCodeFragment(CodeType.GENERATES_VOID);
 		
