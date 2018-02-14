@@ -1,5 +1,8 @@
 exec{
 	var a:=[].
+	var b:=[1,2,_true_].
+	var c:=[1,"fla"].
+	var d:=[1,^c^].
 	var e:= [1.2,3,^c^,3//4].
 	var f:= ["first","second","third",_true_,_false_].
 }

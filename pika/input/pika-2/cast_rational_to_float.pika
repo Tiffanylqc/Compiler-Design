@@ -1,5 +1,0 @@
-exec{
-	var a:=5//3.
-	var b:=[a|float].
-	print b.
-}

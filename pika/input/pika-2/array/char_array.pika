@@ -1,0 +1,18 @@
+exec{
+	var a:=[^a^,^b^,^c^,^d^].
+	print a,_n_.
+
+	a:=[^a^].
+	print a,_n_.
+
+	a:=[^a^,^b^].
+	print a,_n_.
+
+	a:=new[char](5).
+	var x:=0.
+	while(x<length a){
+		a[x]:=[^a^+ x|char].
+		x:=x+ 1.
+	}
+	print a.
+}

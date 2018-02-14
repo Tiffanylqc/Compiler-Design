@@ -31,6 +31,7 @@ public class ArrayPopulateCreationCodeGenerator implements FullCodeGenerator {
 		
 		frag.add(PushI,subtypeSize);
 		frag.add(PushI,node.nChildren());
+		
 		frag.add(Multiply);
 		frag.add(PushI,Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
@@ -59,8 +60,8 @@ public class ArrayPopulateCreationCodeGenerator implements FullCodeGenerator {
 				//store numerator from lvalue to lvalue+4
 				//store denominator from lvalue+4 to lvalue+8
 				frag.append(args[i]);//[...numerator denominator]
-				loadIFrom(frag, elemAddrLabel);//[...numerator denominator &lvalue]
 				
+				loadIFrom(frag, elemAddrLabel);//[...numerator denominator &lvalue]
 				declareI(frag,baseAddrLabel);
 				storeITo(frag,baseAddrLabel);
 				loadIFrom(frag,baseAddrLabel);//[...numerator denominator &lvalue]
@@ -78,9 +79,11 @@ public class ArrayPopulateCreationCodeGenerator implements FullCodeGenerator {
 			else{
 				loadIFrom(frag, elemAddrLabel);
 				frag.append(args[i]);
+//				frag.add(PStack);
 				frag.add(this.opcodeForStore(type));
 			}
 			frag.add(PushI,subtypeSize);
+//			frag.add(PStack);
 			addITo(frag,elemAddrLabel);
 		}
 		return frag;

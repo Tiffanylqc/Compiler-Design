@@ -1,0 +1,41 @@
+exec{
+	print ^a^+ 2,_n_.
+	print 2+ ^a^,_n_.
+	print ^a^+ 1.2,_n_.
+	print 1.2+ ^a^,_n_.
+	print 1.2+ 2,_n_.
+	print 2+ 1.2,_n_.
+	print 1//2+ 3,_n_.
+	print 3+ 1//2,_n_.
+	print ^a^+^b^,_n_.
+
+	print ^a^- 2,_n_.
+	print 2- ^a^,_n_.
+	print ^a^- 1.2,_n_.
+	print 1.2- ^a^,_n_.
+	print 1.2- 2,_n_.
+	print 2- 1.2,_n_.
+	print 1//2- 3,_n_.
+	print 3- 1//2,_n_.
+	print ^a^-^b^,_n_.
+
+	print ^a^* 2,_n_.
+	print 2* ^a^,_n_.
+	print ^a^* 1.2,_n_.
+	print 1.2* ^a^,_n_.
+	print 1.2* 2,_n_.
+	print 2* 1.2,_n_.
+	print 1//2* 3,_n_.
+	print 3* 1//2,_n_.
+	print ^a^*^b^,_n_.
+
+	print ^a^/ 2,_n_.
+	print 2/ ^a^,_n_.
+	print ^a^/ 1.2,_n_.
+	print 1.2/ ^a^,_n_.
+	print 1.2/ 2,_n_.
+	print 2/ 1.2,_n_.
+	print 1//2/ 3,_n_.
+	print 3/ (1//2),_n_.
+	print ^a^/^b^,_n_.
+}

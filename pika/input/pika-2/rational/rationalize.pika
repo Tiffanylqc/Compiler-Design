@@ -1,0 +1,33 @@
+exec{
+	var a:=12//8.
+	print a,_n_.
+	
+	var b:= a////8.
+	print b,_n_.
+
+	a:=-12//8.
+	print a,_n_.
+
+	b:= a////8.
+	print b,_n_.
+
+	a:=12//-8.
+	print a,_n_.
+
+	b:= a////8.
+	print b,_n_.
+
+	a:=-12//-8.
+	print a,_n_.
+
+	b:= a////-8.
+	print b,_n_.
+
+	b:=a////^c^.
+	print b,_n_.
+
+	var c:= 1.678.
+	b:=c////-2.
+	print b,_n_.
+
+}

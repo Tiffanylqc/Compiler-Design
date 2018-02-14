@@ -1,0 +1,18 @@
+exec{
+	const a:=[2,3,4,5].
+	const b:=a.
+	print a,_n_,b,_n_.
+	(b[0]):=6.
+	print a,_n_,b.
+
+	const c:=clone clone clone clone a.
+	(c[1]):=7.
+	print c,_n_,a,_n_.
+
+	var R:=[7,5].
+	print R,_n_.
+	R[0]:=2.
+	print R,_n_.
+	R:=new[int](5).
+	print R,_n_.
+}

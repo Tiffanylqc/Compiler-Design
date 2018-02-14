@@ -2,6 +2,7 @@ exec{
 	var a:="-test-string-".
 	print a,_n_.
 	var b:=a.
+
 	if(a==b){
 		print "a==b".
 	}

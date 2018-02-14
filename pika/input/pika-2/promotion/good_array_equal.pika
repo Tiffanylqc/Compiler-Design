@@ -1,8 +1,7 @@
 exec{
-	var a:= new[int](2).
+	var a:= [3,4,5].
 	var b:=[3,4,5].
 	var c:= new [[int]](3).
 	var d:=c.
-	var e:=a==b.
-	var f:=c!=d.
+	print a==b,_n_,c!=d,_n_,a!=b,_n_,c==d.
 }

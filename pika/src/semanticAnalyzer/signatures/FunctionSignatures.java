@@ -288,6 +288,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 			new FunctionSignature(ASMOpcode.ConvertF,PrimitiveType.INTEGER,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
 			new FunctionSignature(new IntToCharCodeGenerator(),PrimitiveType.INTEGER,PrimitiveType.CHARACTER,PrimitiveType.CHARACTER),
 			new FunctionSignature(ASMOpcode.ConvertI,PrimitiveType.FLOATING,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
+			new FunctionSignature(ASMOpcode.ConvertF,PrimitiveType.CHARACTER,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
 			new FunctionSignature(new IntToBoolCodeGenerator(),PrimitiveType.INTEGER,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
 			new FunctionSignature(new CharToBoolCodeGenerator(),PrimitiveType.CHARACTER,PrimitiveType.BOOLEAN,PrimitiveType.BOOLEAN),
 			new FunctionSignature(new CharIntToRationalCodeGenerator(),PrimitiveType.CHARACTER,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),

@@ -75,6 +75,15 @@
         DLabel       $minus-sign-string        
         DataC        45                        %% "-"
         DataC        0                         
+        DLabel       $open-bracket-string      
+        DataC        91                        %% "["
+        DataC        0                         
+        DLabel       $close-bracket-string     
+        DataC        93                        %% "]"
+        DataC        0                         
+        DLabel       $comma-string             
+        DataC        44                        %% ","
+        DataC        0                         
         DLabel       $errors-general-message   
         DataC        82                        %% "Runtime error: %s\n"
         DataC        117                       
@@ -196,7 +205,12 @@
         PushD        $index-out-of-bound-error 
         Jump         $$general-runtime-error   
         DLabel       $zero-denominator-error   
-        DataC        122                       %% "zero denominator"
+        DataC        111                       %% "over zero denominator"
+        DataC        118                       
+        DataC        101                       
+        DataC        114                       
+        DataC        32                        
+        DataC        122                       
         DataC        101                       
         DataC        114                       
         DataC        111                       
@@ -278,6 +292,32 @@
         Label        $$rationalize-divide-by-zero 
         PushD        $rationalize-divide-by-zero 
         Jump         $$general-runtime-error   
+        DLabel       $negative-array-length    
+        DataC        110                       %% "negative array length"
+        DataC        101                       
+        DataC        103                       
+        DataC        97                        
+        DataC        116                       
+        DataC        105                       
+        DataC        118                       
+        DataC        101                       
+        DataC        32                        
+        DataC        97                        
+        DataC        114                       
+        DataC        114                       
+        DataC        97                        
+        DataC        121                       
+        DataC        32                        
+        DataC        108                       
+        DataC        101                       
+        DataC        110                       
+        DataC        103                       
+        DataC        116                       
+        DataC        104                       
+        DataC        0                         
+        Label        $$negative-length-array   
+        PushD        $negative-array-length    
+        Jump         $$general-runtime-error   
         DLabel       $a-indexing-array         
         DataZ        4                         
         DLabel       $a-indexing-index         
@@ -288,11 +328,35 @@
         DataZ        4                         
         DLabel       $rational-numerator-temp  
         DataZ        4                         
+        DLabel       $rational-denominator-temp2 
+        DataZ        4                         
+        DLabel       $rational-numerator-temp2 
+        DataZ        4                         
         DLabel       $rational-print-integer-part 
         DataZ        4                         
         DLabel       $rational-print-remainder 
         DataZ        4                         
         DLabel       $rational-print-sign      
+        DataZ        4                         
+        DLabel       $record-creation-temp     
+        DataZ        4                         
+        DLabel       $array-datasize-temp      
+        DataZ        4                         
+        DLabel       $array-identifier-temp    
+        DataZ        4                         
+        DLabel       $array-status-temp        
+        DataZ        4                         
+        DLabel       $array-subtype-size-temp  
+        DataZ        4                         
+        DLabel       $array-length-temp        
+        DataZ        4                         
+        DLabel       $array-element-temp       
+        DataZ        4                         
+        DLabel       $cloned-array-temp        
+        DataZ        4                         
+        DLabel       $print-string-temp        
+        DataZ        4                         
+        DLabel       $print-string-length      
         DataZ        4                         
         Label        $lowest-term-subroutine   
         DLabel       $lowest-term-return       
@@ -323,18 +387,18 @@
         PushD        $lowest-term-denominator  
         LoadI                                  
         Subtract                               
-        JumpNeg      -lowest-subroutine-1-exchange 
+        JumpNeg      -lowest-term-subroutine-1-exchange 
         PushD        $lowest-term-numerator    
         LoadI                                  
         PushD        $lowest-term-denominator  
         LoadI                                  
-        Jump         -lowest-subroutine-1-loop-start 
-        Label        -lowest-subroutine-1-exchange 
+        Jump         -lowest-term-subroutine-1-loop-start 
+        Label        -lowest-term-subroutine-1-exchange 
         PushD        $lowest-term-denominator  
         LoadI                                  
         PushD        $lowest-term-numerator    
         LoadI                                  
-        Label        -lowest-subroutine-1-loop-start 
+        Label        -lowest-term-subroutine-1-loop-start 
         PushD        $lowest-term-tmpb         
         Exchange                               
         StoreI                                 
@@ -346,13 +410,13 @@
         PushD        $lowest-term-tmpb         
         LoadI                                  
         Duplicate                              
-        JumpFalse    -lowest-subroutine-1-end  
+        JumpFalse    -lowest-term-subroutine-1-end 
         Remainder                              
         PushD        $lowest-term-tmpb         
         LoadI                                  
         Exchange                               
-        Jump         -lowest-subroutine-1-loop-start 
-        Label        -lowest-subroutine-1-end  
+        Jump         -lowest-term-subroutine-1-loop-start 
+        Label        -lowest-term-subroutine-1-end 
         Pop                                    
         PushD        $lowest-term-gcd          
         Exchange                               
@@ -370,48 +434,269 @@
         PushD        $lowest-term-return       
         LoadI                                  
         Return                                 
-        DLabel       $usable-memory-start      
-        DLabel       $global-memory-block      
-        DataZ        24                        
-        Label        $$main                    
+        Label        $clear-n-bytes-subroutine 
+        DLabel       $clear-n-bytes-return-address 
+        DataZ        4                         
+        PushD        $clear-n-bytes-return-address 
+        Exchange                               
+        StoreI                                 
+        DLabel       $clear-n-bytes-element-size 
+        DataZ        4                         
+        PushD        $clear-n-bytes-element-size 
+        Exchange                               
+        StoreI                                 
+        DLabel       $clear-n-bytes-element-addr 
+        DataZ        4                         
+        PushD        $clear-n-bytes-element-addr 
+        Exchange                               
+        StoreI                                 
+        Label        -clear-n-bytes-subroutine-2-loop-start 
+        PushD        $clear-n-bytes-element-size 
+        LoadI                                  
+        JumpFalse    -clear-n-bytes-subroutine-2-end 
+        PushI        0                         
+        PushD        $clear-n-bytes-element-addr 
+        Exchange                               
+        StoreC                                 
+        PushI        1                         
+        PushD        $clear-n-bytes-element-addr 
+        LoadI                                  
+        Add                                    
+        PushD        $clear-n-bytes-element-addr 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        $clear-n-bytes-element-size 
+        LoadI                                  
+        Add                                    
+        PushD        $clear-n-bytes-element-size 
+        Exchange                               
+        StoreI                                 
+        Jump         -clear-n-bytes-subroutine-2-loop-start 
+        Label        -clear-n-bytes-subroutine-2-end 
+        PushD        $clear-n-bytes-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $print-array-subroutine   
+        DLabel       -print-array-recursive-3-return-address 
+        DataZ        4                         
+        PushD        -print-array-recursive-3-return-address 
+        Exchange                               
+        StoreI                                 
+        DLabel       -print-array-recursive-3-type 
+        DataZ        4                         
+        PushD        -print-array-recursive-3-type 
+        Exchange                               
+        StoreI                                 
+        DLabel       -print-array-recursive-3-element 
+        DataZ        4                         
+        DLabel       -print-array-recursive-3-length 
+        DataZ        4                         
+        DLabel       -print-array-recursive-3-elem-size 
+        DataZ        4                         
+        Duplicate                              
+        Duplicate                              
+        Duplicate                              
+        PushI        16                        
+        Add                                    
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
         PushI        12                        
+        Add                                    
+        LoadI                                  
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
         PushI        8                         
-        Call         $lowest-term-subroutine   
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        DLabel       -rational-storage-2-baseAddr 
-        DataZ        4                         
-        PushD        -rational-storage-2-baseAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -rational-storage-2-baseAddr 
-        LoadI                                  
-        PushI        4                         
         Add                                    
+        LoadI                                  
+        PushD        -print-array-recursive-3-elem-size 
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-2-baseAddr 
-        LoadI                                  
-        Exchange                               
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        Nop                                    
-        DLabel       -rational-load-3-baseAddr 
-        DataZ        4                         
-        PushD        -rational-load-3-baseAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -rational-load-3-baseAddr 
-        LoadI                                  
-        LoadI                                  
-        PushD        -rational-load-3-baseAddr 
-        LoadI                                  
+        PushD        $open-bracket-string      
+        PushD        $print-format-string      
+        Printf                                 
         PushI        4                         
         Add                                    
         LoadI                                  
+        PushI        2                         
+        BTAnd                                  
+        JumpFalse    -print-array-recursive-3-one-dim 
+        Label        -print-array-recursive-3-loop-start 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        JumpFalse    -print-array-recursive-3-end 
+        PushD        -print-array-recursive-3-return-address 
+        LoadI                                  
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        PushD        -print-array-recursive-3-elem-size 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        LoadI                                  
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        Call         $print-array-subroutine   
+        PushD        -print-array-recursive-3-elem-size 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-type 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-elem-size 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        PushI        0                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-loop-start 
+        PushD        $comma-string             
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        $print-format-space       
+        PushD        $print-format-string      
+        Printf                                 
+        Jump         -print-array-recursive-3-loop-start 
+        Label        -print-array-recursive-3-one-dim 
+        Label        -print-array-recursive-3-loop-start-2 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        JumpFalse    -print-array-recursive-3-end 
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        1                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-int-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        2                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-float-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        3                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-char-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        4                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-string-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        5                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-rat-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        6                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-bool-label 
+        Label        -print-array-recursive-3-int-label 
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-float-label 
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-char-label 
+        LoadC                                  
+        PushD        $print-format-character   
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-rat-label 
+        Duplicate                              
+        LoadI                                  
+        Exchange                               
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-bool-label 
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-string-label 
+        LoadI                                  
+        Call         $print-string             
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-join-label 
+        PushD        -print-array-recursive-3-elem-size 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        PushI        0                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-loop-start-2 
+        PushD        $comma-string             
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        $print-format-space       
+        PushD        $print-format-string      
+        Printf                                 
+        Jump         -print-array-recursive-3-loop-start-2 
+        Label        -print-array-recursive-3-end 
+        PushD        $close-bracket-string     
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        -print-array-recursive-3-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $print-rational           
+        DLabel       $print-rational-return-address 
+        DataZ        4                         
+        PushD        $print-rational-return-address 
+        Exchange                               
+        StoreI                                 
         PushI        1                         
         PushD        $rational-print-sign      
         Exchange                               
@@ -498,192 +783,249 @@
         Printf                                 
         Pop                                    
         Label        -print-rational-4-end     
-        PushD        $print-format-newline     
-        Printf                                 
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        Nop                                    
-        DLabel       -rational-load-5-baseAddr 
+        PushD        $print-rational-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $print-string             
+        DLabel       $print-string-return-address 
         DataZ        4                         
-        PushD        -rational-load-5-baseAddr 
+        PushD        $print-string-return-address 
         Exchange                               
         StoreI                                 
-        PushD        -rational-load-5-baseAddr 
-        LoadI                                  
-        LoadI                                  
-        PushD        -rational-load-5-baseAddr 
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        LoadI                                  
-        PushI        8                         
         Duplicate                              
-        JumpFalse    $$rationalize-divide-by-zero 
-        PushD        $express-over-denominator 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $express-over-denominator 
-        LoadI                                  
-        Multiply                               
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $express-over-denominator 
-        LoadI                                  
-        Call         $lowest-term-subroutine   
-        PushD        $global-memory-block      
-        PushI        8                         
-        Add                                    %% b
-        DLabel       -rational-storage-6-baseAddr 
-        DataZ        4                         
-        PushD        -rational-storage-6-baseAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -rational-storage-6-baseAddr 
-        LoadI                                  
-        PushI        4                         
+        PushI        12                        
         Add                                    
+        PushD        $print-string-temp        
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-6-baseAddr 
-        LoadI                                  
-        Exchange                               
-        StoreI                                 
-        PushD        $global-memory-block      
         PushI        8                         
-        Add                                    %% b
-        Nop                                    
-        DLabel       -rational-load-7-baseAddr 
-        DataZ        4                         
-        PushD        -rational-load-7-baseAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -rational-load-7-baseAddr 
-        LoadI                                  
-        LoadI                                  
-        PushD        -rational-load-7-baseAddr 
-        LoadI                                  
-        PushI        4                         
         Add                                    
         LoadI                                  
+        PushD        $print-string-length      
+        Exchange                               
+        StoreI                                 
+        Label        -print-string-5-loop-start 
+        PushD        $print-string-length      
+        LoadI                                  
+        JumpFalse    -print-string-5-end       
+        PushD        $print-string-temp        
+        LoadI                                  
+        LoadC                                  
+        PushD        $print-format-character   
+        Printf                                 
         PushI        1                         
-        PushD        $rational-print-sign      
+        PushD        $print-string-temp        
+        LoadI                                  
+        Add                                    
+        PushD        $print-string-temp        
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        $print-string-length      
+        LoadI                                  
+        Add                                    
+        PushD        $print-string-length      
+        Exchange                               
+        StoreI                                 
+        Jump         -print-string-5-loop-start 
+        Label        -print-string-5-end       
+        PushD        $print-string-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $convert-to-string-if-bool-subroutine 
+        DLabel       $convert-to-string-if-bool-return-address 
+        DataZ        4                         
+        PushD        $convert-to-string-if-bool-return-address 
+        Exchange                               
+        StoreI                                 
+        JumpTrue     -print-boolean-6-true     
+        PushD        $boolean-false-string     
+        Jump         -print-boolean-6-join     
+        Label        -print-boolean-6-true     
+        PushD        $boolean-true-string      
+        Label        -print-boolean-6-join     
+        PushD        $convert-to-string-if-bool-return-address 
+        LoadI                                  
+        Return                                 
+        DLabel       -release-record-7-length  
+        DataZ        4                         
+        DLabel       -release-record-7-element-size 
+        DataZ        4                         
+        DLabel       -release-record-7-element 
+        DataZ        4                         
+        Label        $release-record           
+        DLabel       $release-record-return-address 
+        DataZ        4                         
+        PushD        $release-record-return-address 
         Exchange                               
         StoreI                                 
         Duplicate                              
-        JumpPos      -print-rational-8-denominator-pos 
-        PushD        $rational-print-sign      
+        PushI        4                         
+        Add                                    
         LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-8-denominator-pos 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
         Duplicate                              
         Duplicate                              
-        JumpFalse    -print-rational-8-zero-numerator 
-        JumpPos      -print-rational-8-numerator-pos 
-        PushD        $rational-print-sign      
+        PushI        4                         
+        BTAnd                                  
+        JumpTrue     -release-record-7-end     
+        PushI        8                         
+        BTAnd                                  
+        JumpTrue     -release-record-7-end     
+        PushI        2                         
+        BTAnd                                  
+        JumpFalse    -release-record-7-release 
+        Duplicate                              
+        PushI        0                         
+        Add                                    
         LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
+        PushI        6                         
+        Subtract                               
+        JumpFalse    -release-record-7-string-record 
+        Duplicate                              
+        Duplicate                              
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-length  
         Exchange                               
         StoreI                                 
-        Negate                                 
-        Label        -print-rational-8-numerator-pos 
-        PushD        $rational-numerator-temp  
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-element-size 
         Exchange                               
         StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $rational-print-integer-part 
+        PushI        16                        
+        Add                                    
+        PushD        -release-record-7-element 
         Exchange                               
         StoreI                                 
-        PushD        $rational-print-remainder 
+        Jump         -release-record-7-join    
+        Label        -release-record-7-string-record 
+        Duplicate                              
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-length  
         Exchange                               
         StoreI                                 
-        PushD        $rational-print-remainder 
+        PushI        1                         
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushI        12                        
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        Label        -release-record-7-join    
+        Label        -release-record-7-loop-start 
+        PushD        -release-record-7-length  
         LoadI                                  
-        PushD        $rational-print-integer-part 
+        JumpFalse    -release-record-7-end     
+        PushD        -release-record-7-element 
         LoadI                                  
-        PushD        $rational-print-sign      
+        PushD        -release-record-7-length  
         LoadI                                  
-        JumpPos      -print-rational-8-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-8-rational-pos 
-        JumpFalse    -print-rational-8-fraction 
-        PushD        $rational-print-integer-part 
+        PushD        -release-record-7-element-size 
         LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-8-fraction 
-        JumpFalse    -print-rational-8-end     
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
+        PushD        $release-record-return-address 
         LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
+        PushD        -release-record-7-element 
         LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-8-end     
-        Label        -print-rational-8-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-8-end     
-        PushD        $print-format-newline     
-        Printf                                 
-        PushI        -12                       
+        LoadI                                  
+        Call         $release-record           
+        PushD        $release-record-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element-size 
+        LoadI                                  
+        PushD        -release-record-7-element 
+        LoadI                                  
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        -release-record-7-length  
+        LoadI                                  
+        Add                                    
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        Jump         -release-record-7-loop-start 
+        Label        -release-record-7-release 
+        Duplicate                              
+        Duplicate                              
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        Call         -mem-manager-deallocate   
+        Label        -release-record-7-end     
+        PushD        $release-record-return-address 
+        LoadI                                  
+        Return                                 
+        DLabel       $usable-memory-start      
+        DLabel       $global-memory-block      
+        DataZ        24                        
+        Label        $$main                    
+        PushI        12                        
         PushI        8                         
         Call         $lowest-term-subroutine   
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
-        DLabel       -rational-storage-9-baseAddr 
+        DLabel       -rational-storage-8-baseAddr 
         DataZ        4                         
-        PushD        -rational-storage-9-baseAddr 
+        PushD        -rational-storage-8-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-9-baseAddr 
+        PushD        -rational-storage-8-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-9-baseAddr 
+        PushD        -rational-storage-8-baseAddr 
         LoadI                                  
         Exchange                               
         StoreI                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-9-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-9-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-9-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-9-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-newline     
+        Printf                                 
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
@@ -701,97 +1043,50 @@
         PushI        4                         
         Add                                    
         LoadI                                  
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
+        PushI        8                         
         Duplicate                              
-        JumpPos      -print-rational-11-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
         Exchange                               
         StoreI                                 
-        Negate                                 
-        Label        -print-rational-11-denominator-pos 
         PushD        $rational-denominator-temp 
         Exchange                               
         StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-11-zero-numerator 
-        JumpPos      -print-rational-11-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-11-numerator-pos 
         PushD        $rational-numerator-temp  
         Exchange                               
         StoreI                                 
         PushD        $rational-numerator-temp  
         LoadI                                  
-        PushD        $rational-denominator-temp 
+        PushD        $express-over-denominator 
         LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
+        Multiply                               
         PushD        $rational-denominator-temp 
         LoadI                                  
         Divide                                 
-        PushD        $rational-print-integer-part 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
+        PushD        $express-over-denominator 
         LoadI                                  
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $rational-print-sign      
-        LoadI                                  
-        JumpPos      -print-rational-11-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-11-rational-pos 
-        JumpFalse    -print-rational-11-fraction 
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-11-fraction 
-        JumpFalse    -print-rational-11-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-11-end    
-        Label        -print-rational-11-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-11-end    
-        PushD        $print-format-newline     
-        Printf                                 
+        Call         $lowest-term-subroutine   
         PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
+        PushI        8                         
+        Add                                    %% b
+        DLabel       -rational-storage-11-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-11-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-11-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-11-baseAddr 
+        LoadI                                  
+        Exchange                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
         Nop                                    
         DLabel       -rational-load-12-baseAddr 
         DataZ        4                         
@@ -802,6 +1097,67 @@
         LoadI                                  
         LoadI                                  
         PushD        -rational-load-12-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        -12                       
+        PushI        8                         
+        Call         $lowest-term-subroutine   
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        DLabel       -rational-storage-13-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-13-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-13-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-13-baseAddr 
+        LoadI                                  
+        Exchange                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-14-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-14-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-14-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-14-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-15-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-15-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-15-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-15-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
@@ -832,132 +1188,6 @@
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
-        DLabel       -rational-storage-13-baseAddr 
-        DataZ        4                         
-        PushD        -rational-storage-13-baseAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -rational-storage-13-baseAddr 
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        -rational-storage-13-baseAddr 
-        LoadI                                  
-        Exchange                               
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        8                         
-        Add                                    %% b
-        Nop                                    
-        DLabel       -rational-load-14-baseAddr 
-        DataZ        4                         
-        PushD        -rational-load-14-baseAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -rational-load-14-baseAddr 
-        LoadI                                  
-        LoadI                                  
-        PushD        -rational-load-14-baseAddr 
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        LoadI                                  
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        JumpPos      -print-rational-15-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-15-denominator-pos 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-15-zero-numerator 
-        JumpPos      -print-rational-15-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-15-numerator-pos 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $rational-print-integer-part 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $rational-print-sign      
-        LoadI                                  
-        JumpPos      -print-rational-15-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-15-rational-pos 
-        JumpFalse    -print-rational-15-fraction 
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-15-fraction 
-        JumpFalse    -print-rational-15-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-15-end    
-        Label        -print-rational-15-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-15-end    
-        PushD        $print-format-newline     
-        Printf                                 
-        PushI        12                        
-        PushI        -8                        
-        Call         $lowest-term-subroutine   
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
         DLabel       -rational-storage-16-baseAddr 
         DataZ        4                         
         PushD        -rational-storage-16-baseAddr 
@@ -974,8 +1204,8 @@
         Exchange                               
         StoreI                                 
         PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
+        PushI        8                         
+        Add                                    %% b
         Nop                                    
         DLabel       -rational-load-17-baseAddr 
         DataZ        4                         
@@ -990,94 +1220,30 @@
         PushI        4                         
         Add                                    
         LoadI                                  
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        JumpPos      -print-rational-18-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-18-denominator-pos 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-18-zero-numerator 
-        JumpPos      -print-rational-18-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-18-numerator-pos 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $rational-print-integer-part 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $rational-print-sign      
-        LoadI                                  
-        JumpPos      -print-rational-18-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-18-rational-pos 
-        JumpFalse    -print-rational-18-fraction 
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-18-fraction 
-        JumpFalse    -print-rational-18-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-18-end    
-        Label        -print-rational-18-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-18-end    
+        Call         $print-rational           
         PushD        $print-format-newline     
         Printf                                 
+        PushI        12                        
+        PushI        -8                        
+        Call         $lowest-term-subroutine   
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        DLabel       -rational-storage-18-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-18-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-18-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-18-baseAddr 
+        LoadI                                  
+        Exchange                               
+        StoreI                                 
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
@@ -1095,6 +1261,26 @@
         PushI        4                         
         Add                                    
         LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-20-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-20-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-20-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-20-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
         PushI        8                         
         Duplicate                              
         JumpFalse    $$rationalize-divide-by-zero 
@@ -1121,18 +1307,18 @@
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
-        DLabel       -rational-storage-20-baseAddr 
+        DLabel       -rational-storage-21-baseAddr 
         DataZ        4                         
-        PushD        -rational-storage-20-baseAddr 
+        PushD        -rational-storage-21-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-20-baseAddr 
+        PushD        -rational-storage-21-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-20-baseAddr 
+        PushD        -rational-storage-21-baseAddr 
         LoadI                                  
         Exchange                               
         StoreI                                 
@@ -1140,105 +1326,20 @@
         PushI        8                         
         Add                                    %% b
         Nop                                    
-        DLabel       -rational-load-21-baseAddr 
+        DLabel       -rational-load-22-baseAddr 
         DataZ        4                         
-        PushD        -rational-load-21-baseAddr 
+        PushD        -rational-load-22-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -rational-load-21-baseAddr 
+        PushD        -rational-load-22-baseAddr 
         LoadI                                  
         LoadI                                  
-        PushD        -rational-load-21-baseAddr 
+        PushD        -rational-load-22-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         LoadI                                  
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        JumpPos      -print-rational-22-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-22-denominator-pos 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-22-zero-numerator 
-        JumpPos      -print-rational-22-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-22-numerator-pos 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $rational-print-integer-part 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $rational-print-sign      
-        LoadI                                  
-        JumpPos      -print-rational-22-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-22-rational-pos 
-        JumpFalse    -print-rational-22-fraction 
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-22-fraction 
-        JumpFalse    -print-rational-22-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-22-end    
-        Label        -print-rational-22-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-22-end    
+        Call         $print-rational           
         PushD        $print-format-newline     
         Printf                                 
         PushI        -12                       
@@ -1279,107 +1380,22 @@
         PushI        4                         
         Add                                    
         LoadI                                  
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        JumpPos      -print-rational-25-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-25-denominator-pos 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-25-zero-numerator 
-        JumpPos      -print-rational-25-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-25-numerator-pos 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $rational-print-integer-part 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $rational-print-sign      
-        LoadI                                  
-        JumpPos      -print-rational-25-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-25-rational-pos 
-        JumpFalse    -print-rational-25-fraction 
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-25-fraction 
-        JumpFalse    -print-rational-25-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-25-end    
-        Label        -print-rational-25-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-25-end    
+        Call         $print-rational           
         PushD        $print-format-newline     
         Printf                                 
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
         Nop                                    
-        DLabel       -rational-load-26-baseAddr 
+        DLabel       -rational-load-25-baseAddr 
         DataZ        4                         
-        PushD        -rational-load-26-baseAddr 
+        PushD        -rational-load-25-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -rational-load-26-baseAddr 
+        PushD        -rational-load-25-baseAddr 
         LoadI                                  
         LoadI                                  
-        PushD        -rational-load-26-baseAddr 
+        PushD        -rational-load-25-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
@@ -1410,24 +1426,44 @@
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
-        DLabel       -rational-storage-27-baseAddr 
+        DLabel       -rational-storage-26-baseAddr 
         DataZ        4                         
-        PushD        -rational-storage-27-baseAddr 
+        PushD        -rational-storage-26-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-27-baseAddr 
+        PushD        -rational-storage-26-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-27-baseAddr 
+        PushD        -rational-storage-26-baseAddr 
         LoadI                                  
         Exchange                               
         StoreI                                 
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
+        Nop                                    
+        DLabel       -rational-load-27-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-27-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-27-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-27-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
         Nop                                    
         DLabel       -rational-load-28-baseAddr 
         DataZ        4                         
@@ -1442,92 +1478,67 @@
         PushI        4                         
         Add                                    
         LoadI                                  
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
+        PushI        99                        
+        PushI        255                       
+        BTAnd                                  
         Duplicate                              
-        JumpPos      -print-rational-29-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
         Exchange                               
         StoreI                                 
-        Negate                                 
-        Label        -print-rational-29-denominator-pos 
         PushD        $rational-denominator-temp 
         Exchange                               
         StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-29-zero-numerator 
-        JumpPos      -print-rational-29-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-29-numerator-pos 
         PushD        $rational-numerator-temp  
         Exchange                               
         StoreI                                 
         PushD        $rational-numerator-temp  
         LoadI                                  
-        PushD        $rational-denominator-temp 
+        PushD        $express-over-denominator 
         LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
+        Multiply                               
         PushD        $rational-denominator-temp 
         LoadI                                  
         Divide                                 
-        PushD        $rational-print-integer-part 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        DLabel       -rational-storage-29-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-29-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        $rational-print-remainder 
+        PushD        -rational-storage-29-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
         Exchange                               
         StoreI                                 
-        PushD        $rational-print-remainder 
+        PushD        -rational-storage-29-baseAddr 
         LoadI                                  
-        PushD        $rational-print-integer-part 
+        Exchange                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        Nop                                    
+        DLabel       -rational-load-30-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-30-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-30-baseAddr 
         LoadI                                  
-        PushD        $rational-print-sign      
         LoadI                                  
-        JumpPos      -print-rational-29-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-29-rational-pos 
-        JumpFalse    -print-rational-29-fraction 
-        PushD        $rational-print-integer-part 
+        PushD        -rational-load-30-baseAddr 
         LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-29-fraction 
-        JumpFalse    -print-rational-29-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
+        PushI        4                         
+        Add                                    
         LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-29-end    
-        Label        -print-rational-29-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-29-end    
+        Call         $print-rational           
         PushD        $print-format-newline     
         Printf                                 
         PushD        $global-memory-block      
@@ -1555,18 +1566,18 @@
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
-        DLabel       -rational-storage-30-baseAddr 
+        DLabel       -rational-storage-31-baseAddr 
         DataZ        4                         
-        PushD        -rational-storage-30-baseAddr 
+        PushD        -rational-storage-31-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-30-baseAddr 
+        PushD        -rational-storage-31-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushD        -rational-storage-30-baseAddr 
+        PushD        -rational-storage-31-baseAddr 
         LoadI                                  
         Exchange                               
         StoreI                                 
@@ -1574,210 +1585,22 @@
         PushI        8                         
         Add                                    %% b
         Nop                                    
-        DLabel       -rational-load-31-baseAddr 
+        DLabel       -rational-load-32-baseAddr 
         DataZ        4                         
-        PushD        -rational-load-31-baseAddr 
+        PushD        -rational-load-32-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -rational-load-31-baseAddr 
+        PushD        -rational-load-32-baseAddr 
         LoadI                                  
         LoadI                                  
-        PushD        -rational-load-31-baseAddr 
+        PushD        -rational-load-32-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         LoadI                                  
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        JumpPos      -print-rational-32-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-32-denominator-pos 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-32-zero-numerator 
-        JumpPos      -print-rational-32-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-32-numerator-pos 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $rational-print-integer-part 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $rational-print-sign      
-        LoadI                                  
-        JumpPos      -print-rational-32-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-32-rational-pos 
-        JumpFalse    -print-rational-32-fraction 
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-32-fraction 
-        JumpFalse    -print-rational-32-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-32-end    
-        Label        -print-rational-32-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-32-end    
+        Call         $print-rational           
         PushD        $print-format-newline     
         Printf                                 
-        PushD        $global-memory-block      
-        PushI        16                        
-        Add                                    %% c
-        LoadF                                  
-        PushI        0                         
-        Duplicate                              
-        JumpFalse    $$rationalize-divide-by-zero 
-        Duplicate                              
-        PushD        $express-over-denominator 
-        Exchange                               
-        StoreI                                 
-        ConvertF                               
-        FMultiply                              
-        ConvertI                               
-        PushD        $express-over-denominator 
-        LoadI                                  
-        Call         $lowest-term-subroutine   
-        PushI        1                         
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        JumpPos      -print-rational-33-denominator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-33-denominator-pos 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        Duplicate                              
-        Duplicate                              
-        JumpFalse    -print-rational-33-zero-numerator 
-        JumpPos      -print-rational-33-numerator-pos 
-        PushD        $rational-print-sign      
-        LoadI                                  
-        Negate                                 
-        PushD        $rational-print-sign      
-        Exchange                               
-        StoreI                                 
-        Negate                                 
-        Label        -print-rational-33-numerator-pos 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Remainder                              
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        Divide                                 
-        PushD        $rational-print-integer-part 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $rational-print-sign      
-        LoadI                                  
-        JumpPos      -print-rational-33-rational-pos 
-        PushD        $minus-sign-string        
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -print-rational-33-rational-pos 
-        JumpFalse    -print-rational-33-fraction 
-        PushD        $rational-print-integer-part 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Label        -print-rational-33-fraction 
-        JumpFalse    -print-rational-33-end    
-        PushD        $dash-string              
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-print-remainder 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $divide-sign-string       
-        PushD        $print-format-string      
-        Printf                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        Jump         -print-rational-33-end    
-        Label        -print-rational-33-zero-numerator 
-        PushD        $print-format-integer     
-        Printf                                 
-        Pop                                    
-        Label        -print-rational-33-end    
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           
@@ -2052,6 +1875,9 @@
         PushD        $mmgr-dealloc-block       
         Exchange                               
         StoreI                                 
+        PushD        $heap-first-free          
+        LoadI                                  
+        JumpFalse    -mmgr-bypass-firstFree    
         PushD        $mmgr-dealloc-block       
         LoadI                                  
         PushD        $heap-first-free          
@@ -2060,6 +1886,7 @@
         Add                                    
         Exchange                               
         StoreI                                 
+        Label        -mmgr-bypass-firstFree    
         PushI        0                         
         PushD        $mmgr-dealloc-block       
         LoadI                                  

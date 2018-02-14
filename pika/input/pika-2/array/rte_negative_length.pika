@@ -1,0 +1,3 @@
+exec{
+	var b:=new[[float]](-1).
+}

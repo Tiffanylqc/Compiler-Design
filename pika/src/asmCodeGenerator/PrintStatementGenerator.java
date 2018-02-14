@@ -62,7 +62,7 @@ public class PrintStatementGenerator {
 	
 	private void printArray(ParseNode node){
 		Array type=(Array)node.getType();
-		if(type.getSubtype() instanceof Array){
+		while(type.getSubtype() instanceof Array){
 			type=(Array) type.getSubtype();
 		}
 		Type oneDimType=type.getSubtype();

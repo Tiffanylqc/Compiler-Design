@@ -1,0 +1,11 @@
+exec{
+
+	var i:=14.
+	var c:= ^b^.
+	# test operand type
+	print c//i,_n_,i//3,_n_,c//^A^,_n_,i//c.
+
+	# test gcd
+	print 77//98,_n_,-77//98,_n_,77//-98,_n_,-77//-98,_n_.
+	print 98//77,_n_,-98//77,_n_,98//-77,_n_,-98//-77,_n_.
+}

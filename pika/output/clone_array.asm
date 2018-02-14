@@ -75,6 +75,15 @@
         DLabel       $minus-sign-string        
         DataC        45                        %% "-"
         DataC        0                         
+        DLabel       $open-bracket-string      
+        DataC        91                        %% "["
+        DataC        0                         
+        DLabel       $close-bracket-string     
+        DataC        93                        %% "]"
+        DataC        0                         
+        DLabel       $comma-string             
+        DataC        44                        %% ","
+        DataC        0                         
         DLabel       $errors-general-message   
         DataC        82                        %% "Runtime error: %s\n"
         DataC        117                       
@@ -196,7 +205,12 @@
         PushD        $index-out-of-bound-error 
         Jump         $$general-runtime-error   
         DLabel       $zero-denominator-error   
-        DataC        122                       %% "zero denominator"
+        DataC        111                       %% "over zero denominator"
+        DataC        118                       
+        DataC        101                       
+        DataC        114                       
+        DataC        32                        
+        DataC        122                       
         DataC        101                       
         DataC        114                       
         DataC        111                       
@@ -340,6 +354,10 @@
         DataZ        4                         
         DLabel       $cloned-array-temp        
         DataZ        4                         
+        DLabel       $print-string-temp        
+        DataZ        4                         
+        DLabel       $print-string-length      
+        DataZ        4                         
         Label        $lowest-term-subroutine   
         DLabel       $lowest-term-return       
         DataZ        4                         
@@ -459,6 +477,510 @@
         PushD        $clear-n-bytes-return-address 
         LoadI                                  
         Return                                 
+        Label        $print-array-subroutine   
+        DLabel       -print-array-recursive-3-return-address 
+        DataZ        4                         
+        PushD        -print-array-recursive-3-return-address 
+        Exchange                               
+        StoreI                                 
+        DLabel       -print-array-recursive-3-type 
+        DataZ        4                         
+        PushD        -print-array-recursive-3-type 
+        Exchange                               
+        StoreI                                 
+        DLabel       -print-array-recursive-3-element 
+        DataZ        4                         
+        DLabel       -print-array-recursive-3-length 
+        DataZ        4                         
+        DLabel       -print-array-recursive-3-elem-size 
+        DataZ        4                         
+        Duplicate                              
+        Duplicate                              
+        Duplicate                              
+        PushI        16                        
+        Add                                    
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        -print-array-recursive-3-elem-size 
+        Exchange                               
+        StoreI                                 
+        PushD        $open-bracket-string      
+        PushD        $print-format-string      
+        Printf                                 
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushI        2                         
+        BTAnd                                  
+        JumpFalse    -print-array-recursive-3-one-dim 
+        Label        -print-array-recursive-3-loop-start 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        JumpFalse    -print-array-recursive-3-end 
+        PushD        -print-array-recursive-3-return-address 
+        LoadI                                  
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        PushD        -print-array-recursive-3-elem-size 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        LoadI                                  
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        Call         $print-array-subroutine   
+        PushD        -print-array-recursive-3-elem-size 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-type 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-elem-size 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        PushI        0                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-loop-start 
+        PushD        $comma-string             
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        $print-format-space       
+        PushD        $print-format-string      
+        Printf                                 
+        Jump         -print-array-recursive-3-loop-start 
+        Label        -print-array-recursive-3-one-dim 
+        Label        -print-array-recursive-3-loop-start-2 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        JumpFalse    -print-array-recursive-3-end 
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        1                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-int-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        2                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-float-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        3                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-char-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        4                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-string-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        5                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-rat-label 
+        PushD        -print-array-recursive-3-type 
+        LoadI                                  
+        PushI        6                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-bool-label 
+        Label        -print-array-recursive-3-int-label 
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-float-label 
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-char-label 
+        LoadC                                  
+        PushD        $print-format-character   
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-rat-label 
+        Duplicate                              
+        LoadI                                  
+        Exchange                               
+        PushI        4                         
+        LoadI                                  
+        Call         $print-rational           
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-bool-label 
+        LoadI                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-string-label 
+        LoadI                                  
+        Call         $print-string             
+        Jump         -print-array-recursive-3-join-label 
+        Label        -print-array-recursive-3-join-label 
+        PushD        -print-array-recursive-3-elem-size 
+        LoadI                                  
+        PushD        -print-array-recursive-3-element 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-element 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        Add                                    
+        PushD        -print-array-recursive-3-length 
+        Exchange                               
+        StoreI                                 
+        PushD        -print-array-recursive-3-length 
+        LoadI                                  
+        PushI        0                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-3-loop-start-2 
+        PushD        $comma-string             
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        $print-format-space       
+        PushD        $print-format-string      
+        Printf                                 
+        Jump         -print-array-recursive-3-loop-start-2 
+        Label        -print-array-recursive-3-end 
+        PushD        $close-bracket-string     
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        -print-array-recursive-3-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $print-rational           
+        DLabel       $print-rational-return-address 
+        DataZ        4                         
+        PushD        $print-rational-return-address 
+        Exchange                               
+        StoreI                                 
+        PushI        1                         
+        PushD        $rational-print-sign      
+        Exchange                               
+        StoreI                                 
+        Duplicate                              
+        JumpPos      -print-rational-4-denominator-pos 
+        PushD        $rational-print-sign      
+        LoadI                                  
+        Negate                                 
+        PushD        $rational-print-sign      
+        Exchange                               
+        StoreI                                 
+        Negate                                 
+        Label        -print-rational-4-denominator-pos 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        Duplicate                              
+        Duplicate                              
+        JumpFalse    -print-rational-4-zero-numerator 
+        JumpPos      -print-rational-4-numerator-pos 
+        PushD        $rational-print-sign      
+        LoadI                                  
+        Negate                                 
+        PushD        $rational-print-sign      
+        Exchange                               
+        StoreI                                 
+        Negate                                 
+        Label        -print-rational-4-numerator-pos 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Remainder                              
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $rational-print-integer-part 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-print-remainder 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-print-remainder 
+        LoadI                                  
+        PushD        $rational-print-integer-part 
+        LoadI                                  
+        PushD        $rational-print-sign      
+        LoadI                                  
+        JumpPos      -print-rational-4-rational-pos 
+        PushD        $minus-sign-string        
+        PushD        $print-format-string      
+        Printf                                 
+        Label        -print-rational-4-rational-pos 
+        JumpFalse    -print-rational-4-fraction 
+        PushD        $rational-print-integer-part 
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        Label        -print-rational-4-fraction 
+        JumpFalse    -print-rational-4-end     
+        PushD        $dash-string              
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        $rational-print-remainder 
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $divide-sign-string       
+        PushD        $print-format-string      
+        Printf                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        Jump         -print-rational-4-end     
+        Label        -print-rational-4-zero-numerator 
+        PushD        $print-format-integer     
+        Printf                                 
+        Pop                                    
+        Label        -print-rational-4-end     
+        PushD        $print-rational-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $print-string             
+        DLabel       $print-string-return-address 
+        DataZ        4                         
+        PushD        $print-string-return-address 
+        Exchange                               
+        StoreI                                 
+        Duplicate                              
+        PushI        12                        
+        Add                                    
+        PushD        $print-string-temp        
+        Exchange                               
+        StoreI                                 
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        $print-string-length      
+        Exchange                               
+        StoreI                                 
+        Label        -print-string-5-loop-start 
+        PushD        $print-string-length      
+        LoadI                                  
+        JumpFalse    -print-string-5-end       
+        PushD        $print-string-temp        
+        LoadI                                  
+        LoadC                                  
+        PushD        $print-format-character   
+        Printf                                 
+        PushI        1                         
+        PushD        $print-string-temp        
+        LoadI                                  
+        Add                                    
+        PushD        $print-string-temp        
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        $print-string-length      
+        LoadI                                  
+        Add                                    
+        PushD        $print-string-length      
+        Exchange                               
+        StoreI                                 
+        Jump         -print-string-5-loop-start 
+        Label        -print-string-5-end       
+        PushD        $print-string-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $convert-to-string-if-bool-subroutine 
+        DLabel       $convert-to-string-if-bool-return-address 
+        DataZ        4                         
+        PushD        $convert-to-string-if-bool-return-address 
+        Exchange                               
+        StoreI                                 
+        JumpTrue     -print-boolean-6-true     
+        PushD        $boolean-false-string     
+        Jump         -print-boolean-6-join     
+        Label        -print-boolean-6-true     
+        PushD        $boolean-true-string      
+        Label        -print-boolean-6-join     
+        PushD        $convert-to-string-if-bool-return-address 
+        LoadI                                  
+        Return                                 
+        DLabel       -release-record-7-length  
+        DataZ        4                         
+        DLabel       -release-record-7-element-size 
+        DataZ        4                         
+        DLabel       -release-record-7-element 
+        DataZ        4                         
+        Label        $release-record           
+        DLabel       $release-record-return-address 
+        DataZ        4                         
+        PushD        $release-record-return-address 
+        Exchange                               
+        StoreI                                 
+        Duplicate                              
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Duplicate                              
+        Duplicate                              
+        PushI        4                         
+        BTAnd                                  
+        JumpTrue     -release-record-7-end     
+        PushI        8                         
+        BTAnd                                  
+        JumpTrue     -release-record-7-end     
+        PushI        2                         
+        BTAnd                                  
+        JumpFalse    -release-record-7-release 
+        Duplicate                              
+        PushI        0                         
+        Add                                    
+        LoadI                                  
+        PushI        6                         
+        Subtract                               
+        JumpFalse    -release-record-7-string-record 
+        Duplicate                              
+        Duplicate                              
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushI        16                        
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        Jump         -release-record-7-join    
+        Label        -release-record-7-string-record 
+        Duplicate                              
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        PushI        1                         
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushI        12                        
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        Label        -release-record-7-join    
+        Label        -release-record-7-loop-start 
+        PushD        -release-record-7-length  
+        LoadI                                  
+        JumpFalse    -release-record-7-end     
+        PushD        -release-record-7-element 
+        LoadI                                  
+        PushD        -release-record-7-length  
+        LoadI                                  
+        PushD        -release-record-7-element-size 
+        LoadI                                  
+        PushD        $release-record-return-address 
+        LoadI                                  
+        PushD        -release-record-7-element 
+        LoadI                                  
+        LoadI                                  
+        Call         $release-record           
+        PushD        $release-record-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element-size 
+        LoadI                                  
+        PushD        -release-record-7-element 
+        LoadI                                  
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        -release-record-7-length  
+        LoadI                                  
+        Add                                    
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        Jump         -release-record-7-loop-start 
+        Label        -release-record-7-release 
+        Duplicate                              
+        Duplicate                              
+        PStack                                 
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        Call         -mem-manager-deallocate   
+        Label        -release-record-7-end     
+        PushD        $release-record-return-address 
+        LoadI                                  
+        Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
         DataZ        16                        
@@ -535,13 +1057,13 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -while-6-condition        
-        Label        -compare-less-3-arg1      
+        Label        -while-11-condition       
+        Label        -compare-less-8-arg1      
         PushD        $global-memory-block      
         PushI        4                         
         Add                                    %% x
         LoadI                                  
-        Label        -compare-less-3-arg2      
+        Label        -compare-less-8-arg2      
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
@@ -549,20 +1071,20 @@
         PushI        12                        
         Add                                    
         LoadI                                  
-        Label        -compare-less-3-sub       
+        Label        -compare-less-8-sub       
         Subtract                               
-        JumpNeg      -compare-less-3-true      
-        Jump         -compare-less-3-false     
-        Label        -compare-less-3-true      
+        JumpNeg      -compare-less-8-true      
+        Jump         -compare-less-8-false     
+        Label        -compare-less-8-true      
         PushI        1                         
-        Jump         -compare-less-3-join      
-        Label        -compare-less-3-false     
+        Jump         -compare-less-8-join      
+        Label        -compare-less-8-false     
         PushI        0                         
-        Jump         -compare-less-3-join      
-        Label        -compare-less-3-join      
-        JumpTrue     -while-6-true             
-        Jump         -while-6-false            
-        Label        -while-6-true             
+        Jump         -compare-less-8-join      
+        Label        -compare-less-8-join      
+        JumpTrue     -while-11-true            
+        Jump         -while-11-false           
+        Label        -while-11-true            
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
@@ -591,9 +1113,9 @@
         Add                                    
         LoadI                                  
         Subtract                               
-        JumpNeg      -array-indexing-4-in-bounds 
+        JumpNeg      -array-indexing-9-in-bounds 
         Jump         $$index-out-of-bound      
-        Label        -array-indexing-4-in-bounds 
+        Label        -array-indexing-9-in-bounds 
         Nop                                    
         PushD        $a-indexing-array         
         LoadI                                  
@@ -639,9 +1161,9 @@
         Add                                    
         LoadI                                  
         Subtract                               
-        JumpNeg      -array-indexing-5-in-bounds 
+        JumpNeg      -array-indexing-10-in-bounds 
         Jump         $$index-out-of-bound      
-        Label        -array-indexing-5-in-bounds 
+        Label        -array-indexing-10-in-bounds 
         Nop                                    
         PushD        $a-indexing-array         
         LoadI                                  
@@ -667,10 +1189,10 @@
         PushI        1                         
         Add                                    
         StoreI                                 
-        Jump         -while-6-condition        
-        Label        -while-6-false            
-        Jump         -while-6-join             
-        Label        -while-6-join             
+        Jump         -while-11-condition       
+        Label        -while-11-false           
+        Jump         -while-11-join            
+        Label        -while-11-join            
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
@@ -762,13 +1284,13 @@
         PushD        $array-element-temp       
         Exchange                               
         StoreI                                 
-        Label        -clone-element-7-loop-start 
+        Label        -clone-element-12-loop-start 
         PushD        $array-datasize-temp      
         LoadI                                  
         PushD        $array-element-temp       
         LoadI                                  
         Subtract                               
-        JumpFalse    -clone-element-7-end      
+        JumpFalse    -clone-element-12-end     
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        16                        
@@ -792,8 +1314,8 @@
         PushD        $array-element-temp       
         Exchange                               
         StoreI                                 
-        Jump         -clone-element-7-loop-start 
-        Label        -clone-element-7-end      
+        Jump         -clone-element-12-loop-start 
+        Label        -clone-element-12-end     
         PushD        $record-creation-temp     
         LoadI                                  
         StoreI                                 
@@ -813,13 +1335,13 @@
         Printf                                 
         PushD        $print-format-newline     
         Printf                                 
-        Label        -while-10-condition       
-        Label        -compare-less-8-arg1      
+        Label        -while-15-condition       
+        Label        -compare-less-13-arg1     
         PushD        $global-memory-block      
         PushI        4                         
         Add                                    %% x
         LoadI                                  
-        Label        -compare-less-8-arg2      
+        Label        -compare-less-13-arg2     
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
@@ -827,20 +1349,20 @@
         PushI        12                        
         Add                                    
         LoadI                                  
-        Label        -compare-less-8-sub       
+        Label        -compare-less-13-sub      
         Subtract                               
-        JumpNeg      -compare-less-8-true      
-        Jump         -compare-less-8-false     
-        Label        -compare-less-8-true      
+        JumpNeg      -compare-less-13-true     
+        Jump         -compare-less-13-false    
+        Label        -compare-less-13-true     
         PushI        1                         
-        Jump         -compare-less-8-join      
-        Label        -compare-less-8-false     
+        Jump         -compare-less-13-join     
+        Label        -compare-less-13-false    
         PushI        0                         
-        Jump         -compare-less-8-join      
-        Label        -compare-less-8-join      
-        JumpTrue     -while-10-true            
-        Jump         -while-10-false           
-        Label        -while-10-true            
+        Jump         -compare-less-13-join     
+        Label        -compare-less-13-join     
+        JumpTrue     -while-15-true            
+        Jump         -while-15-false           
+        Label        -while-15-true            
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
@@ -849,197 +1371,6 @@
         PushI        4                         
         Add                                    %% x
         LoadI                                  
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-9-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-9-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $print-format-newline     
-        Printf                                 
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% x
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% x
-        LoadI                                  
-        PushI        1                         
-        Add                                    
-        StoreI                                 
-        Jump         -while-10-condition       
-        Label        -while-10-false           
-        Jump         -while-10-join            
-        Label        -while-10-join            
-        PushD        $global-memory-block      
-        PushI        12                        
-        Add                                    %% c
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        LoadI                                  
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        12                        
-        Add                                    %% c
-        LoadI                                  
-        PushI        0                         
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-11-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-11-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        PushI        12                        
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        12                        
-        Add                                    %% c
-        LoadI                                  
-        PushI        0                         
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-12-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-12-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $print-format-newline     
-        Printf                                 
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        LoadI                                  
-        PushI        0                         
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-13-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-13-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        LoadI                                  
-        PushD        $print-format-integer     
-        Printf                                 
-        PushD        $print-format-newline     
-        Printf                                 
-        PushD        $global-memory-block      
-        PushI        8                         
-        Add                                    %% b
-        LoadI                                  
-        PushI        0                         
         PushD        $a-indexing-index         
         Exchange                               
         StoreI                                 
@@ -1076,6 +1407,199 @@
         LoadI                                  
         PushD        $print-format-integer     
         Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% x
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% x
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-15-condition       
+        Label        -while-15-false           
+        Jump         -while-15-join            
+        Label        -while-15-join            
+        PushD        $global-memory-block      
+        PushI        12                        
+        Add                                    %% c
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadI                                  
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        12                        
+        Add                                    %% c
+        LoadI                                  
+        PushI        0                         
+        PushD        $a-indexing-index         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        LoadI                                  
+        JumpFalse    $$null-array              
+        PushD        $a-indexing-index         
+        LoadI                                  
+        JumpNeg      $$index-out-of-bound      
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        Subtract                               
+        JumpNeg      -array-indexing-16-in-bounds 
+        Jump         $$index-out-of-bound      
+        Label        -array-indexing-16-in-bounds 
+        Nop                                    
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushI        4                         
+        Multiply                               
+        Add                                    
+        PushI        12                        
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        12                        
+        Add                                    %% c
+        LoadI                                  
+        PushI        0                         
+        PushD        $a-indexing-index         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        LoadI                                  
+        JumpFalse    $$null-array              
+        PushD        $a-indexing-index         
+        LoadI                                  
+        JumpNeg      $$index-out-of-bound      
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        Subtract                               
+        JumpNeg      -array-indexing-17-in-bounds 
+        Jump         $$index-out-of-bound      
+        Label        -array-indexing-17-in-bounds 
+        Nop                                    
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushI        4                         
+        Multiply                               
+        Add                                    
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadI                                  
+        PushI        0                         
+        PushD        $a-indexing-index         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        LoadI                                  
+        JumpFalse    $$null-array              
+        PushD        $a-indexing-index         
+        LoadI                                  
+        JumpNeg      $$index-out-of-bound      
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        Subtract                               
+        JumpNeg      -array-indexing-18-in-bounds 
+        Jump         $$index-out-of-bound      
+        Label        -array-indexing-18-in-bounds 
+        Nop                                    
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushI        4                         
+        Multiply                               
+        Add                                    
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        LoadI                                  
+        PushI        0                         
+        PushD        $a-indexing-index         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        Exchange                               
+        StoreI                                 
+        PushD        $a-indexing-array         
+        LoadI                                  
+        JumpFalse    $$null-array              
+        PushD        $a-indexing-index         
+        LoadI                                  
+        JumpNeg      $$index-out-of-bound      
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        Subtract                               
+        JumpNeg      -array-indexing-19-in-bounds 
+        Jump         $$index-out-of-bound      
+        Label        -array-indexing-19-in-bounds 
+        Nop                                    
+        PushD        $a-indexing-array         
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        PushD        $a-indexing-index         
+        LoadI                                  
+        PushI        4                         
+        Multiply                               
+        Add                                    
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
@@ -1101,9 +1625,9 @@
         Add                                    
         LoadI                                  
         Subtract                               
-        JumpNeg      -array-indexing-15-in-bounds 
+        JumpNeg      -array-indexing-20-in-bounds 
         Jump         $$index-out-of-bound      
-        Label        -array-indexing-15-in-bounds 
+        Label        -array-indexing-20-in-bounds 
         Nop                                    
         PushD        $a-indexing-array         
         LoadI                                  
@@ -1140,9 +1664,9 @@
         Add                                    
         LoadI                                  
         Subtract                               
-        JumpNeg      -array-indexing-16-in-bounds 
+        JumpNeg      -array-indexing-21-in-bounds 
         Jump         $$index-out-of-bound      
-        Label        -array-indexing-16-in-bounds 
+        Label        -array-indexing-21-in-bounds 
         Nop                                    
         PushD        $a-indexing-array         
         LoadI                                  
@@ -1157,98 +1681,360 @@
         Add                                    
         PushD        $print-format-integer     
         Printf                                 
-        Label        -if-20-condition          
-        Label        -compare-equal-17-arg1    
+        PushD        $print-format-newline     
+        Printf                                 
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
         LoadI                                  
-        Label        -compare-equal-17-arg2    
+        PushI        1                         
+        Call         $print-array-subroutine   
+        PushD        $print-format-newline     
+        Printf                                 
         PushD        $global-memory-block      
         PushI        8                         
         Add                                    %% b
         LoadI                                  
-        Label        -compare-equal-17-sub     
-        Subtract                               
-        JumpFalse    -compare-equal-17-true    
-        Jump         -compare-equal-17-false   
-        Label        -compare-equal-17-true    
         PushI        1                         
-        Jump         -compare-equal-17-join    
-        Label        -compare-equal-17-false   
-        PushI        0                         
-        Jump         -compare-equal-17-join    
-        Label        -compare-equal-17-join    
-        JumpTrue     -if-20-ifBody             
-        Jump         -if-20-elseBody           
-        Label        -if-20-ifBody             
-        DLabel       -string-18-a==b           
-        DataC        97                        %% "a==b"
-        DataC        61                        
-        DataC        61                        
-        DataC        98                        
-        DataC        0                         
-        PushD        -string-18-a==b           
-        PushD        $print-format-string      
+        Call         $print-array-subroutine   
+        PushD        $print-format-newline     
         Printf                                 
-        Jump         -if-20-join               
-        Label        -if-20-elseBody           
-        DLabel       -string-19-a!=b           
-        DataC        97                        %% "a!=b"
-        DataC        33                        
-        DataC        61                        
-        DataC        98                        
-        DataC        0                         
-        PushD        -string-19-a!=b           
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -if-20-join               
-        Label        -if-24-condition          
-        Label        -compare-equal-21-arg1    
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        LoadI                                  
-        Label        -compare-equal-21-arg2    
         PushD        $global-memory-block      
         PushI        12                        
         Add                                    %% c
         LoadI                                  
-        Label        -compare-equal-21-sub     
-        Subtract                               
-        JumpFalse    -compare-equal-21-true    
-        Jump         -compare-equal-21-false   
-        Label        -compare-equal-21-true    
         PushI        1                         
-        Jump         -compare-equal-21-join    
-        Label        -compare-equal-21-false   
+        Call         $print-array-subroutine   
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -if-23-condition          
+        Label        -compare-equal-22-arg1    
+        PushD        $global-memory-block      
         PushI        0                         
-        Jump         -compare-equal-21-join    
-        Label        -compare-equal-21-join    
-        JumpTrue     -if-24-ifBody             
-        Jump         -if-24-elseBody           
-        Label        -if-24-ifBody             
-        DLabel       -string-22-a==c           
-        DataC        97                        %% "a==c"
-        DataC        61                        
-        DataC        61                        
-        DataC        99                        
-        DataC        0                         
-        PushD        -string-22-a==c           
-        PushD        $print-format-string      
-        Printf                                 
-        Jump         -if-24-join               
-        Label        -if-24-elseBody           
-        DLabel       -string-23-a!=c           
-        DataC        97                        %% "a!=c"
-        DataC        33                        
-        DataC        61                        
-        DataC        99                        
-        DataC        0                         
-        PushD        -string-23-a!=c           
-        PushD        $print-format-string      
-        Printf                                 
-        Label        -if-24-join               
+        Add                                    %% a
+        LoadI                                  
+        Label        -compare-equal-22-arg2    
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        LoadI                                  
+        Label        -compare-equal-22-sub     
+        Subtract                               
+        JumpFalse    -compare-equal-22-true    
+        Jump         -compare-equal-22-false   
+        Label        -compare-equal-22-true    
+        PushI        1                         
+        Jump         -compare-equal-22-join    
+        Label        -compare-equal-22-false   
+        PushI        0                         
+        Jump         -compare-equal-22-join    
+        Label        -compare-equal-22-join    
+        JumpTrue     -if-23-ifBody             
+        Jump         -if-23-elseBody           
+        Label        -if-23-ifBody             
+        PushI        4                         
+        PushI        1                         
+        Add                                    
+        PushI        12                        
+        Add                                    
+        Call         -mem-manager-allocate     
+        PushD        $record-creation-temp     
+        Exchange                               
+        StoreI                                 
+        PushI        6                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        9                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        97                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        13                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        14                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        98                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Call         $print-string             
+        Jump         -if-23-join               
+        Label        -if-23-elseBody           
+        PushI        4                         
+        PushI        1                         
+        Add                                    
+        PushI        12                        
+        Add                                    
+        Call         -mem-manager-allocate     
+        PushD        $record-creation-temp     
+        Exchange                               
+        StoreI                                 
+        PushI        6                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        9                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        97                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        33                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        13                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        14                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        98                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Call         $print-string             
+        Label        -if-23-join               
+        Label        -if-25-condition          
+        Label        -compare-equal-24-arg1    
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadI                                  
+        Label        -compare-equal-24-arg2    
+        PushD        $global-memory-block      
+        PushI        12                        
+        Add                                    %% c
+        LoadI                                  
+        Label        -compare-equal-24-sub     
+        Subtract                               
+        JumpFalse    -compare-equal-24-true    
+        Jump         -compare-equal-24-false   
+        Label        -compare-equal-24-true    
+        PushI        1                         
+        Jump         -compare-equal-24-join    
+        Label        -compare-equal-24-false   
+        PushI        0                         
+        Jump         -compare-equal-24-join    
+        Label        -compare-equal-24-join    
+        JumpTrue     -if-25-ifBody             
+        Jump         -if-25-elseBody           
+        Label        -if-25-ifBody             
+        PushI        4                         
+        PushI        1                         
+        Add                                    
+        PushI        12                        
+        Add                                    
+        Call         -mem-manager-allocate     
+        PushD        $record-creation-temp     
+        Exchange                               
+        StoreI                                 
+        PushI        6                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        9                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        97                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        13                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        14                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        99                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Call         $print-string             
+        Jump         -if-25-join               
+        Label        -if-25-elseBody           
+        PushI        4                         
+        PushI        1                         
+        Add                                    
+        PushI        12                        
+        Add                                    
+        Call         -mem-manager-allocate     
+        PushD        $record-creation-temp     
+        Exchange                               
+        StoreI                                 
+        PushI        6                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        9                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        97                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        33                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        13                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        14                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        99                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Call         $print-string             
+        Label        -if-25-join               
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           
@@ -1523,6 +2309,9 @@
         PushD        $mmgr-dealloc-block       
         Exchange                               
         StoreI                                 
+        PushD        $heap-first-free          
+        LoadI                                  
+        JumpFalse    -mmgr-bypass-firstFree    
         PushD        $mmgr-dealloc-block       
         LoadI                                  
         PushD        $heap-first-free          
@@ -1531,6 +2320,7 @@
         Add                                    
         Exchange                               
         StoreI                                 
+        Label        -mmgr-bypass-firstFree    
         PushI        0                         
         PushD        $mmgr-dealloc-block       
         LoadI                                  

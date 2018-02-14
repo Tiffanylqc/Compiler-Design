@@ -1,0 +1,48 @@
+# http://zjustudy.chalaoshi.cn/c_lab?type=c&no=40027
+
+exec {
+	var digit := 0.
+	var in := 0.
+	var power := 0.
+	var temp := 0.
+	var k := 0.
+	var repeat := 0.
+	var ri := 0.
+	
+	repeat := 3.
+	ri := 1.
+	while (ri <= repeat) {
+		if (ri == 1) {
+			in := 23456.
+		} else {
+			if (ri == 2) {
+				in := -600.
+			} else {
+				in := 8.
+			}
+		}
+		
+		if (in < 0) {
+			in := 0 - in.
+		}
+		power := in.
+		temp := 0.
+		k := 1.
+		while (power > 0) {
+			power := power / 10.
+			temp := temp + 1.
+			k := k * 10.
+		}
+		
+		power := in.
+		while (temp > 0) {
+			temp := temp - 1.
+			k := k / 10.
+			digit :=power/k.
+			power:=power-power/k*k.
+			print ;digit.
+		}
+		print _n_.
+		ri := ri + 1.
+	}
+}

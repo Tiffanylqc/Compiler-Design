@@ -2,7 +2,7 @@ package applications.tests;
 
 public class FixtureDefinitions {
 //	public static final String FIXTURE_DIRECTORY = "src/applications/tests/fixtures/";
-	public static final String FIXTURE_DIRECTORY = "input/pika-2/";
+	public static final String FIXTURE_DIRECTORY = "input/pika-2/promotion/";
 	
 	public static final String NUMBERED_FILE_INPUT_FILENAME     = FIXTURE_DIRECTORY + "sampleFile.txt";
 	public static final String NUMBERED_FILE_EXPECTED_FILENAME  = FIXTURE_DIRECTORY + "sampleFileListing.txt";
@@ -15,10 +15,10 @@ public class FixtureDefinitions {
 	public static final String AST_EXPECTED_TOKEN_ONLY_FILENAME = FIXTURE_DIRECTORY + "coinTestTokenOnlyAST.txt";
 
 //	public static final String SEMANTIC_INPUT_FILENAME          = FIXTURE_DIRECTORY + "coinTest.pika";
-	public static final String SEMANTIC_INPUT_FILENAME          = FIXTURE_DIRECTORY + "release_array.pika";
+	public static final String SEMANTIC_INPUT_FILENAME          = FIXTURE_DIRECTORY + "arrayTest.pika";
 	public static final String SEMANTIC_EXPECTED_FILENAME       = FIXTURE_DIRECTORY + "coinTestSemantics.txt";
 	
-	public static final String CODEGENERATION_INPUT_FILENAME	= FIXTURE_DIRECTORY + "release_array.pika";
+	public static final String CODEGENERATION_INPUT_FILENAME	= FIXTURE_DIRECTORY + "add.pika";
 	public static final String CODEGENERATION_EXPECTED_FILENAME	= FIXTURE_DIRECTORY + "coinTestCodeGeneration.txt";
 }
    

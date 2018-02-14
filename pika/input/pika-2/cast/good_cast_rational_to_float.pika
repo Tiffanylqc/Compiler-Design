@@ -1,0 +1,25 @@
+exec{
+	var a:=5//3.
+	var b:=[a|float].
+	print b,_n_.
+
+	a:=-5//3.
+	b:=[a|float].
+	print b,_n_.
+
+	a:=5//-3.
+	b:=[a|float].
+	print b,_n_.
+
+	a:=-5//-3.
+	b:=[a|float].
+	print b,_n_.
+
+	var c:=4//1.
+	b:=[c|float].
+	print b,_n_.
+
+	var d:=49//14.
+	b:=[d|float].
+	print b,_n_.
+}

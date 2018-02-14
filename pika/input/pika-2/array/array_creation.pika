@@ -1,0 +1,10 @@
+exec{
+	var a:= new[int](10).
+	print a,_n_,length a,_n_.
+
+	var b:=[4,5,3,4,2,4,5].
+	print b,_n_,length b,_n_.
+
+	a:=b.
+	print a,_n_,length a,_n_.
+}

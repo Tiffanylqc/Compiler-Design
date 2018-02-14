@@ -205,7 +205,12 @@
         PushD        $index-out-of-bound-error 
         Jump         $$general-runtime-error   
         DLabel       $zero-denominator-error   
-        DataC        122                       %% "zero denominator"
+        DataC        111                       %% "over zero denominator"
+        DataC        118                       
+        DataC        101                       
+        DataC        114                       
+        DataC        32                        
+        DataC        122                       
         DataC        101                       
         DataC        114                       
         DataC        111                       
@@ -841,6 +846,141 @@
         PushD        $convert-to-string-if-bool-return-address 
         LoadI                                  
         Return                                 
+        DLabel       -release-record-7-length  
+        DataZ        4                         
+        DLabel       -release-record-7-element-size 
+        DataZ        4                         
+        DLabel       -release-record-7-element 
+        DataZ        4                         
+        Label        $release-record           
+        DLabel       $release-record-return-address 
+        DataZ        4                         
+        PushD        $release-record-return-address 
+        Exchange                               
+        StoreI                                 
+        Duplicate                              
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Duplicate                              
+        Duplicate                              
+        PushI        4                         
+        BTAnd                                  
+        JumpTrue     -release-record-7-end     
+        PushI        8                         
+        BTAnd                                  
+        JumpTrue     -release-record-7-end     
+        PushI        2                         
+        BTAnd                                  
+        JumpFalse    -release-record-7-release 
+        Duplicate                              
+        PushI        0                         
+        Add                                    
+        LoadI                                  
+        PushI        6                         
+        Subtract                               
+        JumpFalse    -release-record-7-string-record 
+        Duplicate                              
+        Duplicate                              
+        PushI        12                        
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushI        16                        
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        Jump         -release-record-7-join    
+        Label        -release-record-7-string-record 
+        Duplicate                              
+        PushI        8                         
+        Add                                    
+        LoadI                                  
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        PushI        1                         
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushI        12                        
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        Label        -release-record-7-join    
+        Label        -release-record-7-loop-start 
+        PushD        -release-record-7-length  
+        LoadI                                  
+        JumpFalse    -release-record-7-end     
+        PushD        -release-record-7-element 
+        LoadI                                  
+        PushD        -release-record-7-length  
+        LoadI                                  
+        PushD        -release-record-7-element-size 
+        LoadI                                  
+        PushD        $release-record-return-address 
+        LoadI                                  
+        PushD        -release-record-7-element 
+        LoadI                                  
+        LoadI                                  
+        Call         $release-record           
+        PushD        $release-record-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element-size 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        PushD        -release-record-7-element-size 
+        LoadI                                  
+        PushD        -release-record-7-element 
+        LoadI                                  
+        Add                                    
+        PushD        -release-record-7-element 
+        Exchange                               
+        StoreI                                 
+        PushI        -1                        
+        PushD        -release-record-7-length  
+        LoadI                                  
+        Add                                    
+        PushD        -release-record-7-length  
+        Exchange                               
+        StoreI                                 
+        Jump         -release-record-7-loop-start 
+        Label        -release-record-7-release 
+        Duplicate                              
+        Duplicate                              
+        PStack                                 
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        Call         -mem-manager-deallocate   
+        Label        -release-record-7-end     
+        PushD        $release-record-return-address 
+        LoadI                                  
+        Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
         DataZ        8                         
@@ -885,97 +1025,17 @@
         Add                                    
         Exchange                               
         StoreI                                 
-        DLabel       -populate-creation-10-elemAddr 
+        DLabel       -populate-creation-11-elemAddr 
         DataZ        4                         
         PushD        $record-creation-temp     
         LoadI                                  
         Duplicate                              
         PushI        16                        
         Add                                    
-        PushD        -populate-creation-10-elemAddr 
+        PushD        -populate-creation-11-elemAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-10-elemAddr 
-        LoadI                                  
-        PushI        8                         
-        PushI        2                         
-        Multiply                               
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
-        Exchange                               
-        StoreI                                 
-        PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        0                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        2                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        8                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-7-elemAddr 
-        DataZ        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        Duplicate                              
-        PushI        16                        
-        Add                                    
-        PushD        -populate-creation-7-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-7-elemAddr 
-        LoadI                                  
-        PushI        2                         
-        ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-7-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-7-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-7-elemAddr 
-        LoadI                                  
-        PushF        4.200000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-7-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-7-elemAddr 
-        Exchange                               
-        StoreI                                 
-        StoreI                                 
-        PushI        4                         
-        PushD        -populate-creation-10-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-10-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-10-elemAddr 
+        PushD        -populate-creation-11-elemAddr 
         LoadI                                  
         PushI        8                         
         PushI        2                         
@@ -1026,7 +1086,7 @@
         StoreI                                 
         PushD        -populate-creation-8-elemAddr 
         LoadI                                  
-        PushI        5                         
+        PushI        2                         
         ConvertF                               
         StoreF                                 
         PushI        8                         
@@ -1038,7 +1098,7 @@
         StoreI                                 
         PushD        -populate-creation-8-elemAddr 
         LoadI                                  
-        PushF        6.700000                  
+        PushF        4.200000                  
         StoreF                                 
         PushI        8                         
         PushD        -populate-creation-8-elemAddr 
@@ -1049,13 +1109,13 @@
         StoreI                                 
         StoreI                                 
         PushI        4                         
-        PushD        -populate-creation-10-elemAddr 
+        PushD        -populate-creation-11-elemAddr 
         LoadI                                  
         Add                                    
-        PushD        -populate-creation-10-elemAddr 
+        PushD        -populate-creation-11-elemAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-10-elemAddr 
+        PushD        -populate-creation-11-elemAddr 
         LoadI                                  
         PushI        8                         
         PushI        2                         
@@ -1106,7 +1166,7 @@
         StoreI                                 
         PushD        -populate-creation-9-elemAddr 
         LoadI                                  
-        PushI        7                         
+        PushI        5                         
         ConvertF                               
         StoreF                                 
         PushI        8                         
@@ -1118,7 +1178,7 @@
         StoreI                                 
         PushD        -populate-creation-9-elemAddr 
         LoadI                                  
-        PushF        8.900000                  
+        PushF        6.700000                  
         StoreF                                 
         PushI        8                         
         PushD        -populate-creation-9-elemAddr 
@@ -1129,10 +1189,90 @@
         StoreI                                 
         StoreI                                 
         PushI        4                         
+        PushD        -populate-creation-11-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-11-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-11-elemAddr 
+        LoadI                                  
+        PushI        8                         
+        PushI        2                         
+        Multiply                               
+        PushI        16                        
+        Add                                    
+        Call         -mem-manager-allocate     
+        PushD        $record-creation-temp     
+        Exchange                               
+        StoreI                                 
+        PushI        7                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        2                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        8                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        DLabel       -populate-creation-10-elemAddr 
+        DataZ        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Duplicate                              
+        PushI        16                        
+        Add                                    
+        PushD        -populate-creation-10-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-10-elemAddr 
+        LoadI                                  
+        PushI        7                         
+        ConvertF                               
+        StoreF                                 
+        PushI        8                         
         PushD        -populate-creation-10-elemAddr 
         LoadI                                  
         Add                                    
         PushD        -populate-creation-10-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-10-elemAddr 
+        LoadI                                  
+        PushF        8.900000                  
+        StoreF                                 
+        PushI        8                         
+        PushD        -populate-creation-10-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-10-elemAddr 
+        Exchange                               
+        StoreI                                 
+        StoreI                                 
+        PushI        4                         
+        PushD        -populate-creation-11-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-11-elemAddr 
         Exchange                               
         StoreI                                 
         StoreI                                 
@@ -1176,36 +1316,36 @@
         Add                                    
         Exchange                               
         StoreI                                 
-        DLabel       -populate-creation-11-elemAddr 
+        DLabel       -populate-creation-12-elemAddr 
         DataZ        4                         
         PushD        $record-creation-temp     
         LoadI                                  
         Duplicate                              
         PushI        16                        
         Add                                    
-        PushD        -populate-creation-11-elemAddr 
+        PushD        -populate-creation-12-elemAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-11-elemAddr 
+        PushD        -populate-creation-12-elemAddr 
         LoadI                                  
         PushI        1                         
         StoreC                                 
         PushI        1                         
-        PushD        -populate-creation-11-elemAddr 
+        PushD        -populate-creation-12-elemAddr 
         LoadI                                  
         Add                                    
-        PushD        -populate-creation-11-elemAddr 
+        PushD        -populate-creation-12-elemAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-11-elemAddr 
+        PushD        -populate-creation-12-elemAddr 
         LoadI                                  
         PushI        0                         
         StoreC                                 
         PushI        1                         
-        PushD        -populate-creation-11-elemAddr 
+        PushD        -populate-creation-12-elemAddr 
         LoadI                                  
         Add                                    
-        PushD        -populate-creation-11-elemAddr 
+        PushD        -populate-creation-12-elemAddr 
         Exchange                               
         StoreI                                 
         StoreI                                 

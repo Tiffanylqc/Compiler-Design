@@ -1,0 +1,11 @@
+exec{
+	var a:=[[1,2],[3,4,5]].
+	release a.
+	print a.
+	var b:=[[3,4],[3,1,2]].
+	print a.
+	var c:= "string-2".
+	release c.
+	var d:="strin".
+	print c,_n_.
+}

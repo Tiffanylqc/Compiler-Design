@@ -1,0 +1,68 @@
+exec {
+	var a := [[[4,8],[2,5]],[[54,-8],[21,9]]].
+	print "Before release, a: ", a,_n_.
+	
+	release a.
+	#print "After release, a: ", a,_n_.
+	
+	var h := [["hi","how are you"],["I'm fine","thank you","and you?"],["I'm fine too"]].
+	print h,_n_.
+	print length h, _n_.
+	
+	var b := [3.5, 7.5].
+	print b,_n_.
+	print length b, _n_.
+
+	var c := [_true_, _false_].
+	print c,_n_.
+	print length c, _n_.
+	
+	var d := [^c^, 6.5].
+	print d, _n_.
+	print length d, _n_.
+	
+	var e := [^j^, 7//8].
+	print e, _n_.
+	print length e, _n_.
+	
+	var f := clone b.
+	print f, _n_, b, _n_.
+	print length f, _n_.
+	
+	var g := new [int] (0).
+	print g, _n_.
+	print length g, _n_.
+	
+	
+	var i := clone c.
+	print i, _n_.
+	print length i, _n_.
+	
+	var x := [1, 2, 3].
+	print x, _n_.
+	
+	var y := clone x.
+	print y, _n_.
+	
+	y[2] := 7.
+	print x, _n_.
+	print y, _n_.
+	
+	var z := [[1,2,8], [8,7,6]].
+	z[1][1]:=-100.
+	print z,_n_.
+	
+	print z[1][2],_n_.
+	
+	var s := z.
+	print s, _n_.
+	
+	print s==z,_n_.
+	print x==y, _n_.
+	
+	var t := [8.7, 6.3].
+	print t, _n_.
+	t[1] := 8.2.
+	print t, _n_.
+}
+

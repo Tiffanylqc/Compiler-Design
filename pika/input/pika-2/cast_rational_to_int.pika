@@ -1,9 +1,0 @@
-exec{
-	var a:=5//3.
-	var b:=[3|rat].
-	print b,_n_.
-
-	a:=-5.
-	print a,_n_.
-
-}

@@ -1,7 +1,0 @@
-exec{
-	var a:= new[int](10).
-	a[1]:=3.
-	var b:= clone a.
-	print a[1],_n_.
-	print length a.
-}

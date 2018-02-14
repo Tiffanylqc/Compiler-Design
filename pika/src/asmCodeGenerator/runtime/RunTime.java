@@ -249,7 +249,7 @@ public class RunTime {
 	private void zeroDenominatorError(ASMCodeFragment frag){
 		String zeroDenominatorMessage="$zero-denominator-error";
 		frag.add(DLabel,zeroDenominatorMessage);
-		frag.add(DataS, "zero denominator");
+		frag.add(DataS, "over zero denominator");
 		
 		frag.add(Label, OVER_ZERO_DENOMINATOR_RUNTIME_ERROR);
 		frag.add(PushD, zeroDenominatorMessage);
@@ -576,12 +576,13 @@ public class RunTime {
 		frag.add(LoadI);
 		frag.add(Exchange);
 		frag.add(PushI,4);
+		frag.add(Add);
 		frag.add(LoadI);
 		frag.add(Call,PRINT_RATIONAL);
 		frag.add(Jump,joinLabel);
 		
 		frag.add(Label,boolLabel);
-		frag.add(LoadI);
+		frag.add(LoadC);
 		frag.add(Call,CONVERT_TO_STRING_IF_BOOL);
 		frag.add(PushD, BOOLEAN_PRINT_FORMAT);
 		frag.add(Printf);
@@ -714,7 +715,7 @@ public class RunTime {
 		frag.add(Label,releaseLabel);
 		frag.add(Duplicate);
 		frag.add(Duplicate);
-		frag.add(PStack);
+//		frag.add(PStack);
 		readIOffset(frag, Record.RECORD_STATUS_OFFSET);
 		frag.add(PushI,4);
 		frag.add(Add);

@@ -1,0 +1,4 @@
+exec{
+	var a:="str-1".
+	a:="str-2".
+}

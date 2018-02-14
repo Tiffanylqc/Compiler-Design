@@ -1,0 +1,8 @@
+exec{
+	var a:=[1.2].
+	var b:=[.3,.5E2,-2.1].
+	var c:=new[[float]](2).
+	c[0]:=a.
+	c[1]:=b.
+	print c.
+}
