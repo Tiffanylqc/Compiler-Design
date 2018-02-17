@@ -983,94 +983,1402 @@
         Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        4                         
+        DataZ        12                        
         Label        $$main                    
         PushD        $global-memory-block      
         PushI        0                         
-        Add                                    %% a
-        PushI        8                         
-        PushI        3                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-9-condition        
+        Label        -compare-lessequal-8-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-8-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-8-sub  
+        Subtract                               
+        JumpPos      -compare-lessequal-8-false 
+        Jump         -compare-lessequal-8-true 
+        Label        -compare-lessequal-8-true 
+        PushI        1                         
+        Jump         -compare-lessequal-8-join 
+        Label        -compare-lessequal-8-false 
+        PushI        0                         
+        Jump         -compare-lessequal-8-join 
+        Label        -compare-lessequal-8-join 
+        JumpTrue     -while-9-true             
+        Jump         -while-9-false            
+        Label        -while-9-true             
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        18                        
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
         Multiply                               
-        PushI        16                        
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-9-condition        
+        Label        -while-9-false            
+        Jump         -while-9-join             
+        Label        -while-9-join             
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-11-condition       
+        Label        -compare-lessequal-10-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-10-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-10-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-10-false 
+        Jump         -compare-lessequal-10-true 
+        Label        -compare-lessequal-10-true 
+        PushI        1                         
+        Jump         -compare-lessequal-10-join 
+        Label        -compare-lessequal-10-false 
+        PushI        0                         
+        Jump         -compare-lessequal-10-join 
+        Label        -compare-lessequal-10-join 
+        JumpTrue     -while-11-true            
+        Jump         -while-11-false           
+        Label        -while-11-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        PushI        18                        
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-11-condition       
+        Label        -while-11-false           
+        Jump         -while-11-join            
+        Label        -while-11-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-13-condition       
+        Label        -compare-lessequal-12-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-12-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-12-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-12-false 
+        Jump         -compare-lessequal-12-true 
+        Label        -compare-lessequal-12-true 
+        PushI        1                         
+        Jump         -compare-lessequal-12-join 
+        Label        -compare-lessequal-12-false 
+        PushI        0                         
+        Jump         -compare-lessequal-12-join 
+        Label        -compare-lessequal-12-join 
+        JumpTrue     -while-13-true            
+        Jump         -while-13-false           
+        Label        -while-13-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -18                       
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-13-condition       
+        Label        -while-13-false           
+        Jump         -while-13-join            
+        Label        -while-13-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-15-condition       
+        Label        -compare-lessequal-14-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-14-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-14-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-14-false 
+        Jump         -compare-lessequal-14-true 
+        Label        -compare-lessequal-14-true 
+        PushI        1                         
+        Jump         -compare-lessequal-14-join 
+        Label        -compare-lessequal-14-false 
+        PushI        0                         
+        Jump         -compare-lessequal-14-join 
+        Label        -compare-lessequal-14-join 
+        JumpTrue     -while-15-true            
+        Jump         -while-15-false           
+        Label        -while-15-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        PushI        -18                       
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-15-condition       
+        Label        -while-15-false           
+        Jump         -while-15-join            
+        Label        -while-15-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -40                       
+        StoreI                                 
+        Label        -while-17-condition       
+        Label        -compare-lessequal-16-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-16-arg2 
+        PushI        40                        
+        Label        -compare-lessequal-16-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-16-false 
+        Jump         -compare-lessequal-16-true 
+        Label        -compare-lessequal-16-true 
+        PushI        1                         
+        Jump         -compare-lessequal-16-join 
+        Label        -compare-lessequal-16-false 
+        PushI        0                         
+        Jump         -compare-lessequal-16-join 
+        Label        -compare-lessequal-16-join 
+        JumpTrue     -while-17-true            
+        Jump         -while-17-false           
+        Label        -while-17-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        18                        
+        Call         $lowest-term-subroutine   
+        PushI        6                         
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-17-condition       
+        Label        -while-17-false           
+        Jump         -while-17-join            
+        Label        -while-17-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-19-condition       
+        Label        -compare-lessequal-18-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-18-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-18-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-18-false 
+        Jump         -compare-lessequal-18-true 
+        Label        -compare-lessequal-18-true 
+        PushI        1                         
+        Jump         -compare-lessequal-18-join 
+        Label        -compare-lessequal-18-false 
+        PushI        0                         
+        Jump         -compare-lessequal-18-join 
+        Label        -compare-lessequal-18-join 
+        JumpTrue     -while-19-true            
+        Jump         -while-19-false           
+        Label        -while-19-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-19-condition       
+        Label        -while-19-false           
+        Jump         -while-19-join            
+        Label        -while-19-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-21-condition       
+        Label        -compare-lessequal-20-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-20-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-20-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-20-false 
+        Jump         -compare-lessequal-20-true 
+        Label        -compare-lessequal-20-true 
+        PushI        1                         
+        Jump         -compare-lessequal-20-join 
+        Label        -compare-lessequal-20-false 
+        PushI        0                         
+        Jump         -compare-lessequal-20-join 
+        Label        -compare-lessequal-20-join 
+        JumpTrue     -while-21-true            
+        Jump         -while-21-false           
+        Label        -while-21-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-21-condition       
+        Label        -while-21-false           
+        Jump         -while-21-join            
+        Label        -while-21-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        PushF        -2.200000                 
+        StoreF                                 
+        Label        -while-23-condition       
+        Label        -compare-lessequal-22-arg1 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        Label        -compare-lessequal-22-arg2 
+        PushF        2.300000                  
+        Label        -compare-lessequal-22-sub 
+        FSubtract                              
+        JumpFPos     -compare-lessequal-22-false 
+        Jump         -compare-lessequal-22-true 
+        Label        -compare-lessequal-22-true 
+        PushI        1                         
+        Jump         -compare-lessequal-22-join 
+        Label        -compare-lessequal-22-false 
+        PushI        0                         
+        Jump         -compare-lessequal-22-join 
+        Label        -compare-lessequal-22-join 
+        JumpTrue     -while-23-true            
+        Jump         -while-23-false           
+        Label        -while-23-true            
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        8                         
+        PushI        1                         
+        Add                                    
+        PushI        12                        
         Add                                    
         Call         -mem-manager-allocate     
         PushD        $record-creation-temp     
         Exchange                               
         StoreI                                 
-        PushI        7                         
+        PushI        6                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        0                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        0                         
+        PushI        9                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        3                         
+        PushI        8                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        20                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        47                        
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        12                        
         Add                                    
         Exchange                               
-        StoreI                                 
-        PushI        8                         
+        StoreC                                 
+        PushI        47                        
         PushD        $record-creation-temp     
         LoadI                                  
-        PushI        8                         
+        PushI        13                        
         Add                                    
         Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-8-elemAddr 
-        DataZ        4                         
+        StoreC                                 
+        PushI        47                        
         PushD        $record-creation-temp     
         LoadI                                  
-        Duplicate                              
+        PushI        14                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        32                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        54                        
+        PushD        $record-creation-temp     
+        LoadI                                  
         PushI        16                        
         Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        Exchange                               
+        StoreC                                 
+        PushI        32                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        17                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        18                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        32                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        19                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Call         $print-string             
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushI        6                         
+        Duplicate                              
+        JumpFalse    $$rational-expressover-divide-by-zero 
+        ConvertF                               
+        FMultiply                              
+        ConvertI                               
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushF        0.050000                  
+        FAdd                                   
+        StoreF                                 
+        Jump         -while-23-condition       
+        Label        -while-23-false           
+        Jump         -while-23-join            
+        Label        -while-23-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-25-condition       
+        Label        -compare-lessequal-24-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-24-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-24-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-24-false 
+        Jump         -compare-lessequal-24-true 
+        Label        -compare-lessequal-24-true 
+        PushI        1                         
+        Jump         -compare-lessequal-24-join 
+        Label        -compare-lessequal-24-false 
+        PushI        0                         
+        Jump         -compare-lessequal-24-join 
+        Label        -compare-lessequal-24-join 
+        JumpTrue     -while-25-true            
+        Jump         -while-25-false           
+        Label        -while-25-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        17                        
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
         LoadI                                  
         PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-25-condition       
+        Label        -while-25-false           
+        Jump         -while-25-join            
+        Label        -while-25-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-27-condition       
+        Label        -compare-lessequal-26-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-26-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-26-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-26-false 
+        Jump         -compare-lessequal-26-true 
+        Label        -compare-lessequal-26-true 
+        PushI        1                         
+        Jump         -compare-lessequal-26-join 
+        Label        -compare-lessequal-26-false 
+        PushI        0                         
+        Jump         -compare-lessequal-26-join 
+        Label        -compare-lessequal-26-join 
+        JumpTrue     -while-27-true            
+        Jump         -while-27-false           
+        Label        -while-27-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        PushI        17                        
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-27-condition       
+        Label        -while-27-false           
+        Jump         -while-27-join            
+        Label        -while-27-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-29-condition       
+        Label        -compare-lessequal-28-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-28-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-28-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-28-false 
+        Jump         -compare-lessequal-28-true 
+        Label        -compare-lessequal-28-true 
+        PushI        1                         
+        Jump         -compare-lessequal-28-join 
+        Label        -compare-lessequal-28-false 
+        PushI        0                         
+        Jump         -compare-lessequal-28-join 
+        Label        -compare-lessequal-28-join 
+        JumpTrue     -while-29-true            
+        Jump         -while-29-false           
+        Label        -while-29-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -17                       
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-29-condition       
+        Label        -while-29-false           
+        Jump         -while-29-join            
+        Label        -while-29-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-31-condition       
+        Label        -compare-lessequal-30-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-30-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-30-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-30-false 
+        Jump         -compare-lessequal-30-true 
+        Label        -compare-lessequal-30-true 
+        PushI        1                         
+        Jump         -compare-lessequal-30-join 
+        Label        -compare-lessequal-30-false 
+        PushI        0                         
+        Jump         -compare-lessequal-30-join 
+        Label        -compare-lessequal-30-join 
+        JumpTrue     -while-31-true            
+        Jump         -while-31-false           
+        Label        -while-31-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        PushI        -17                       
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-31-condition       
+        Label        -while-31-false           
+        Jump         -while-31-join            
+        Label        -while-31-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -40                       
+        StoreI                                 
+        Label        -while-33-condition       
+        Label        -compare-lessequal-32-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-32-arg2 
+        PushI        40                        
+        Label        -compare-lessequal-32-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-32-false 
+        Jump         -compare-lessequal-32-true 
+        Label        -compare-lessequal-32-true 
+        PushI        1                         
+        Jump         -compare-lessequal-32-join 
+        Label        -compare-lessequal-32-false 
+        PushI        0                         
+        Jump         -compare-lessequal-32-join 
+        Label        -compare-lessequal-32-join 
+        JumpTrue     -while-33-true            
+        Jump         -while-33-false           
+        Label        -while-33-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        17                        
+        Call         $lowest-term-subroutine   
+        PushI        6                         
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-33-condition       
+        Label        -while-33-false           
+        Jump         -while-33-join            
+        Label        -while-33-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-35-condition       
+        Label        -compare-lessequal-34-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-34-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-34-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-34-false 
+        Jump         -compare-lessequal-34-true 
+        Label        -compare-lessequal-34-true 
+        PushI        1                         
+        Jump         -compare-lessequal-34-join 
+        Label        -compare-lessequal-34-false 
+        PushI        0                         
+        Jump         -compare-lessequal-34-join 
+        Label        -compare-lessequal-34-join 
+        JumpTrue     -while-35-true            
+        Jump         -while-35-false           
+        Label        -while-35-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-35-condition       
+        Label        -while-35-false           
+        Jump         -while-35-join            
+        Label        -while-35-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushI        -13                       
+        StoreI                                 
+        Label        -while-37-condition       
+        Label        -compare-lessequal-36-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-36-arg2 
+        PushI        13                        
+        Label        -compare-lessequal-36-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-36-false 
+        Jump         -compare-lessequal-36-true 
+        Label        -compare-lessequal-36-true 
+        PushI        1                         
+        Jump         -compare-lessequal-36-join 
+        Label        -compare-lessequal-36-false 
+        PushI        0                         
+        Jump         -compare-lessequal-36-join 
+        Label        -compare-lessequal-36-join 
+        JumpTrue     -while-37-true            
+        Jump         -while-37-false           
+        Label        -while-37-true            
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        Divide                                 
+        PushD        $express-over-denominator 
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-37-condition       
+        Label        -while-37-false           
+        Jump         -while-37-join            
+        Label        -while-37-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        PushF        -2.200000                 
+        StoreF                                 
+        Label        -while-39-condition       
+        Label        -compare-lessequal-38-arg1 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        Label        -compare-lessequal-38-arg2 
+        PushF        2.300000                  
+        Label        -compare-lessequal-38-sub 
+        FSubtract                              
+        JumpFPos     -compare-lessequal-38-false 
+        Jump         -compare-lessequal-38-true 
+        Label        -compare-lessequal-38-true 
+        PushI        1                         
+        Jump         -compare-lessequal-38-join 
+        Label        -compare-lessequal-38-false 
+        PushI        0                         
+        Jump         -compare-lessequal-38-join 
+        Label        -compare-lessequal-38-join 
+        JumpTrue     -while-39-true            
+        Jump         -while-39-false           
+        Label        -while-39-true            
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        9                         
+        PushI        1                         
+        Add                                    
+        PushI        12                        
+        Add                                    
+        Call         -mem-manager-allocate     
+        PushD        $record-creation-temp     
+        Exchange                               
+        StoreI                                 
+        PushI        6                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        9                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        9                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        21                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        47                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        47                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        13                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        47                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        14                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        47                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        32                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        16                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        54                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        17                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        32                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        18                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        61                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        19                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        32                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        20                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Call         $print-string             
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushI        6                         
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        Duplicate                              
+        PushD        $express-over-denominator 
+        Exchange                               
+        StoreI                                 
         ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
+        FMultiply                              
+        ConvertI                               
+        PushD        $express-over-denominator 
         LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushF        0.050000                  
+        FAdd                                   
+        StoreF                                 
+        Jump         -while-39-condition       
+        Label        -while-39-false           
+        Jump         -while-39-join            
+        Label        -while-39-join            
+        PushD        $print-format-newline     
+        Printf                                 
+        PushF        1.600000                  
+        PushI        0                         
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        Duplicate                              
+        PushD        $express-over-denominator 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushI        2                         
         ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
+        FMultiply                              
+        ConvertI                               
+        PushD        $express-over-denominator 
         LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushF        3.300000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        StoreI                                 
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

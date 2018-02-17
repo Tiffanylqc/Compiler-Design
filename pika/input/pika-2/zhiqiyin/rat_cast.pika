@@ -1,0 +1,38 @@
+exec
+{
+	print
+		[0//6|int];[1//6|int];[2//6|int];[3//6|int];[4//6|int];[5//6|int];
+		[6//6|int];[7//6|int];[8//6|int];[9//6|int];[10//6|int];[11//6|int];
+		[12//6|int];[13//6|int];
+		[-0//6|int];[-1//6|int];[-2//6|int];[-3//6|int];[-4//6|int];[-5//6|int];
+		[-6//6|int];[-7//6|int];[-8//6|int];[-9//6|int];[-10//6|int];[-11//6|int];
+		[-12//6|int];[-13//6|int];
+		_n_.
+	print
+		[0//6|float];[1//6|float];[2//6|float];[3//6|float];[4//6|float];[5//6|float];
+		[6//6|float];[7//6|float];[8//6|float];[9//6|float];[10//6|float];[11//6|float];
+		[12//6|float];[13//6|float];
+		[-0//6|float];[-1//6|float];[-2//6|float];[-3//6|float];[-4//6|float];[-5//6|float];
+		[-6//6|float];[-7//6|float];[-8//6|float];[-9//6|float];[-10//6|float];[-11//6|float];
+		[-12//6|float];[-13//6|float];
+		_n_.
+	print [5//8|rat];_n_.
+	var n := -12.
+	while (n <= 12)
+	{
+		var x := [n//6|int].
+		print x;.
+		n := n + 1.
+	}
+	print _n_.
+	print
+		[0|rat];[1|rat];[2|rat];[-0|rat];[-1|rat];[-2|rat];
+		[^a^|rat];[^^^|rat];[-2|rat]*(7//4);_n_.
+	var f := -2.2.
+	while (f < 2.3)
+	{
+		print f;"to rat is";[f|rat];_n_.
+		f := f + 0.05.
+	}
+	print -0.9////223092870;[-0.9|rat];_n_.
+} 

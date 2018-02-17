@@ -1,0 +1,12 @@
+exec
+{
+	print _true_ && _true_; _true_ && _false_; _false_ && _true_; _false_ && _false_; _n_.
+	print _true_ || _true_; _true_ || _false_; _false_ || _true_; _false_ || _false_; _n_.
+	print !_true_; !_false_; !!_true_; !!_false_; _n_.
+	print ![[^a^|int]|bool] == _false_; ![[0.0001|int]|bool] == _true_; _n_.
+	var t := _true_.
+	var f := _false_.
+	print t && f || t && f; _n_.
+	print t || [0/0|bool]; f || f || t || [0/0|bool]; f && [0/0|bool]; t && t && t && f && [0/0|bool]; _n_.
+	print !t || !!f || [0/0|bool].
+}

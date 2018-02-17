@@ -983,93 +983,736 @@
         Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        4                         
+        DataZ        32                        
         Label        $$main                    
+        PushI        1                         
+        PushI        2                         
+        Call         $lowest-term-subroutine   
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
-        PushI        8                         
-        PushI        3                         
-        Multiply                               
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
+        DLabel       -rational-storage-8-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-8-baseAddr 
         Exchange                               
         StoreI                                 
-        PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        0                         
-        PushD        $record-creation-temp     
+        PushD        -rational-storage-8-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        3                         
-        PushD        $record-creation-temp     
+        PushD        -rational-storage-8-baseAddr 
         LoadI                                  
-        PushI        12                        
-        Add                                    
         Exchange                               
         StoreI                                 
-        PushI        8                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-8-elemAddr 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-9-baseAddr 
         DataZ        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        Duplicate                              
-        PushI        16                        
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        PushD        -rational-load-9-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        PushD        -rational-load-9-baseAddr 
         LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-9-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-10-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-10-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-10-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-10-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        DLabel       -rational-storage-11-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-11-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-11-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-11-baseAddr 
+        LoadI                                  
+        Exchange                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-12-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-12-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-12-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-12-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        Nop                                    
+        DLabel       -rational-load-13-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-13-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-13-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-13-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        4                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        DLabel       -rational-storage-14-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-14-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-14-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-14-baseAddr 
+        LoadI                                  
+        Exchange                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        Nop                                    
+        DLabel       -rational-load-15-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-15-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-15-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-15-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        Nop                                    
+        DLabel       -rational-load-16-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-16-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-16-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-16-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        DLabel       -rational-storage-17-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-17-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-17-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-storage-17-baseAddr 
+        LoadI                                  
+        Exchange                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% b
+        Nop                                    
+        DLabel       -rational-load-18-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-18-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-18-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-18-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        0                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
         PushI        1                         
-        ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
         PushI        2                         
-        ConvertF                               
-        StoreF                                 
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        3                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        4                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        5                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        6                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        7                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
         PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        9                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        10                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        11                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        13                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        0                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        2                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        3                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        4                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        5                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        6                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        7                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        8                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        9                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        10                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        11                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        13                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -2                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -3                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -4                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -5                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -6                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -7                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -8                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -9                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -10                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -11                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -13                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        -1                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -2                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -3                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -4                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -5                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -6                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -7                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -8                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -9                        
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -10                       
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -11                       
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -13                       
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        16                        
+        Add                                    %% n
+        PushI        2                         
+        PushI        5                         
+        Multiply                               
+        PushI        3                         
+        Multiply                               
+        PushI        7                         
+        Multiply                               
+        PushI        13                        
+        Multiply                               
+        PushI        17                        
+        Multiply                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        20                        
+        Add                                    %% d
+        PushI        2                         
+        PushI        3                         
+        Multiply                               
+        PushI        7                         
+        Multiply                               
+        PushI        17                        
+        Multiply                               
+        PushI        19                        
+        Multiply                               
+        PushI        21                        
+        Multiply                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        16                        
+        Add                                    %% n
         LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        PushD        $global-memory-block      
+        PushI        20                        
+        Add                                    %% d
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        5                         
+        PushI        13                        
+        Multiply                               
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        19                        
+        PushI        21                        
+        Multiply                               
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        20                        
+        Add                                    %% d
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        16                        
+        Add                                    %% n
+        LoadI                                  
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        1                         
+        PushI        1                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        -1                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        1                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        -1                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        0                         
+        PushI        1                         
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        0                         
+        PushI        -1                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        91                        
+        PushI        17                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        17                        
+        PushI        91                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -91                       
+        PushI        17                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -17                       
+        PushI        91                        
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        91                        
+        PushI        -17                       
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        17                        
+        PushI        -91                       
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -91                       
+        PushI        -17                       
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -17                       
+        PushI        -91                       
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        1                         
+        PushI        0                         
+        Call         $lowest-term-subroutine   
+        PushD        $global-memory-block      
+        PushI        24                        
+        Add                                    %% c
+        DLabel       -rational-storage-19-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-19-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        PushD        -rational-storage-19-baseAddr 
         LoadI                                  
-        PushF        3.300000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
+        PushI        4                         
         Add                                    
-        PushD        -populate-creation-8-elemAddr 
         Exchange                               
         StoreI                                 
+        PushD        -rational-storage-19-baseAddr 
+        LoadI                                  
+        Exchange                               
         StoreI                                 
         Halt                                   
         Label        -mem-manager-make-tags    

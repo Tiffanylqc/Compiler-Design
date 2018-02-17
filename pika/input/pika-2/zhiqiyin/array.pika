@@ -1,0 +1,19 @@
+exec
+{
+	var a := [1].
+	print a,_n_.
+	var b := [1,2,3].
+	print b,_n_.
+	var c := [1.0,2.0].
+	print c,_n_.
+	var d := [[^a^|bool],[[1|bool]|bool]].
+	print d,_n_.
+	var e := new[int](1).
+	print e,_n_.
+	var f := new[int](b[[1.99|int]]).
+	print f,_n_.
+	#var g := new [[int]] (new [[[int]]](([[1|bool]]))).
+	#var h := [[[[1|[int]]]|[[int]]]].
+	#var i := [[[[[[[[[1],2],3],4],5],6],7],[[[[1]]]]]].
+	#a[1][2][3] := clone new[[int]](([[2]])).
+}

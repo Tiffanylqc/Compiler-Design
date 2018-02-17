@@ -320,7 +320,6 @@ public class RunTime {
 		code.add(Duplicate); // [... nElems nElems]
 		code.add(PushI, subtypeSize);
 		// [... nElems nElems subSize]
-		
 		code.add(Multiply); // [... nElems elemsSize]
 		code.add(Duplicate);
 		// [... nElems elemsSize elemsSize]
@@ -525,6 +524,7 @@ public class RunTime {
 		frag.add(Label,oneDimArrayLabel);
 		frag.add(Label,loop2Label);
 		loadIFrom(frag,lengthLabel);
+//		frag.add(PStack);
 		frag.add(JumpFalse,endLabel);
 		loadIFrom(frag,elemLabel);//[...arrAddr elemAddr]
 		
@@ -804,7 +804,7 @@ public class RunTime {
 		code.add(PushI,1);
 		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);//sign=1
 		//[...numerator denominator]
-		
+//		code.add(PStack);
 		code.add(Duplicate);
 		code.add(JumpPos,denominatorPos);
 		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);
@@ -833,6 +833,7 @@ public class RunTime {
 		loadIFrom(code, RunTime.RATIONAL_NUMERATOR_TEMP);
 		loadIFrom(code, RunTime.RATIONAL_DENOMINATOR_TEMP);
 		//[...numerator/denominator numerator denominator]
+//		code.add(PStack);
 		code.add(Divide);//[...numerator%denominator numerator/denominator]
 		storeITo(code,RunTime.RATIONAL_PRINT_INT_PART);
 		storeITo(code,RunTime.RATIONAL_PRINT_REMAINDER);

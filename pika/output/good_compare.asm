@@ -983,94 +983,776 @@
         Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        4                         
+        DataZ        0                         
         Label        $$main                    
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        PushI        8                         
-        PushI        3                         
-        Multiply                               
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
-        Exchange                               
-        StoreI                                 
-        PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        0                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        3                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        8                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-8-elemAddr 
-        DataZ        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        Duplicate                              
-        PushI        16                        
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
+        Label        -compare-less-8-arg1      
         PushI        1                         
+        Label        -compare-less-8-arg2      
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-less-8-sub       
+        Subtract                               
+        JumpNeg      -compare-less-8-true      
+        Jump         -compare-less-8-false     
+        Label        -compare-less-8-true      
+        PushI        1                         
+        Jump         -compare-less-8-join      
+        Label        -compare-less-8-false     
+        PushI        0                         
+        Jump         -compare-less-8-join      
+        Label        -compare-less-8-join      
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-less-9-arg1      
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-less-9-arg2      
+        PushI        1                         
+        Label        -compare-less-9-sub       
+        Subtract                               
+        JumpNeg      -compare-less-9-true      
+        Jump         -compare-less-9-false     
+        Label        -compare-less-9-true      
+        PushI        1                         
+        Jump         -compare-less-9-join      
+        Label        -compare-less-9-false     
+        PushI        0                         
+        Jump         -compare-less-9-join      
+        Label        -compare-less-9-join      
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-less-10-arg1     
+        PushI        97                        
         ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
+        Label        -compare-less-10-arg2     
+        PushF        2.200000                  
+        Label        -compare-less-10-sub      
+        FSubtract                              
+        JumpFNeg     -compare-less-10-true     
+        Jump         -compare-less-10-false    
+        Label        -compare-less-10-true     
+        PushI        1                         
+        Jump         -compare-less-10-join     
+        Label        -compare-less-10-false    
+        PushI        0                         
+        Jump         -compare-less-10-join     
+        Label        -compare-less-10-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-less-11-arg1     
+        PushF        2.200000                  
+        Label        -compare-less-11-arg2     
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-less-11-sub      
+        FSubtract                              
+        JumpFNeg     -compare-less-11-true     
+        Jump         -compare-less-11-false    
+        Label        -compare-less-11-true     
+        PushI        1                         
+        Jump         -compare-less-11-join     
+        Label        -compare-less-11-false    
+        PushI        0                         
+        Jump         -compare-less-11-join     
+        Label        -compare-less-11-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-less-12-arg1     
         PushI        2                         
         ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushF        3.300000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        StoreI                                 
+        Label        -compare-less-12-arg2     
+        PushF        2.200000                  
+        Label        -compare-less-12-sub      
+        FSubtract                              
+        JumpFNeg     -compare-less-12-true     
+        Jump         -compare-less-12-false    
+        Label        -compare-less-12-true     
+        PushI        1                         
+        Jump         -compare-less-12-join     
+        Label        -compare-less-12-false    
+        PushI        0                         
+        Jump         -compare-less-12-join     
+        Label        -compare-less-12-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-less-13-arg1     
+        PushF        2.200000                  
+        Label        -compare-less-13-arg2     
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-less-13-sub      
+        FSubtract                              
+        JumpFNeg     -compare-less-13-true     
+        Jump         -compare-less-13-false    
+        Label        -compare-less-13-true     
+        PushI        1                         
+        Jump         -compare-less-13-join     
+        Label        -compare-less-13-false    
+        PushI        0                         
+        Jump         -compare-less-13-join     
+        Label        -compare-less-13-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-lessequal-14-arg1 
+        PushI        1                         
+        Label        -compare-lessequal-14-arg2 
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-lessequal-14-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-14-false 
+        Jump         -compare-lessequal-14-true 
+        Label        -compare-lessequal-14-true 
+        PushI        1                         
+        Jump         -compare-lessequal-14-join 
+        Label        -compare-lessequal-14-false 
+        PushI        0                         
+        Jump         -compare-lessequal-14-join 
+        Label        -compare-lessequal-14-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-lessequal-15-arg1 
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-lessequal-15-arg2 
+        PushI        1                         
+        Label        -compare-lessequal-15-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-15-false 
+        Jump         -compare-lessequal-15-true 
+        Label        -compare-lessequal-15-true 
+        PushI        1                         
+        Jump         -compare-lessequal-15-join 
+        Label        -compare-lessequal-15-false 
+        PushI        0                         
+        Jump         -compare-lessequal-15-join 
+        Label        -compare-lessequal-15-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-lessequal-16-arg1 
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-lessequal-16-arg2 
+        PushF        2.200000                  
+        Label        -compare-lessequal-16-sub 
+        FSubtract                              
+        JumpFPos     -compare-lessequal-16-false 
+        Jump         -compare-lessequal-16-true 
+        Label        -compare-lessequal-16-true 
+        PushI        1                         
+        Jump         -compare-lessequal-16-join 
+        Label        -compare-lessequal-16-false 
+        PushI        0                         
+        Jump         -compare-lessequal-16-join 
+        Label        -compare-lessequal-16-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-lessequal-17-arg1 
+        PushF        2.200000                  
+        Label        -compare-lessequal-17-arg2 
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-lessequal-17-sub 
+        FSubtract                              
+        JumpFPos     -compare-lessequal-17-false 
+        Jump         -compare-lessequal-17-true 
+        Label        -compare-lessequal-17-true 
+        PushI        1                         
+        Jump         -compare-lessequal-17-join 
+        Label        -compare-lessequal-17-false 
+        PushI        0                         
+        Jump         -compare-lessequal-17-join 
+        Label        -compare-lessequal-17-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-lessequal-18-arg1 
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-lessequal-18-arg2 
+        PushF        2.200000                  
+        Label        -compare-lessequal-18-sub 
+        FSubtract                              
+        JumpFPos     -compare-lessequal-18-false 
+        Jump         -compare-lessequal-18-true 
+        Label        -compare-lessequal-18-true 
+        PushI        1                         
+        Jump         -compare-lessequal-18-join 
+        Label        -compare-lessequal-18-false 
+        PushI        0                         
+        Jump         -compare-lessequal-18-join 
+        Label        -compare-lessequal-18-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-lessequal-19-arg1 
+        PushF        2.200000                  
+        Label        -compare-lessequal-19-arg2 
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-lessequal-19-sub 
+        FSubtract                              
+        JumpFPos     -compare-lessequal-19-false 
+        Jump         -compare-lessequal-19-true 
+        Label        -compare-lessequal-19-true 
+        PushI        1                         
+        Jump         -compare-lessequal-19-join 
+        Label        -compare-lessequal-19-false 
+        PushI        0                         
+        Jump         -compare-lessequal-19-join 
+        Label        -compare-lessequal-19-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-greater-20-arg1  
+        PushI        1                         
+        Label        -compare-greater-20-arg2  
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-greater-20-sub   
+        Subtract                               
+        JumpPos      -compare-greater-20-true  
+        Jump         -compare-greater-20-false 
+        Label        -compare-greater-20-true  
+        PushI        1                         
+        Jump         -compare-greater-20-join  
+        Label        -compare-greater-20-false 
+        PushI        0                         
+        Jump         -compare-greater-20-join  
+        Label        -compare-greater-20-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-greater-21-arg1  
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-greater-21-arg2  
+        PushI        1                         
+        Label        -compare-greater-21-sub   
+        Subtract                               
+        JumpPos      -compare-greater-21-true  
+        Jump         -compare-greater-21-false 
+        Label        -compare-greater-21-true  
+        PushI        1                         
+        Jump         -compare-greater-21-join  
+        Label        -compare-greater-21-false 
+        PushI        0                         
+        Jump         -compare-greater-21-join  
+        Label        -compare-greater-21-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-greater-22-arg1  
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-greater-22-arg2  
+        PushF        2.200000                  
+        Label        -compare-greater-22-sub   
+        FSubtract                              
+        JumpFPos     -compare-greater-22-true  
+        Jump         -compare-greater-22-false 
+        Label        -compare-greater-22-true  
+        PushI        1                         
+        Jump         -compare-greater-22-join  
+        Label        -compare-greater-22-false 
+        PushI        0                         
+        Jump         -compare-greater-22-join  
+        Label        -compare-greater-22-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-greater-23-arg1  
+        PushF        2.200000                  
+        Label        -compare-greater-23-arg2  
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-greater-23-sub   
+        FSubtract                              
+        JumpFPos     -compare-greater-23-true  
+        Jump         -compare-greater-23-false 
+        Label        -compare-greater-23-true  
+        PushI        1                         
+        Jump         -compare-greater-23-join  
+        Label        -compare-greater-23-false 
+        PushI        0                         
+        Jump         -compare-greater-23-join  
+        Label        -compare-greater-23-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-greater-24-arg1  
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-greater-24-arg2  
+        PushF        2.200000                  
+        Label        -compare-greater-24-sub   
+        FSubtract                              
+        JumpFPos     -compare-greater-24-true  
+        Jump         -compare-greater-24-false 
+        Label        -compare-greater-24-true  
+        PushI        1                         
+        Jump         -compare-greater-24-join  
+        Label        -compare-greater-24-false 
+        PushI        0                         
+        Jump         -compare-greater-24-join  
+        Label        -compare-greater-24-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-greater-25-arg1  
+        PushF        2.200000                  
+        Label        -compare-greater-25-arg2  
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-greater-25-sub   
+        FSubtract                              
+        JumpFPos     -compare-greater-25-true  
+        Jump         -compare-greater-25-false 
+        Label        -compare-greater-25-true  
+        PushI        1                         
+        Jump         -compare-greater-25-join  
+        Label        -compare-greater-25-false 
+        PushI        0                         
+        Jump         -compare-greater-25-join  
+        Label        -compare-greater-25-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-greaterequal-26-arg1 
+        PushI        1                         
+        Label        -compare-greaterequal-26-arg2 
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-greaterequal-26-sub 
+        Subtract                               
+        JumpNeg      -compare-greaterequal-26-false 
+        Jump         -compare-greaterequal-26-true 
+        Label        -compare-greaterequal-26-true 
+        PushI        1                         
+        Jump         -compare-greaterequal-26-join 
+        Label        -compare-greaterequal-26-false 
+        PushI        0                         
+        Jump         -compare-greaterequal-26-join 
+        Label        -compare-greaterequal-26-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-greaterequal-27-arg1 
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-greaterequal-27-arg2 
+        PushI        1                         
+        Label        -compare-greaterequal-27-sub 
+        Subtract                               
+        JumpNeg      -compare-greaterequal-27-false 
+        Jump         -compare-greaterequal-27-true 
+        Label        -compare-greaterequal-27-true 
+        PushI        1                         
+        Jump         -compare-greaterequal-27-join 
+        Label        -compare-greaterequal-27-false 
+        PushI        0                         
+        Jump         -compare-greaterequal-27-join 
+        Label        -compare-greaterequal-27-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-greaterequal-28-arg1 
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-greaterequal-28-arg2 
+        PushF        2.200000                  
+        Label        -compare-greaterequal-28-sub 
+        FSubtract                              
+        JumpFNeg     -compare-greaterequal-28-false 
+        Jump         -compare-greaterequal-28-true 
+        Label        -compare-greaterequal-28-true 
+        PushI        1                         
+        Jump         -compare-greaterequal-28-join 
+        Label        -compare-greaterequal-28-false 
+        PushI        0                         
+        Jump         -compare-greaterequal-28-join 
+        Label        -compare-greaterequal-28-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-greaterequal-29-arg1 
+        PushF        2.200000                  
+        Label        -compare-greaterequal-29-arg2 
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-greaterequal-29-sub 
+        FSubtract                              
+        JumpFNeg     -compare-greaterequal-29-false 
+        Jump         -compare-greaterequal-29-true 
+        Label        -compare-greaterequal-29-true 
+        PushI        1                         
+        Jump         -compare-greaterequal-29-join 
+        Label        -compare-greaterequal-29-false 
+        PushI        0                         
+        Jump         -compare-greaterequal-29-join 
+        Label        -compare-greaterequal-29-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-greaterequal-30-arg1 
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-greaterequal-30-arg2 
+        PushF        2.200000                  
+        Label        -compare-greaterequal-30-sub 
+        FSubtract                              
+        JumpFNeg     -compare-greaterequal-30-false 
+        Jump         -compare-greaterequal-30-true 
+        Label        -compare-greaterequal-30-true 
+        PushI        1                         
+        Jump         -compare-greaterequal-30-join 
+        Label        -compare-greaterequal-30-false 
+        PushI        0                         
+        Jump         -compare-greaterequal-30-join 
+        Label        -compare-greaterequal-30-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-greaterequal-31-arg1 
+        PushF        2.200000                  
+        Label        -compare-greaterequal-31-arg2 
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-greaterequal-31-sub 
+        FSubtract                              
+        JumpFNeg     -compare-greaterequal-31-false 
+        Jump         -compare-greaterequal-31-true 
+        Label        -compare-greaterequal-31-true 
+        PushI        1                         
+        Jump         -compare-greaterequal-31-join 
+        Label        -compare-greaterequal-31-false 
+        PushI        0                         
+        Jump         -compare-greaterequal-31-join 
+        Label        -compare-greaterequal-31-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-notequal-32-arg1 
+        PushI        1                         
+        Label        -compare-notequal-32-arg2 
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-notequal-32-sub  
+        Subtract                               
+        JumpTrue     -compare-notequal-32-true 
+        Jump         -compare-notequal-32-false 
+        Label        -compare-notequal-32-true 
+        PushI        1                         
+        Jump         -compare-notequal-32-join 
+        Label        -compare-notequal-32-false 
+        PushI        0                         
+        Jump         -compare-notequal-32-join 
+        Label        -compare-notequal-32-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-notequal-33-arg1 
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-notequal-33-arg2 
+        PushI        1                         
+        Label        -compare-notequal-33-sub  
+        Subtract                               
+        JumpTrue     -compare-notequal-33-true 
+        Jump         -compare-notequal-33-false 
+        Label        -compare-notequal-33-true 
+        PushI        1                         
+        Jump         -compare-notequal-33-join 
+        Label        -compare-notequal-33-false 
+        PushI        0                         
+        Jump         -compare-notequal-33-join 
+        Label        -compare-notequal-33-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-notequal-34-arg1 
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-notequal-34-arg2 
+        PushF        2.200000                  
+        Label        -compare-notequal-34-sub  
+        FSubtract                              
+        JumpFZero    -compare-notequal-34-false 
+        Jump         -compare-notequal-34-true 
+        Label        -compare-notequal-34-false 
+        PushI        0                         
+        Jump         -compare-notequal-34-join 
+        Label        -compare-notequal-34-true 
+        PushI        1                         
+        Jump         -compare-notequal-34-join 
+        Label        -compare-notequal-34-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-notequal-35-arg1 
+        PushF        2.200000                  
+        Label        -compare-notequal-35-arg2 
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-notequal-35-sub  
+        FSubtract                              
+        JumpFZero    -compare-notequal-35-false 
+        Jump         -compare-notequal-35-true 
+        Label        -compare-notequal-35-false 
+        PushI        0                         
+        Jump         -compare-notequal-35-join 
+        Label        -compare-notequal-35-true 
+        PushI        1                         
+        Jump         -compare-notequal-35-join 
+        Label        -compare-notequal-35-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-notequal-36-arg1 
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-notequal-36-arg2 
+        PushF        2.200000                  
+        Label        -compare-notequal-36-sub  
+        FSubtract                              
+        JumpFZero    -compare-notequal-36-false 
+        Jump         -compare-notequal-36-true 
+        Label        -compare-notequal-36-false 
+        PushI        0                         
+        Jump         -compare-notequal-36-join 
+        Label        -compare-notequal-36-true 
+        PushI        1                         
+        Jump         -compare-notequal-36-join 
+        Label        -compare-notequal-36-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-notequal-37-arg1 
+        PushF        2.200000                  
+        Label        -compare-notequal-37-arg2 
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-notequal-37-sub  
+        FSubtract                              
+        JumpFZero    -compare-notequal-37-false 
+        Jump         -compare-notequal-37-true 
+        Label        -compare-notequal-37-false 
+        PushI        0                         
+        Jump         -compare-notequal-37-join 
+        Label        -compare-notequal-37-true 
+        PushI        1                         
+        Jump         -compare-notequal-37-join 
+        Label        -compare-notequal-37-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-equal-38-arg1    
+        PushI        1                         
+        Label        -compare-equal-38-arg2    
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-equal-38-sub     
+        Subtract                               
+        JumpFalse    -compare-equal-38-true    
+        Jump         -compare-equal-38-false   
+        Label        -compare-equal-38-true    
+        PushI        1                         
+        Jump         -compare-equal-38-join    
+        Label        -compare-equal-38-false   
+        PushI        0                         
+        Jump         -compare-equal-38-join    
+        Label        -compare-equal-38-join    
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-equal-39-arg1    
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-equal-39-arg2    
+        PushI        1                         
+        Label        -compare-equal-39-sub     
+        Subtract                               
+        JumpFalse    -compare-equal-39-true    
+        Jump         -compare-equal-39-false   
+        Label        -compare-equal-39-true    
+        PushI        1                         
+        Jump         -compare-equal-39-join    
+        Label        -compare-equal-39-false   
+        PushI        0                         
+        Jump         -compare-equal-39-join    
+        Label        -compare-equal-39-join    
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-equal-40-arg1    
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-equal-40-arg2    
+        PushF        2.200000                  
+        Label        -compare-equal-40-sub     
+        FSubtract                              
+        JumpFZero    -compare-equal-40-true    
+        Jump         -compare-equal-40-false   
+        Label        -compare-equal-40-true    
+        PushI        1                         
+        Jump         -compare-equal-40-join    
+        Label        -compare-equal-40-false   
+        PushI        0                         
+        Jump         -compare-equal-40-join    
+        Label        -compare-equal-40-join    
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-equal-41-arg1    
+        PushF        2.200000                  
+        Label        -compare-equal-41-arg2    
+        PushI        97                        
+        ConvertF                               
+        Label        -compare-equal-41-sub     
+        FSubtract                              
+        JumpFZero    -compare-equal-41-true    
+        Jump         -compare-equal-41-false   
+        Label        -compare-equal-41-true    
+        PushI        1                         
+        Jump         -compare-equal-41-join    
+        Label        -compare-equal-41-false   
+        PushI        0                         
+        Jump         -compare-equal-41-join    
+        Label        -compare-equal-41-join    
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-equal-42-arg1    
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-equal-42-arg2    
+        PushF        2.200000                  
+        Label        -compare-equal-42-sub     
+        FSubtract                              
+        JumpFZero    -compare-equal-42-true    
+        Jump         -compare-equal-42-false   
+        Label        -compare-equal-42-true    
+        PushI        1                         
+        Jump         -compare-equal-42-join    
+        Label        -compare-equal-42-false   
+        PushI        0                         
+        Jump         -compare-equal-42-join    
+        Label        -compare-equal-42-join    
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-equal-43-arg1    
+        PushF        2.200000                  
+        Label        -compare-equal-43-arg2    
+        PushI        2                         
+        ConvertF                               
+        Label        -compare-equal-43-sub     
+        FSubtract                              
+        JumpFZero    -compare-equal-43-true    
+        Jump         -compare-equal-43-false   
+        Label        -compare-equal-43-true    
+        PushI        1                         
+        Jump         -compare-equal-43-join    
+        Label        -compare-equal-43-false   
+        PushI        0                         
+        Jump         -compare-equal-43-join    
+        Label        -compare-equal-43-join    
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

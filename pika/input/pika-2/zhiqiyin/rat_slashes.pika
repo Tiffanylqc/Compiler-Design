@@ -1,0 +1,120 @@
+exec
+{
+	var n := -13.
+	while (n <= 13)
+	{
+		print n//6///18;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//-6///18;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//6///-18;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//-6///-18;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -40.
+	while (n <= 40)
+	{
+		print n//18///6;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//6///1;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//6///-1;.
+		n := n + 1.
+	}
+	print _n_.
+
+	var f := -2.2.
+	while (f <= 2.3)
+	{
+		print f;"/// 6 = ",f///6;_n_.
+		f := f + 0.05.
+	}
+	print _n_.
+
+	n := -13.
+	while (n <= 13)
+	{
+		print n//6////17;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//-6////17;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//6////-17;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//-6////-17;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -40.
+	while (n <= 40)
+	{
+		print n//17////6;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//6////1;.
+		n := n + 1.
+	}
+	print _n_.
+	n := -13.
+	while (n <= 13)
+	{
+		print n//6////-1;.
+		n := n + 1.
+	}
+	print _n_.
+
+	f := -2.2.
+	while (f <= 2.3)
+	{
+		print f;"//// 6 = ",f////6;_n_.
+		f := f + 0.05.
+	}
+	print _n_.
+
+	print 1.6////-0;_n_.
+} 

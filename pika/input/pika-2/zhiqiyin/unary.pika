@@ -1,0 +1,12 @@
+exec
+{
+	a := !x.
+	a := !2+!3.
+	if (!x&&!y||!a&&!b) {}
+	a := !!x.
+	a := !!!x.
+	a := clone x.
+	a := length x.
+	a := clone !x + clone length clone!clone!length[2.6|bool].
+	a := !x*!y//!!x.
+}

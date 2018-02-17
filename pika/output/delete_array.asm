@@ -983,13 +983,13 @@
         Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        4                         
+        DataZ        8                         
         Label        $$main                    
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
-        PushI        8                         
-        PushI        3                         
+        PushI        4                         
+        PushI        4                         
         Multiply                               
         PushI        16                        
         Add                                    
@@ -1011,14 +1011,14 @@
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        3                         
+        PushI        4                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        12                        
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        8                         
+        PushI        4                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        8                         
@@ -1037,22 +1037,9 @@
         StoreI                                 
         PushD        -populate-creation-8-elemAddr 
         LoadI                                  
-        PushI        1                         
-        ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
         PushI        2                         
-        ConvertF                               
-        StoreF                                 
-        PushI        8                         
+        StoreI                                 
+        PushI        4                         
         PushD        -populate-creation-8-elemAddr 
         LoadI                                  
         Add                                    
@@ -1061,9 +1048,31 @@
         StoreI                                 
         PushD        -populate-creation-8-elemAddr 
         LoadI                                  
-        PushF        3.300000                  
-        StoreF                                 
-        PushI        8                         
+        PushI        3                         
+        StoreI                                 
+        PushI        4                         
+        PushD        -populate-creation-8-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-8-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-8-elemAddr 
+        LoadI                                  
+        PushI        4                         
+        StoreI                                 
+        PushI        4                         
+        PushD        -populate-creation-8-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-8-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-8-elemAddr 
+        LoadI                                  
+        PushI        5                         
+        StoreI                                 
+        PushI        4                         
         PushD        -populate-creation-8-elemAddr 
         LoadI                                  
         Add                                    
@@ -1071,6 +1080,112 @@
         Exchange                               
         StoreI                                 
         StoreI                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadI                                  
+        Call         $release-record           
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% b
+        PushI        4                         
+        PushI        4                         
+        Multiply                               
+        PushI        16                        
+        Add                                    
+        Call         -mem-manager-allocate     
+        PushD        $record-creation-temp     
+        Exchange                               
+        StoreI                                 
+        PushI        7                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        12                        
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        DLabel       -populate-creation-9-elemAddr 
+        DataZ        4                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Duplicate                              
+        PushI        16                        
+        Add                                    
+        PushD        -populate-creation-9-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        PushI        3                         
+        StoreI                                 
+        PushI        4                         
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-9-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        PushI        4                         
+        StoreI                                 
+        PushI        4                         
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-9-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        PushI        5                         
+        StoreI                                 
+        PushI        4                         
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-9-elemAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        PushI        6                         
+        StoreI                                 
+        PushI        4                         
+        PushD        -populate-creation-9-elemAddr 
+        LoadI                                  
+        Add                                    
+        PushD        -populate-creation-9-elemAddr 
+        Exchange                               
+        StoreI                                 
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadI                                  
+        PushI        1                         
+        Call         $print-array-subroutine   
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

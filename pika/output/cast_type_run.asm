@@ -983,28 +983,128 @@
         Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        4                         
+        DataZ        59                        
         Label        $$main                    
         PushD        $global-memory-block      
         PushI        0                         
-        Add                                    %% a
-        PushI        8                         
+        Add                                    %% c
+        PushI        65536                     
+        Nop                                    
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% d
+        PushI        65536                     
+        ConvertF                               
+        StoreF                                 
+        PushD        $global-memory-block      
+        PushI        12                        
+        Add                                    %% e
+        PushI        12335                     
+        PushI        255                       
+        BTAnd                                  
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% g
+        PushI        65536                     
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castIntToBool-8-true     
+        Jump         -castIntToBool-8-false    
+        Label        -castIntToBool-8-true     
+        PushI        1                         
+        Jump         -castIntToBool-8-join     
+        Label        -castIntToBool-8-false    
+        PushI        0                         
+        Jump         -castIntToBool-8-join     
+        Label        -castIntToBool-8-join     
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% d
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        12                        
+        Add                                    %% e
+        LoadC                                  
+        PushD        $print-format-character   
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% g
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        14                        
+        Add                                    %% c1
+        PushF        1.120000                  
+        ConvertI                               
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        18                        
+        Add                                    %% d1
+        PushF        1.120000                  
+        Nop                                    
+        StoreF                                 
+        PushD        $global-memory-block      
+        PushI        14                        
+        Add                                    %% c1
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        18                        
+        Add                                    %% d1
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        26                        
+        Add                                    %% f2
         PushI        3                         
-        Multiply                               
-        PushI        16                        
+        PushI        1                         
+        Add                                    
+        PushI        12                        
         Add                                    
         Call         -mem-manager-allocate     
         PushD        $record-creation-temp     
         Exchange                               
         StoreI                                 
-        PushI        7                         
+        PushI        6                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        0                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        0                         
+        PushI        9                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        4                         
@@ -1014,63 +1114,340 @@
         PushI        3                         
         PushD        $record-creation-temp     
         LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        97                        
+        PushD        $record-creation-temp     
+        LoadI                                  
         PushI        12                        
         Add                                    
         Exchange                               
-        StoreI                                 
-        PushI        8                         
+        StoreC                                 
+        PushI        115                       
         PushD        $record-creation-temp     
         LoadI                                  
-        PushI        8                         
+        PushI        13                        
         Add                                    
         Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-8-elemAddr 
-        DataZ        4                         
+        StoreC                                 
+        PushI        100                       
         PushD        $record-creation-temp     
         LoadI                                  
-        Duplicate                              
-        PushI        16                        
+        PushI        14                        
         Add                                    
-        PushD        -populate-creation-8-elemAddr 
         Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        StoreC                                 
+        PushD        $record-creation-temp     
         LoadI                                  
+        Nop                                    
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        26                        
+        Add                                    %% f2
+        LoadI                                  
+        Call         $print-string             
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        30                        
+        Add                                    %% g3
         PushI        1                         
+        Nop                                    
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        30                        
+        Add                                    %% g3
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        31                        
+        Add                                    %% c4
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        35                        
+        Add                                    %% e4
+        PushI        97                        
+        Nop                                    
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        36                        
+        Add                                    %% g4
+        PushI        97                        
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castCharToBool-9-true    
+        Jump         -castCharToBool-9-false   
+        Label        -castCharToBool-9-true    
+        PushI        1                         
+        Jump         -castCharToBool-9-join    
+        Label        -castCharToBool-9-false   
+        PushI        0                         
+        Jump         -castCharToBool-9-join    
+        Label        -castCharToBool-9-join    
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        31                        
+        Add                                    %% c4
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        35                        
+        Add                                    %% e4
+        LoadC                                  
+        PushD        $print-format-character   
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        36                        
+        Add                                    %% g4
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        37                        
+        Add                                    %% a5
+        PushI        128                       
+        PushI        255                       
+        BTAnd                                  
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castCharToBool-10-true   
+        Jump         -castCharToBool-10-false  
+        Label        -castCharToBool-10-true   
+        PushI        1                         
+        Jump         -castCharToBool-10-join   
+        Label        -castCharToBool-10-false  
+        PushI        0                         
+        Jump         -castCharToBool-10-join   
+        Label        -castCharToBool-10-join   
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        38                        
+        Add                                    %% b5
+        PushF        12345.678900              
+        ConvertI                               
+        PushI        255                       
+        BTAnd                                  
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        39                        
+        Add                                    %% c5
+        PushD        $global-memory-block      
+        PushI        38                        
+        Add                                    %% b5
+        LoadC                                  
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castCharToBool-11-true   
+        Jump         -castCharToBool-11-false  
+        Label        -castCharToBool-11-true   
+        PushI        1                         
+        Jump         -castCharToBool-11-join   
+        Label        -castCharToBool-11-false  
+        PushI        0                         
+        Jump         -castCharToBool-11-join   
+        Label        -castCharToBool-11-join   
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        40                        
+        Add                                    %% d5
+        PushI        97                        
+        Nop                                    
+        PushI        255                       
+        BTAnd                                  
         ConvertF                               
+        PushF        5.666600                  
+        FAdd                                   
         StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushI        2                         
+        PushD        $global-memory-block      
+        PushI        48                        
+        Add                                    %% e5
+        Label        -compare-equal-13-arg1    
+        PushI        97                        
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castCharToBool-12-true   
+        Jump         -castCharToBool-12-false  
+        Label        -castCharToBool-12-true   
+        PushI        1                         
+        Jump         -castCharToBool-12-join   
+        Label        -castCharToBool-12-false  
+        PushI        0                         
+        Jump         -castCharToBool-12-join   
+        Label        -castCharToBool-12-join   
+        Label        -compare-equal-13-arg2    
+        PushI        1                         
+        Label        -compare-equal-13-sub     
+        Subtract                               
+        JumpFalse    -compare-equal-13-true    
+        Jump         -compare-equal-13-false   
+        Label        -compare-equal-13-true    
+        PushI        1                         
+        Jump         -compare-equal-13-join    
+        Label        -compare-equal-13-false   
+        PushI        0                         
+        Jump         -compare-equal-13-join    
+        Label        -compare-equal-13-join    
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        49                        
+        Add                                    %% f5
+        Label        -compare-equal-15-arg1    
+        PushI        65536                     
+        PushI        255                       
+        BTAnd                                  
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castCharToBool-14-true   
+        Jump         -castCharToBool-14-false  
+        Label        -castCharToBool-14-true   
+        PushI        1                         
+        Jump         -castCharToBool-14-join   
+        Label        -castCharToBool-14-false  
+        PushI        0                         
+        Jump         -castCharToBool-14-join   
+        Label        -castCharToBool-14-join   
+        Label        -compare-equal-15-arg2    
+        PushI        1                         
+        Label        -compare-equal-15-sub     
+        Subtract                               
+        JumpFalse    -compare-equal-15-true    
+        Jump         -compare-equal-15-false   
+        Label        -compare-equal-15-true    
+        PushI        1                         
+        Jump         -compare-equal-15-join    
+        Label        -compare-equal-15-false   
+        PushI        0                         
+        Jump         -compare-equal-15-join    
+        Label        -compare-equal-15-join    
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        50                        
+        Add                                    %% g5
+        Label        -compare-equal-16-arg1    
+        PushI        12345                     
+        PushI        255                       
+        BTAnd                                  
+        Label        -compare-equal-16-arg2    
+        PushI        57                        
+        Label        -compare-equal-16-sub     
+        Subtract                               
+        JumpFalse    -compare-equal-16-true    
+        Jump         -compare-equal-16-false   
+        Label        -compare-equal-16-true    
+        PushI        1                         
+        Jump         -compare-equal-16-join    
+        Label        -compare-equal-16-false   
+        PushI        0                         
+        Jump         -compare-equal-16-join    
+        Label        -compare-equal-16-join    
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        51                        
+        Add                                    %% h5
+        PushF        1.000000                  
+        PushI        65281                     
+        PushI        255                       
+        BTAnd                                  
+        PushI        255                       
+        BTAnd                                  
         ConvertF                               
+        Duplicate                              
+        JumpFZero    $$f-divide-by-zero        
+        FDivide                                
         StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushF        3.300000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        37                        
+        Add                                    %% a5
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        38                        
+        Add                                    %% b5
+        LoadC                                  
+        PushD        $print-format-character   
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        39                        
+        Add                                    %% c5
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        40                        
+        Add                                    %% d5
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        48                        
+        Add                                    %% e5
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        49                        
+        Add                                    %% f5
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        50                        
+        Add                                    %% g5
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

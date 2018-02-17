@@ -983,94 +983,925 @@
         Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        4                         
+        DataZ        12                        
         Label        $$main                    
+        PushI        0                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        2                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        3                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        4                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        5                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        6                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        7                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        8                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        9                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        10                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        11                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        13                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        0                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -2                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -3                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -4                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -5                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -6                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -7                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -8                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -9                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -10                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -11                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -13                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        0                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        2                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        3                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        4                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        5                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        6                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        7                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        8                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        9                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        10                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        11                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        13                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        0                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -2                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -3                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -4                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -5                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -6                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -7                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -8                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -9                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -10                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -11                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -13                       
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Exchange                               
+        ConvertF                               
+        Exchange                               
+        ConvertF                               
+        FDivide                                
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        5                         
+        PushI        8                         
+        Call         $lowest-term-subroutine   
+        Nop                                    
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         PushD        $global-memory-block      
         PushI        0                         
-        Add                                    %% a
-        PushI        8                         
-        PushI        3                         
+        Add                                    %% n
+        PushI        -12                       
+        StoreI                                 
+        Label        -while-9-condition        
+        Label        -compare-lessequal-8-arg1 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        Label        -compare-lessequal-8-arg2 
+        PushI        12                        
+        Label        -compare-lessequal-8-sub  
+        Subtract                               
+        JumpPos      -compare-lessequal-8-false 
+        Jump         -compare-lessequal-8-true 
+        Label        -compare-lessequal-8-true 
+        PushI        1                         
+        Jump         -compare-lessequal-8-join 
+        Label        -compare-lessequal-8-false 
+        PushI        0                         
+        Jump         -compare-lessequal-8-join 
+        Label        -compare-lessequal-8-join 
+        JumpTrue     -while-9-true             
+        Jump         -while-9-false            
+        Label        -while-9-true             
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% x
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Divide                                 
+        StoreI                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% x
+        LoadI                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% n
+        LoadI                                  
+        PushI        1                         
+        Add                                    
+        StoreI                                 
+        Jump         -while-9-condition        
+        Label        -while-9-false            
+        Jump         -while-9-join             
+        Label        -while-9-join             
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        0                         
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        2                         
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        0                         
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -2                        
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        97                        
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        94                        
+        PushI        1                         
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -2                        
+        PushI        1                         
+        PushI        7                         
+        PushI        4                         
+        Call         $lowest-term-subroutine   
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
         Multiply                               
-        PushI        16                        
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        PushF        -2.200000                 
+        StoreF                                 
+        Label        -while-11-condition       
+        Label        -compare-less-10-arg1     
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        Label        -compare-less-10-arg2     
+        PushF        2.300000                  
+        Label        -compare-less-10-sub      
+        FSubtract                              
+        JumpFNeg     -compare-less-10-true     
+        Jump         -compare-less-10-false    
+        Label        -compare-less-10-true     
+        PushI        1                         
+        Jump         -compare-less-10-join     
+        Label        -compare-less-10-false    
+        PushI        0                         
+        Jump         -compare-less-10-join     
+        Label        -compare-less-10-join     
+        JumpTrue     -while-11-true            
+        Jump         -while-11-false           
+        Label        -while-11-true            
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        9                         
+        PushI        1                         
+        Add                                    
+        PushI        12                        
         Add                                    
         Call         -mem-manager-allocate     
         PushD        $record-creation-temp     
         Exchange                               
         StoreI                                 
-        PushI        7                         
+        PushI        6                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        0                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        0                         
+        PushI        9                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        3                         
+        PushI        9                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        8                         
+        Add                                    
+        Exchange                               
+        StoreI                                 
+        PushI        0                         
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        21                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        116                       
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        12                        
         Add                                    
         Exchange                               
-        StoreI                                 
-        PushI        8                         
+        StoreC                                 
+        PushI        111                       
         PushD        $record-creation-temp     
         LoadI                                  
-        PushI        8                         
+        PushI        13                        
         Add                                    
         Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-8-elemAddr 
-        DataZ        4                         
+        StoreC                                 
+        PushI        32                        
         PushD        $record-creation-temp     
         LoadI                                  
-        Duplicate                              
+        PushI        14                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        114                       
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        15                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        97                        
+        PushD        $record-creation-temp     
+        LoadI                                  
         PushI        16                        
         Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        Exchange                               
+        StoreC                                 
+        PushI        116                       
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        17                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        32                        
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        18                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        105                       
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        19                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushI        115                       
+        PushD        $record-creation-temp     
+        LoadI                                  
+        PushI        20                        
+        Add                                    
+        Exchange                               
+        StoreC                                 
+        PushD        $record-creation-temp     
+        LoadI                                  
+        Call         $print-string             
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushI        223092870                 
+        Duplicate                              
+        PushD        $express-over-denominator 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushI        1                         
         ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
+        FMultiply                              
+        ConvertI                               
+        PushD        $express-over-denominator 
         LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% f
+        LoadF                                  
+        PushF        0.050000                  
+        FAdd                                   
+        StoreF                                 
+        Jump         -while-11-condition       
+        Label        -while-11-false           
+        Jump         -while-11-join            
+        Label        -while-11-join            
+        PushF        -0.900000                 
+        PushI        223092870                 
+        Duplicate                              
+        JumpFalse    $$rationalize-divide-by-zero 
+        Duplicate                              
+        PushD        $express-over-denominator 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushI        2                         
         ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
+        FMultiply                              
+        ConvertI                               
+        PushD        $express-over-denominator 
         LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushF        -0.900000                 
+        PushI        223092870                 
+        Duplicate                              
+        PushD        $express-over-denominator 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        ConvertF                               
+        FMultiply                              
+        ConvertI                               
+        PushD        $express-over-denominator 
         LoadI                                  
-        PushF        3.300000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        StoreI                                 
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

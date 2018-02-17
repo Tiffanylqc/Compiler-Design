@@ -1,0 +1,5 @@
+exec{
+	var a:= 3.2.
+	a:=^a^.
+	print a,_n_.
+}

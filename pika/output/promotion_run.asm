@@ -983,94 +983,533 @@
         Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        4                         
+        DataZ        21                        
         Label        $$main                    
+        PushI        97                        
+        PushI        255                       
+        BTAnd                                  
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         PushD        $global-memory-block      
         PushI        0                         
-        Add                                    %% a
-        PushI        8                         
-        PushI        3                         
-        Multiply                               
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
+        Add                                    %% c
+        PushI        97                        
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        PushI        10                        
+        StoreI                                 
+        PushI        1                         
+        PushI        2                         
+        Call         $lowest-term-subroutine   
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% r
+        DLabel       -rational-storage-8-baseAddr 
+        DataZ        4                         
+        PushD        -rational-storage-8-baseAddr 
         Exchange                               
         StoreI                                 
-        PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        0                         
-        PushD        $record-creation-temp     
+        PushD        -rational-storage-8-baseAddr 
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        3                         
-        PushD        $record-creation-temp     
+        PushD        -rational-storage-8-baseAddr 
         LoadI                                  
-        PushI        12                        
-        Add                                    
         Exchange                               
         StoreI                                 
-        PushI        8                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% f
+        PushF        100.550000                
+        StoreF                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
+        PushI        255                       
+        BTAnd                                  
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
+        PushI        255                       
+        BTAnd                                  
         Add                                    
-        Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-8-elemAddr 
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
+        PushI        255                       
+        BTAnd                                  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        LoadI                                  
+        Add                                    
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
+        PushI        1                         
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% r
+        Nop                                    
+        DLabel       -rational-load-9-baseAddr 
         DataZ        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        Duplicate                              
-        PushI        16                        
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        PushD        -rational-load-9-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        PushD        -rational-load-9-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-9-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        Add                                    
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
+        ConvertF                               
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% f
+        LoadF                                  
+        FAdd                                   
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
+        PushI        255                       
+        BTAnd                                  
+        Add                                    
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        LoadI                                  
+        Add                                    
+        PushD        $print-format-integer     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
         LoadI                                  
         PushI        1                         
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% r
+        Nop                                    
+        DLabel       -rational-load-10-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-10-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-10-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-10-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        Add                                    
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        LoadI                                  
         ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% f
+        LoadF                                  
+        FAdd                                   
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% r
+        Nop                                    
+        DLabel       -rational-load-11-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-11-baseAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        PushD        -rational-load-11-baseAddr 
         LoadI                                  
-        PushI        2                         
+        LoadI                                  
+        PushD        -rational-load-11-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
+        PushI        1                         
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        Add                                    
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% r
+        Nop                                    
+        DLabel       -rational-load-12-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-12-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-12-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-12-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        LoadI                                  
+        PushI        1                         
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        Add                                    
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% r
+        Nop                                    
+        DLabel       -rational-load-13-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-13-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-13-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-13-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% r
+        Nop                                    
+        DLabel       -rational-load-14-baseAddr 
+        DataZ        4                         
+        PushD        -rational-load-14-baseAddr 
+        Exchange                               
+        StoreI                                 
+        PushD        -rational-load-14-baseAddr 
+        LoadI                                  
+        LoadI                                  
+        PushD        -rational-load-14-baseAddr 
+        LoadI                                  
+        PushI        4                         
+        Add                                    
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        Add                                    
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        Call         $print-rational           
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% f
+        LoadF                                  
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% c
+        LoadC                                  
         ConvertF                               
-        StoreF                                 
+        FAdd                                   
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% f
+        LoadF                                  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% i
+        LoadI                                  
+        ConvertF                               
+        FAdd                                   
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% f
+        LoadF                                  
+        PushD        $global-memory-block      
+        PushI        13                        
+        Add                                    %% f
+        LoadF                                  
+        FAdd                                   
+        PushD        $print-format-floating    
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        Label        -compare-boolNot-15-arg1  
+        PushI        1                         
+        Label        -compare-boolNot-15-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-15-true  
+        Jump         -compare-boolNot-15-false 
+        Label        -compare-boolNot-15-true  
+        PushI        1                         
+        Jump         -compare-boolNot-15-join  
+        Label        -compare-boolNot-15-false 
+        PushI        0                         
+        Jump         -compare-boolNot-15-join  
+        Label        -compare-boolNot-15-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-boolNot-16-arg1  
+        PushI        0                         
+        Label        -compare-boolNot-16-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-16-true  
+        Jump         -compare-boolNot-16-false 
+        Label        -compare-boolNot-16-true  
+        PushI        1                         
+        Jump         -compare-boolNot-16-join  
+        Label        -compare-boolNot-16-false 
+        PushI        0                         
+        Jump         -compare-boolNot-16-join  
+        Label        -compare-boolNot-16-join  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        Label        -compare-lessequal-17-arg1 
+        PushI        5                         
+        Label        -compare-lessequal-17-arg2 
         PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushF        3.300000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        StoreI                                 
+        Label        -compare-lessequal-17-sub 
+        Subtract                               
+        JumpPos      -compare-lessequal-17-false 
+        Jump         -compare-lessequal-17-true 
+        Label        -compare-lessequal-17-true 
+        PushI        1                         
+        Jump         -compare-lessequal-17-join 
+        Label        -compare-lessequal-17-false 
+        PushI        0                         
+        Jump         -compare-lessequal-17-join 
+        Label        -compare-lessequal-17-join 
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

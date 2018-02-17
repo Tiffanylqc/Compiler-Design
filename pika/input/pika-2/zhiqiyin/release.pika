@@ -1,0 +1,37 @@
+exec
+{
+	var a := [1,2,3].
+	var b := [[1,2], [3,4], [5]].
+	var c := ["asd", "sdf", "dfg"].
+	var d := [["asd", "asd"], ["asd"], ["sad0", "12"]].
+	print a,_n_,b,_n_,c,_n_,d,_n_.
+
+	print "array a,b";_n_.
+	print ":".
+	release a.
+	print _n_,":";.
+	release a.
+	print _n_,":";.
+	release b[0].
+	print _n_,":";.
+	release b[1].
+	print _n_,":";.
+	release b.
+	print _n_,":";.
+	release b.
+	print _n_,"array c";_n_,":";.
+	release "asd".
+	print _n_,":";.
+	release c[0].
+	print _n_,":";.
+	release c[1].
+	print _n_,":";.
+	release c.
+	print _n_,":";.
+	release c.
+	print _n_,"array d";_n_,":";.
+	release d.
+	print _n_,":";.
+	release d.
+	print _n_.
+}

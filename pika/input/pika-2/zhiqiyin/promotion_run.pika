@@ -1,0 +1,14 @@
+exec
+{
+	print [^a^|int],_n_.
+	const c := ^a^.
+	const i := 10.
+	const r := 1//2.
+	const f := 100.550.
+
+	print c+c;c+i;c+r;c+f;_n_.
+	print i+c;i+i;i+r;i+f;_n_.
+	print r+c;r+i;r+r;_n_.
+	print f+c;f+i;f+f;_n_.
+	print !_true_;!_false_;5<=8;_n_.
+} 

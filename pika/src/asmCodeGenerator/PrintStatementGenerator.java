@@ -62,6 +62,7 @@ public class PrintStatementGenerator {
 	
 	private void printArray(ParseNode node){
 		Array type=(Array)node.getType();
+		Type tmpType;
 		while(type.getSubtype() instanceof Array){
 			type=(Array) type.getSubtype();
 		}
@@ -74,8 +75,9 @@ public class PrintStatementGenerator {
 			code.add(PushI,3);
 		else if(oneDimType==PrimitiveType.STRING)
 			code.add(PushI,4);
-		else if(oneDimType==PrimitiveType.RATIONAL)
+		else if(oneDimType==PrimitiveType.RATIONAL){
 			code.add(PushI,5);
+		}	
 		else if(oneDimType==PrimitiveType.BOOLEAN)
 			code.add(PushI,6);
 		

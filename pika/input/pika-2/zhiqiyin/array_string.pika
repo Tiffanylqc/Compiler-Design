@@ -1,0 +1,18 @@
+exec
+{
+	var a := "asd".
+	const c := "".
+	const b := a.
+	var d := "asd".
+	print a;b;c;d;_n_.
+	print a==a;a!=a;a==b;a!=b;a==d;a!=d;_n_.
+
+	var aa := ["asd", "", "66666"].
+	const bb := [["aaa", "bbb", "ccc"], ["ddd", "eee"]].
+	print aa;bb;_n_.
+	const cc := new[string](3).
+	cc[0] := "asdasdasd".
+	cc[1] := "".
+	cc[2] := "6666".
+	print cc,_n_.
+}

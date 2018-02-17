@@ -1,0 +1,4 @@
+exec{
+	var a:=11.2.
+	print a+_true_.
+}

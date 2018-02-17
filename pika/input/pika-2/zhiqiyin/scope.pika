@@ -1,0 +1,29 @@
+exec
+{
+	var a := 5.
+	print "a = ";a,_n_.
+	a := 4.
+	print "a = ";a,_n_.
+
+	{
+		a := 3.
+		print "a = ";a,_n_.
+	}
+
+	{
+		var a := 2.
+		print "a = ";a,_n_.
+
+		{
+			var a := 1.
+			print "a = ";a,_n_.
+		}
+
+		print "a = ";a,_n_.
+	}
+
+	print "a = ";a,_n_.
+
+	a := 0.
+	print "a = ";a,_n_.
+}
