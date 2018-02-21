@@ -205,7 +205,12 @@
         PushD        $index-out-of-bound-error 
         Jump         $$general-runtime-error   
         DLabel       $zero-denominator-error   
-        DataC        122                       %% "zero denominator"
+        DataC        111                       %% "over zero denominator"
+        DataC        118                       
+        DataC        101                       
+        DataC        114                       
+        DataC        32                        
+        DataC        122                       
         DataC        101                       
         DataC        114                       
         DataC        111                       
@@ -637,11 +642,12 @@
         LoadI                                  
         Exchange                               
         PushI        4                         
+        Add                                    
         LoadI                                  
         Call         $print-rational           
         Jump         -print-array-recursive-3-join-label 
         Label        -print-array-recursive-3-bool-label 
-        LoadI                                  
+        LoadC                                  
         Call         $convert-to-string-if-bool-subroutine 
         PushD        $print-format-boolean     
         Printf                                 
@@ -960,7 +966,6 @@
         Label        -release-record-7-release 
         Duplicate                              
         Duplicate                              
-        PStack                                 
         PushI        4                         
         Add                                    
         LoadI                                  
@@ -1030,7 +1035,7 @@
         PushI        5                         
         Add                                    %% d
         LoadI                                  
-        PushI        255                       
+        PushI        127                       
         BTAnd                                  
         StoreC                                 
         PushD        $global-memory-block      

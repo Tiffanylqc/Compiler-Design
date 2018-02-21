@@ -5,6 +5,8 @@ import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 import static asmCodeGenerator.runtime.Record.ARRAY_HEADER_SIZE;
 import static asmCodeGenerator.runtime.Record.STRING_HEADER_SIZE;
 import static asmCodeGenerator.runtime.Record.STRING_LENGTH_OFFSET;
+import static asmCodeGenerator.runtime.RunTime.ARRAY_INDEXING_ARRAY;
+import static asmCodeGenerator.runtime.RunTime.NULL_ARRAY_RUNTIME_ERROR;
 
 import asmCodeGenerator.Labeller;
 import asmCodeGenerator.Macros;
@@ -99,6 +101,9 @@ public class RunTime {
 	public static final String RELEASE_RECORD = "$release-record";
 	public static final String RELEASE_RECORD_RETURN_ADDRESS = "$release-record-return-address";
 	
+	public static final String SUBTRACT_RATIONAL = "$subtract-rational";
+	public static final String SUBTRACT_RATIONAL_RETURN_ADDRESS = "$subtract-rational-return-address";
+	
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
 		result.append(jumpToMain());
@@ -112,6 +117,7 @@ public class RunTime {
 		result.append(printString());
 		result.append(convertToStringIfBoolean());
 		result.append(releaseRecordRecursive());
+		result.append(subtractRational());
 		
 		result.add(DLabel, USABLE_MEMORY_START);
 		return result;
@@ -459,6 +465,9 @@ public class RunTime {
 		
 		//[...arrAddr]->[...arrAddr]
 		//store the length of array and start address of elements
+		frag.add(Duplicate);// [… arr]
+		frag.add(JumpFalse, NULL_ARRAY_RUNTIME_ERROR);// [… ]
+		
 		frag.add(Duplicate);
 		frag.add(Duplicate);
 		frag.add(Duplicate);
@@ -786,6 +795,40 @@ public class RunTime {
 		return code;
 	}
 
+	private ASMCodeFragment subtractRational(){
+		ASMCodeFragment code=new ASMCodeFragment(CodeType.GENERATES_VALUE);
+		
+		code.add(Label,SUBTRACT_RATIONAL);
+		
+		declareI(code,SUBTRACT_RATIONAL_RETURN_ADDRESS);
+		storeITo(code,SUBTRACT_RATIONAL_RETURN_ADDRESS);
+		
+		storeITo(code,RunTime.RATIONAL_DENOMINATOR_TEMP2);
+		storeITo(code,RunTime.RATIONAL_NUMERATOR_TEMP2);
+		storeITo(code,RunTime.RATIONAL_DENOMINATOR_TEMP);
+		storeITo(code,RunTime.RATIONAL_NUMERATOR_TEMP);
+		
+		
+		loadIFrom(code,RunTime.RATIONAL_DENOMINATOR_TEMP);
+		loadIFrom(code,RunTime.RATIONAL_DENOMINATOR_TEMP2);
+		code.add(Multiply);
+		//[...deno1*deno2]
+		loadIFrom(code,RunTime.RATIONAL_DENOMINATOR_TEMP2);
+		loadIFrom(code,RunTime.RATIONAL_NUMERATOR_TEMP);
+		code.add(Multiply);
+		loadIFrom(code,RunTime.RATIONAL_DENOMINATOR_TEMP);
+		loadIFrom(code,RunTime.RATIONAL_NUMERATOR_TEMP2);
+		code.add(Multiply);
+		
+		code.add(Subtract);
+		//[...deno1*deno2 deno2*num1-deno1*num2]
+		code.add(Exchange);
+		code.add(Call,RunTime.LOWEST_TERMS);
+		loadIFrom(code,SUBTRACT_RATIONAL_RETURN_ADDRESS);
+		code.add(Return);
+		return code;
+	}
+	
 	private ASMCodeFragment printRational(){
 		ASMCodeFragment code=new ASMCodeFragment(CodeType.GENERATES_VOID);
 		
@@ -805,6 +848,9 @@ public class RunTime {
 		storeITo(code,RunTime.RATIONAL_PRINT_SIGN);//sign=1
 		//[...numerator denominator]
 //		code.add(PStack);
+		code.add(Duplicate);
+		code.add(JumpFalse,RunTime.OVER_ZERO_DENOMINATOR_RUNTIME_ERROR);
+		
 		code.add(Duplicate);
 		code.add(JumpPos,denominatorPos);
 		loadIFrom(code, RunTime.RATIONAL_PRINT_SIGN);

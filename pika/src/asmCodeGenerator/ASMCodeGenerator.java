@@ -338,7 +338,6 @@ public class ASMCodeGenerator {
 		// expressions
 		public void visitLeave(OperatorNode node) {
 			Lextant operator = node.getOperator();
-
 			if(operator == Punctuator.GREATER) {
 				visitGreaterOperatorNode(node, operator);
 			}
@@ -408,7 +407,6 @@ public class ASMCodeGenerator {
 		}
 		
 		private void visitGreaterOperatorNode(OperatorNode node, Lextant operator) {
-
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
 			ASMCodeFragment arg2 = removeValueCode(node.child(1));
 			
@@ -421,7 +419,7 @@ public class ASMCodeGenerator {
 			String falseLabel = labeller.newLabel("false");
 			String joinLabel  = labeller.newLabel("join");
 			
-			
+//			code.add(PStack);
 			if(node.child(0).getType()==PrimitiveType.FLOATING){
 				newValueCode(node);
 				code.add(Label, startLabel);
@@ -441,6 +439,29 @@ public class ASMCodeGenerator {
 				code.add(PushI, 0);
 				code.add(Jump, joinLabel);
 				code.add(Label, joinLabel);
+			}
+			else if(node.child(0).getType()==PrimitiveType.RATIONAL){
+				String negDenominator=labeller.newLabel("neg-denominator");
+				
+				newValueCode(node);
+				code.append(arg1);
+				code.append(arg2);
+				code.add(Call,RunTime.SUBTRACT_RATIONAL);
+				//[...num deno]
+				code.add(JumpNeg,negDenominator);
+				code.add(JumpPos,trueLabel);
+				code.add(Jump,falseLabel);
+				code.add(Label,negDenominator);
+				code.add(JumpNeg,trueLabel);
+				code.add(Jump,falseLabel);
+				
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label,joinLabel);
 			}
 			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
 			{
@@ -498,6 +519,29 @@ public class ASMCodeGenerator {
 				code.add(PushI, 0);
 				code.add(Jump, joinLabel);
 				code.add(Label, joinLabel);
+			}
+			else if(node.child(0).getType()==PrimitiveType.RATIONAL){
+				String negDenominator=labeller.newLabel("neg-denominator");
+				
+				newValueCode(node);
+				code.append(arg1);
+				code.append(arg2);
+				code.add(Call,RunTime.SUBTRACT_RATIONAL);
+				//[...num deno]
+				code.add(JumpNeg,negDenominator);
+				code.add(JumpNeg,trueLabel);
+				code.add(Jump,falseLabel);
+				code.add(Label,negDenominator);
+				code.add(JumpPos,trueLabel);
+				code.add(Jump,falseLabel);
+				
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label,joinLabel);
 			}
 			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
 			{
@@ -557,6 +601,29 @@ public class ASMCodeGenerator {
 				code.add(Jump, joinLabel);
 				code.add(Label, joinLabel);
 			}
+			else if(node.child(0).getType()==PrimitiveType.RATIONAL){
+				String negDenominator=labeller.newLabel("neg-denominator");
+				
+				newValueCode(node);
+				code.append(arg1);
+				code.append(arg2);
+				code.add(Call,RunTime.SUBTRACT_RATIONAL);
+				//[...num deno]
+				code.add(JumpNeg,negDenominator);
+				code.add(JumpNeg,falseLabel);
+				code.add(Jump,trueLabel);
+				code.add(Label,negDenominator);
+				code.add(JumpPos,falseLabel);
+				code.add(Jump,trueLabel);
+				
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label,joinLabel);
+			}
 			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
 			{
 				newValueCode(node);
@@ -615,6 +682,29 @@ public class ASMCodeGenerator {
 				code.add(Jump, joinLabel);
 				code.add(Label, joinLabel);
 			}
+			else if(node.child(0).getType()==PrimitiveType.RATIONAL){
+				String negDenominator=labeller.newLabel("neg-denominator");
+				
+				newValueCode(node);
+				code.append(arg1);
+				code.append(arg2);
+				code.add(Call,RunTime.SUBTRACT_RATIONAL);
+				//[...num deno]
+				code.add(JumpNeg,negDenominator);
+				code.add(JumpPos,falseLabel);
+				code.add(Jump,trueLabel);
+				code.add(Label,negDenominator);
+				code.add(JumpNeg,falseLabel);
+				code.add(Jump,trueLabel);
+				
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label,joinLabel);
+			}
 			else//if(node.child(0).getType()==PrimitiveType.INTEGER||node.child(0).getType()==PrimitiveType.CHARACTER)
 			{
 				newValueCode(node);
@@ -665,6 +755,23 @@ public class ASMCodeGenerator {
 				code.add(JumpFZero, trueLabel);//if arg1-arg2==0 then true
 				code.add(Jump, falseLabel);
 	
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else if(node.child(0).getType()==PrimitiveType.RATIONAL){
+				newValueCode(node);
+				code.append(arg1);
+				code.append(arg2);
+				code.add(Call,RunTime.SUBTRACT_RATIONAL);
+				code.add(Pop);
+				code.add(JumpFalse,trueLabel);
+				code.add(Jump,falseLabel);
+				
 				code.add(Label, trueLabel);
 				code.add(PushI, 1);
 				code.add(Jump, joinLabel);
@@ -729,6 +836,23 @@ public class ASMCodeGenerator {
 				code.add(Jump, joinLabel);
 				code.add(Label, trueLabel);
 				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, joinLabel);
+			}
+			else if(node.child(0).getType()==PrimitiveType.RATIONAL){
+				newValueCode(node);
+				code.append(arg1);
+				code.append(arg2);
+				code.add(Call,RunTime.SUBTRACT_RATIONAL);
+				code.add(Pop);
+				code.add(JumpFalse,falseLabel);
+				code.add(Jump,trueLabel);
+				
+				code.add(Label, trueLabel);
+				code.add(PushI, 1);
+				code.add(Jump, joinLabel);
+				code.add(Label, falseLabel);
+				code.add(PushI, 0);
 				code.add(Jump, joinLabel);
 				code.add(Label, joinLabel);
 			}

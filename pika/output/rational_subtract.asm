@@ -495,6 +495,8 @@
         DLabel       -print-array-recursive-3-elem-size 
         DataZ        4                         
         Duplicate                              
+        JumpFalse    $$null-array              
+        Duplicate                              
         Duplicate                              
         Duplicate                              
         PushI        16                        
@@ -642,11 +644,12 @@
         LoadI                                  
         Exchange                               
         PushI        4                         
+        Add                                    
         LoadI                                  
         Call         $print-rational           
         Jump         -print-array-recursive-3-join-label 
         Label        -print-array-recursive-3-bool-label 
-        LoadI                                  
+        LoadC                                  
         Call         $convert-to-string-if-bool-subroutine 
         PushD        $print-format-boolean     
         Printf                                 
@@ -700,6 +703,8 @@
         PushD        $rational-print-sign      
         Exchange                               
         StoreI                                 
+        Duplicate                              
+        JumpFalse    $$over-zero-denominator   
         Duplicate                              
         JumpPos      -print-rational-4-denominator-pos 
         PushD        $rational-print-sign      
@@ -965,7 +970,6 @@
         Label        -release-record-7-release 
         Duplicate                              
         Duplicate                              
-        PStack                                 
         PushI        4                         
         Add                                    
         LoadI                                  
@@ -979,6 +983,45 @@
         Call         -mem-manager-deallocate   
         Label        -release-record-7-end     
         PushD        $release-record-return-address 
+        LoadI                                  
+        Return                                 
+        Label        $subtract-rational        
+        DLabel       $subtract-rational-return-address 
+        DataZ        4                         
+        PushD        $subtract-rational-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        Subtract                               
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        PushD        $subtract-rational-return-address 
         LoadI                                  
         Return                                 
         DLabel       $usable-memory-start      
@@ -1061,36 +1104,7 @@
         PushI        4                         
         Add                                    
         LoadI                                  
-        PushD        $rational-denominator-temp2 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp2 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-denominator-temp 
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-numerator-temp  
-        Exchange                               
-        StoreI                                 
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $rational-denominator-temp2 
-        LoadI                                  
-        Multiply                               
-        PushD        $rational-denominator-temp2 
-        LoadI                                  
-        PushD        $rational-numerator-temp  
-        LoadI                                  
-        Multiply                               
-        PushD        $rational-denominator-temp 
-        LoadI                                  
-        PushD        $rational-numerator-temp2 
-        LoadI                                  
-        Multiply                               
-        Subtract                               
-        Exchange                               
-        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
         Call         $print-rational           
         Halt                                   
         Label        -mem-manager-make-tags    

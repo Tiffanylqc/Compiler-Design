@@ -704,6 +704,8 @@
         Exchange                               
         StoreI                                 
         Duplicate                              
+        JumpFalse    $$over-zero-denominator   
+        Duplicate                              
         JumpPos      -print-rational-4-denominator-pos 
         PushD        $rational-print-sign      
         LoadI                                  
@@ -983,249 +985,1169 @@
         PushD        $release-record-return-address 
         LoadI                                  
         Return                                 
+        Label        $subtract-rational        
+        DLabel       $subtract-rational-return-address 
+        DataZ        4                         
+        PushD        $subtract-rational-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        Subtract                               
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        PushD        $subtract-rational-return-address 
+        LoadI                                  
+        Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        8                         
+        DataZ        0                         
         Label        $$main                    
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        PushI        6999                      
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% a
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        LoadI                                  
         PushI        1                         
-        Add                                    
-        Duplicate                              
-        JumpNeg      $$negative-length-array   
-        Duplicate                              
-        PushI        4                         
-        Multiply                               
-        Duplicate                              
-        PushD        $array-datasize-temp      
-        Exchange                               
-        StoreI                                 
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
-        Exchange                               
-        StoreI                                 
-        PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-8-neg-denominator 
+        JumpNeg      -compare-less-8-true      
+        Jump         -compare-less-8-false     
+        Label        -compare-less-8-neg-denominator 
+        JumpPos      -compare-less-8-true      
+        Jump         -compare-less-8-false     
+        Label        -compare-less-8-true      
+        PushI        1                         
+        Jump         -compare-less-8-join      
+        Label        -compare-less-8-false     
         PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
+        Jump         -compare-less-8-join      
+        Label        -compare-less-8-join      
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-9-neg-denominator 
+        JumpNeg      -compare-less-9-true      
+        Jump         -compare-less-9-false     
+        Label        -compare-less-9-neg-denominator 
+        JumpPos      -compare-less-9-true      
+        Jump         -compare-less-9-false     
+        Label        -compare-less-9-true      
+        PushI        1                         
+        Jump         -compare-less-9-join      
+        Label        -compare-less-9-false     
+        PushI        0                         
+        Jump         -compare-less-9-join      
+        Label        -compare-less-9-join      
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-10-neg-denominator 
+        JumpNeg      -compare-less-10-true     
+        Jump         -compare-less-10-false    
+        Label        -compare-less-10-neg-denominator 
+        JumpPos      -compare-less-10-true     
+        Jump         -compare-less-10-false    
+        Label        -compare-less-10-true     
+        PushI        1                         
+        Jump         -compare-less-10-join     
+        Label        -compare-less-10-false    
+        PushI        0                         
+        Jump         -compare-less-10-join     
+        Label        -compare-less-10-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-11-neg-denominator 
+        JumpNeg      -compare-less-11-true     
+        Jump         -compare-less-11-false    
+        Label        -compare-less-11-neg-denominator 
+        JumpPos      -compare-less-11-true     
+        Jump         -compare-less-11-false    
+        Label        -compare-less-11-true     
+        PushI        1                         
+        Jump         -compare-less-11-join     
+        Label        -compare-less-11-false    
+        PushI        0                         
+        Jump         -compare-less-11-join     
+        Label        -compare-less-11-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-12-neg-denominator 
+        JumpNeg      -compare-less-12-true     
+        Jump         -compare-less-12-false    
+        Label        -compare-less-12-neg-denominator 
+        JumpPos      -compare-less-12-true     
+        Jump         -compare-less-12-false    
+        Label        -compare-less-12-true     
+        PushI        1                         
+        Jump         -compare-less-12-join     
+        Label        -compare-less-12-false    
+        PushI        0                         
+        Jump         -compare-less-12-join     
+        Label        -compare-less-12-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-13-neg-denominator 
+        JumpNeg      -compare-less-13-true     
+        Jump         -compare-less-13-false    
+        Label        -compare-less-13-neg-denominator 
+        JumpPos      -compare-less-13-true     
+        Jump         -compare-less-13-false    
+        Label        -compare-less-13-true     
+        PushI        1                         
+        Jump         -compare-less-13-join     
+        Label        -compare-less-13-false    
+        PushI        0                         
+        Jump         -compare-less-13-join     
+        Label        -compare-less-13-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-14-neg-denominator 
+        JumpNeg      -compare-less-14-true     
+        Jump         -compare-less-14-false    
+        Label        -compare-less-14-neg-denominator 
+        JumpPos      -compare-less-14-true     
+        Jump         -compare-less-14-false    
+        Label        -compare-less-14-true     
+        PushI        1                         
+        Jump         -compare-less-14-join     
+        Label        -compare-less-14-false    
+        PushI        0                         
+        Jump         -compare-less-14-join     
+        Label        -compare-less-14-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-15-neg-denominator 
+        JumpNeg      -compare-less-15-true     
+        Jump         -compare-less-15-false    
+        Label        -compare-less-15-neg-denominator 
+        JumpPos      -compare-less-15-true     
+        Jump         -compare-less-15-false    
+        Label        -compare-less-15-true     
+        PushI        1                         
+        Jump         -compare-less-15-join     
+        Label        -compare-less-15-false    
+        PushI        0                         
+        Jump         -compare-less-15-join     
+        Label        -compare-less-15-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-16-neg-denominator 
+        JumpNeg      -compare-less-16-true     
+        Jump         -compare-less-16-false    
+        Label        -compare-less-16-neg-denominator 
+        JumpPos      -compare-less-16-true     
+        Jump         -compare-less-16-false    
+        Label        -compare-less-16-true     
+        PushI        1                         
+        Jump         -compare-less-16-join     
+        Label        -compare-less-16-false    
+        PushI        0                         
+        Jump         -compare-less-16-join     
+        Label        -compare-less-16-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-17-neg-denominator 
+        JumpNeg      -compare-less-17-true     
+        Jump         -compare-less-17-false    
+        Label        -compare-less-17-neg-denominator 
+        JumpPos      -compare-less-17-true     
+        Jump         -compare-less-17-false    
+        Label        -compare-less-17-true     
+        PushI        1                         
+        Jump         -compare-less-17-join     
+        Label        -compare-less-17-false    
+        PushI        0                         
+        Jump         -compare-less-17-join     
+        Label        -compare-less-17-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-18-neg-denominator 
+        JumpNeg      -compare-less-18-true     
+        Jump         -compare-less-18-false    
+        Label        -compare-less-18-neg-denominator 
+        JumpPos      -compare-less-18-true     
+        Jump         -compare-less-18-false    
+        Label        -compare-less-18-true     
+        PushI        1                         
+        Jump         -compare-less-18-join     
+        Label        -compare-less-18-false    
+        PushI        0                         
+        Jump         -compare-less-18-join     
+        Label        -compare-less-18-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-19-neg-denominator 
+        JumpNeg      -compare-less-19-true     
+        Jump         -compare-less-19-false    
+        Label        -compare-less-19-neg-denominator 
+        JumpPos      -compare-less-19-true     
+        Jump         -compare-less-19-false    
+        Label        -compare-less-19-true     
+        PushI        1                         
+        Jump         -compare-less-19-join     
+        Label        -compare-less-19-false    
+        PushI        0                         
+        Jump         -compare-less-19-join     
+        Label        -compare-less-19-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-20-neg-denominator 
+        JumpNeg      -compare-less-20-true     
+        Jump         -compare-less-20-false    
+        Label        -compare-less-20-neg-denominator 
+        JumpPos      -compare-less-20-true     
+        Jump         -compare-less-20-false    
+        Label        -compare-less-20-true     
+        PushI        1                         
+        Jump         -compare-less-20-join     
+        Label        -compare-less-20-false    
+        PushI        0                         
+        Jump         -compare-less-20-join     
+        Label        -compare-less-20-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-21-neg-denominator 
+        JumpNeg      -compare-less-21-true     
+        Jump         -compare-less-21-false    
+        Label        -compare-less-21-neg-denominator 
+        JumpPos      -compare-less-21-true     
+        Jump         -compare-less-21-false    
+        Label        -compare-less-21-true     
+        PushI        1                         
+        Jump         -compare-less-21-join     
+        Label        -compare-less-21-false    
+        PushI        0                         
+        Jump         -compare-less-21-join     
+        Label        -compare-less-21-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-22-neg-denominator 
+        JumpNeg      -compare-less-22-true     
+        Jump         -compare-less-22-false    
+        Label        -compare-less-22-neg-denominator 
+        JumpPos      -compare-less-22-true     
+        Jump         -compare-less-22-false    
+        Label        -compare-less-22-true     
+        PushI        1                         
+        Jump         -compare-less-22-join     
+        Label        -compare-less-22-false    
+        PushI        0                         
+        Jump         -compare-less-22-join     
+        Label        -compare-less-22-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-23-neg-denominator 
+        JumpNeg      -compare-less-23-true     
+        Jump         -compare-less-23-false    
+        Label        -compare-less-23-neg-denominator 
+        JumpPos      -compare-less-23-true     
+        Jump         -compare-less-23-false    
+        Label        -compare-less-23-true     
+        PushI        1                         
+        Jump         -compare-less-23-join     
+        Label        -compare-less-23-false    
+        PushI        0                         
+        Jump         -compare-less-23-join     
+        Label        -compare-less-23-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        1                         
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-24-neg-denominator 
+        JumpNeg      -compare-less-24-true     
+        Jump         -compare-less-24-false    
+        Label        -compare-less-24-neg-denominator 
+        JumpPos      -compare-less-24-true     
+        Jump         -compare-less-24-false    
+        Label        -compare-less-24-true     
+        PushI        1                         
+        Jump         -compare-less-24-join     
+        Label        -compare-less-24-false    
+        PushI        0                         
+        Jump         -compare-less-24-join     
+        Label        -compare-less-24-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-25-neg-denominator 
+        JumpNeg      -compare-less-25-true     
+        Jump         -compare-less-25-false    
+        Label        -compare-less-25-neg-denominator 
+        JumpPos      -compare-less-25-true     
+        Jump         -compare-less-25-false    
+        Label        -compare-less-25-true     
+        PushI        1                         
+        Jump         -compare-less-25-join     
+        Label        -compare-less-25-false    
+        PushI        0                         
+        Jump         -compare-less-25-join     
+        Label        -compare-less-25-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-26-neg-denominator 
+        JumpNeg      -compare-less-26-true     
+        Jump         -compare-less-26-false    
+        Label        -compare-less-26-neg-denominator 
+        JumpPos      -compare-less-26-true     
+        Jump         -compare-less-26-false    
+        Label        -compare-less-26-true     
+        PushI        1                         
+        Jump         -compare-less-26-join     
+        Label        -compare-less-26-false    
+        PushI        0                         
+        Jump         -compare-less-26-join     
+        Label        -compare-less-26-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-27-neg-denominator 
+        JumpNeg      -compare-less-27-true     
+        Jump         -compare-less-27-false    
+        Label        -compare-less-27-neg-denominator 
+        JumpPos      -compare-less-27-true     
+        Jump         -compare-less-27-false    
+        Label        -compare-less-27-true     
+        PushI        1                         
+        Jump         -compare-less-27-join     
+        Label        -compare-less-27-false    
+        PushI        0                         
+        Jump         -compare-less-27-join     
+        Label        -compare-less-27-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-28-neg-denominator 
+        JumpNeg      -compare-less-28-true     
+        Jump         -compare-less-28-false    
+        Label        -compare-less-28-neg-denominator 
+        JumpPos      -compare-less-28-true     
+        Jump         -compare-less-28-false    
+        Label        -compare-less-28-true     
+        PushI        1                         
+        Jump         -compare-less-28-join     
+        Label        -compare-less-28-false    
+        PushI        0                         
+        Jump         -compare-less-28-join     
+        Label        -compare-less-28-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-29-neg-denominator 
+        JumpNeg      -compare-less-29-true     
+        Jump         -compare-less-29-false    
+        Label        -compare-less-29-neg-denominator 
+        JumpPos      -compare-less-29-true     
+        Jump         -compare-less-29-false    
+        Label        -compare-less-29-true     
+        PushI        1                         
+        Jump         -compare-less-29-join     
+        Label        -compare-less-29-false    
+        PushI        0                         
+        Jump         -compare-less-29-join     
+        Label        -compare-less-29-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        15                        
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-30-neg-denominator 
+        JumpNeg      -compare-less-30-true     
+        Jump         -compare-less-30-false    
+        Label        -compare-less-30-neg-denominator 
+        JumpPos      -compare-less-30-true     
+        Jump         -compare-less-30-false    
+        Label        -compare-less-30-true     
+        PushI        1                         
+        Jump         -compare-less-30-join     
+        Label        -compare-less-30-false    
+        PushI        0                         
+        Jump         -compare-less-30-join     
+        Label        -compare-less-30-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-31-neg-denominator 
+        JumpNeg      -compare-less-31-true     
+        Jump         -compare-less-31-false    
+        Label        -compare-less-31-neg-denominator 
+        JumpPos      -compare-less-31-true     
+        Jump         -compare-less-31-false    
+        Label        -compare-less-31-true     
+        PushI        1                         
+        Jump         -compare-less-31-join     
+        Label        -compare-less-31-false    
+        PushI        0                         
+        Jump         -compare-less-31-join     
+        Label        -compare-less-31-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-32-neg-denominator 
+        JumpNeg      -compare-less-32-true     
+        Jump         -compare-less-32-false    
+        Label        -compare-less-32-neg-denominator 
+        JumpPos      -compare-less-32-true     
+        Jump         -compare-less-32-false    
+        Label        -compare-less-32-true     
+        PushI        1                         
+        Jump         -compare-less-32-join     
+        Label        -compare-less-32-false    
+        PushI        0                         
+        Jump         -compare-less-32-join     
+        Label        -compare-less-32-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-33-neg-denominator 
+        JumpNeg      -compare-less-33-true     
+        Jump         -compare-less-33-false    
+        Label        -compare-less-33-neg-denominator 
+        JumpPos      -compare-less-33-true     
+        Jump         -compare-less-33-false    
+        Label        -compare-less-33-true     
+        PushI        1                         
+        Jump         -compare-less-33-join     
+        Label        -compare-less-33-false    
+        PushI        0                         
+        Jump         -compare-less-33-join     
+        Label        -compare-less-33-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        6                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-34-neg-denominator 
+        JumpNeg      -compare-less-34-true     
+        Jump         -compare-less-34-false    
+        Label        -compare-less-34-neg-denominator 
+        JumpPos      -compare-less-34-true     
+        Jump         -compare-less-34-false    
+        Label        -compare-less-34-true     
+        PushI        1                         
+        Jump         -compare-less-34-join     
+        Label        -compare-less-34-false    
+        PushI        0                         
+        Jump         -compare-less-34-join     
+        Label        -compare-less-34-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        PushI        -1                        
+        PushI        3                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-35-neg-denominator 
+        JumpNeg      -compare-less-35-true     
+        Jump         -compare-less-35-false    
+        Label        -compare-less-35-neg-denominator 
+        JumpPos      -compare-less-35-true     
+        Jump         -compare-less-35-false    
+        Label        -compare-less-35-true     
+        PushI        1                         
+        Jump         -compare-less-35-join     
+        Label        -compare-less-35-false    
+        PushI        0                         
+        Jump         -compare-less-35-join     
+        Label        -compare-less-35-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-36-neg-denominator 
+        JumpNeg      -compare-less-36-true     
+        Jump         -compare-less-36-false    
+        Label        -compare-less-36-neg-denominator 
+        JumpPos      -compare-less-36-true     
+        Jump         -compare-less-36-false    
+        Label        -compare-less-36-true     
+        PushI        1                         
+        Jump         -compare-less-36-join     
+        Label        -compare-less-36-false    
+        PushI        0                         
+        Jump         -compare-less-36-join     
+        Label        -compare-less-36-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-37-neg-denominator 
+        JumpNeg      -compare-less-37-true     
+        Jump         -compare-less-37-false    
+        Label        -compare-less-37-neg-denominator 
+        JumpPos      -compare-less-37-true     
+        Jump         -compare-less-37-false    
+        Label        -compare-less-37-true     
+        PushI        1                         
+        Jump         -compare-less-37-join     
+        Label        -compare-less-37-false    
+        PushI        0                         
+        Jump         -compare-less-37-join     
+        Label        -compare-less-37-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        PushI        -15                       
+        PushI        25                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-38-neg-denominator 
+        JumpNeg      -compare-less-38-true     
+        Jump         -compare-less-38-false    
+        Label        -compare-less-38-neg-denominator 
+        JumpPos      -compare-less-38-true     
+        Jump         -compare-less-38-false    
+        Label        -compare-less-38-true     
+        PushI        1                         
+        Jump         -compare-less-38-join     
+        Label        -compare-less-38-false    
+        PushI        0                         
+        Jump         -compare-less-38-join     
+        Label        -compare-less-38-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        PushI        -12                       
+        PushI        16                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-39-neg-denominator 
+        JumpNeg      -compare-less-39-true     
+        Jump         -compare-less-39-false    
+        Label        -compare-less-39-neg-denominator 
+        JumpPos      -compare-less-39-true     
+        Jump         -compare-less-39-false    
+        Label        -compare-less-39-true     
+        PushI        1                         
+        Jump         -compare-less-39-join     
+        Label        -compare-less-39-false    
+        PushI        0                         
+        Jump         -compare-less-39-join     
+        Label        -compare-less-39-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        1                         
+        PushI        -3                        
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-40-neg-denominator 
+        JumpNeg      -compare-less-40-true     
+        Jump         -compare-less-40-false    
+        Label        -compare-less-40-neg-denominator 
+        JumpPos      -compare-less-40-true     
+        Jump         -compare-less-40-false    
+        Label        -compare-less-40-true     
+        PushI        1                         
+        Jump         -compare-less-40-join     
+        Label        -compare-less-40-false    
+        PushI        0                         
+        Jump         -compare-less-40-join     
+        Label        -compare-less-40-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        -3                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-41-neg-denominator 
+        JumpNeg      -compare-less-41-true     
+        Jump         -compare-less-41-false    
+        Label        -compare-less-41-neg-denominator 
+        JumpPos      -compare-less-41-true     
+        Jump         -compare-less-41-false    
+        Label        -compare-less-41-true     
+        PushI        1                         
+        Jump         -compare-less-41-join     
+        Label        -compare-less-41-false    
+        PushI        0                         
+        Jump         -compare-less-41-join     
+        Label        -compare-less-41-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        -6                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-42-neg-denominator 
+        JumpNeg      -compare-less-42-true     
+        Jump         -compare-less-42-false    
+        Label        -compare-less-42-neg-denominator 
+        JumpPos      -compare-less-42-true     
+        Jump         -compare-less-42-false    
+        Label        -compare-less-42-true     
+        PushI        1                         
+        Jump         -compare-less-42-join     
+        Label        -compare-less-42-false    
+        PushI        0                         
+        Jump         -compare-less-42-join     
+        Label        -compare-less-42-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        1                         
+        PushI        -3                        
+        Call         $lowest-term-subroutine   
+        PushI        1                         
+        PushI        -3                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-43-neg-denominator 
+        JumpNeg      -compare-less-43-true     
+        Jump         -compare-less-43-false    
+        Label        -compare-less-43-neg-denominator 
+        JumpPos      -compare-less-43-true     
+        Jump         -compare-less-43-false    
+        Label        -compare-less-43-true     
+        PushI        1                         
+        Jump         -compare-less-43-join     
+        Label        -compare-less-43-false    
+        PushI        0                         
+        Jump         -compare-less-43-join     
+        Label        -compare-less-43-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        -16                       
+        Call         $lowest-term-subroutine   
+        PushI        15                        
+        PushI        -25                       
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-44-neg-denominator 
+        JumpNeg      -compare-less-44-true     
+        Jump         -compare-less-44-false    
+        Label        -compare-less-44-neg-denominator 
+        JumpPos      -compare-less-44-true     
+        Jump         -compare-less-44-false    
+        Label        -compare-less-44-true     
+        PushI        1                         
+        Jump         -compare-less-44-join     
+        Label        -compare-less-44-false    
+        PushI        0                         
+        Jump         -compare-less-44-join     
+        Label        -compare-less-44-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        15                        
+        PushI        -25                       
+        Call         $lowest-term-subroutine   
+        PushI        12                        
+        PushI        -16                       
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-45-neg-denominator 
+        JumpNeg      -compare-less-45-true     
+        Jump         -compare-less-45-false    
+        Label        -compare-less-45-neg-denominator 
+        JumpPos      -compare-less-45-true     
+        Jump         -compare-less-45-false    
+        Label        -compare-less-45-true     
+        PushI        1                         
+        Jump         -compare-less-45-join     
+        Label        -compare-less-45-false    
+        PushI        0                         
+        Jump         -compare-less-45-join     
+        Label        -compare-less-45-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        15                        
+        PushI        -25                       
+        Call         $lowest-term-subroutine   
+        PushI        15                        
+        PushI        -25                       
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-46-neg-denominator 
+        JumpNeg      -compare-less-46-true     
+        Jump         -compare-less-46-false    
+        Label        -compare-less-46-neg-denominator 
+        JumpPos      -compare-less-46-true     
+        Jump         -compare-less-46-false    
+        Label        -compare-less-46-true     
+        PushI        1                         
+        Jump         -compare-less-46-join     
+        Label        -compare-less-46-false    
+        PushI        0                         
+        Jump         -compare-less-46-join     
+        Label        -compare-less-46-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        12                        
+        PushI        -16                       
+        Call         $lowest-term-subroutine   
+        PushI        12                        
+        PushI        -16                       
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-47-neg-denominator 
+        JumpNeg      -compare-less-47-true     
+        Jump         -compare-less-47-false    
+        Label        -compare-less-47-neg-denominator 
+        JumpPos      -compare-less-47-true     
+        Jump         -compare-less-47-false    
+        Label        -compare-less-47-true     
+        PushI        1                         
+        Jump         -compare-less-47-join     
+        Label        -compare-less-47-false    
+        PushI        0                         
+        Jump         -compare-less-47-join     
+        Label        -compare-less-47-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        0                         
+        PushI        4                         
+        Duplicate                              
+        JumpFalse    $$i-divide-by-zero        
+        Divide                                 
+        PushI        1                         
+        PushI        1                         
+        PushI        -2                        
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-48-neg-denominator 
+        JumpNeg      -compare-less-48-true     
+        Jump         -compare-less-48-false    
+        Label        -compare-less-48-neg-denominator 
+        JumpPos      -compare-less-48-true     
+        Jump         -compare-less-48-false    
+        Label        -compare-less-48-true     
+        PushI        1                         
+        Jump         -compare-less-48-join     
+        Label        -compare-less-48-false    
+        PushI        0                         
+        Jump         -compare-less-48-join     
+        Label        -compare-less-48-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        -1                        
         PushI        2                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $array-datasize-temp      
-        LoadI                                  
-        Call         $clear-n-bytes-subroutine 
-        PushI        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        StoreI                                 
-        Label        -while-11-condition       
-        Label        -compare-greaterequal-8-arg1 
-        PushD        $global-memory-block      
+        Call         $lowest-term-subroutine   
         PushI        0                         
-        Add                                    %% i
-        LoadI                                  
-        Label        -compare-greaterequal-8-arg2 
-        PushI        0                         
-        Label        -compare-greaterequal-8-sub 
-        Subtract                               
-        JumpNeg      -compare-greaterequal-8-false 
-        Jump         -compare-greaterequal-8-true 
-        Label        -compare-greaterequal-8-true 
+        PushI        5                         
+        Call         $lowest-term-subroutine   
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-49-neg-denominator 
+        JumpNeg      -compare-less-49-true     
+        Jump         -compare-less-49-false    
+        Label        -compare-less-49-neg-denominator 
+        JumpPos      -compare-less-49-true     
+        Jump         -compare-less-49-false    
+        Label        -compare-less-49-true     
         PushI        1                         
-        Jump         -compare-greaterequal-8-join 
-        Label        -compare-greaterequal-8-false 
+        Jump         -compare-less-49-join     
+        Label        -compare-less-49-false    
         PushI        0                         
-        Jump         -compare-greaterequal-8-join 
-        Label        -compare-greaterequal-8-join 
-        JumpTrue     -while-11-true            
-        Jump         -while-11-false           
-        Label        -while-11-true            
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% a
-        LoadI                                  
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        LoadI                                  
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-9-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-9-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        PushI        10                        
-        Duplicate                              
-        JumpNeg      $$negative-length-array   
-        Duplicate                              
-        PushI        4                         
-        Multiply                               
-        Duplicate                              
-        PushD        $array-datasize-temp      
-        Exchange                               
-        StoreI                                 
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
-        Exchange                               
-        StoreI                                 
-        PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        0                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $array-datasize-temp      
-        LoadI                                  
-        Call         $clear-n-bytes-subroutine 
-        PushI        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% a
-        LoadI                                  
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        LoadI                                  
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-10-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-10-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        LoadI                                  
-        Call         $release-record           
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        LoadI                                  
+        Jump         -compare-less-49-join     
+        Label        -compare-less-49-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushI        97                        
         PushI        1                         
-        Subtract                               
-        StoreI                                 
-        Jump         -while-11-condition       
-        Label        -while-11-false           
-        Jump         -while-11-join            
-        Label        -while-11-join            
+        PushI        97                        
+        PushI        1                         
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-50-neg-denominator 
+        JumpNeg      -compare-less-50-true     
+        Jump         -compare-less-50-false    
+        Label        -compare-less-50-neg-denominator 
+        JumpPos      -compare-less-50-true     
+        Jump         -compare-less-50-false    
+        Label        -compare-less-50-true     
+        PushI        1                         
+        Jump         -compare-less-50-join     
+        Label        -compare-less-50-false    
+        PushI        0                         
+        Jump         -compare-less-50-join     
+        Label        -compare-less-50-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        98                        
+        PushI        1                         
+        PushI        97                        
+        PushI        1                         
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-51-neg-denominator 
+        JumpNeg      -compare-less-51-true     
+        Jump         -compare-less-51-false    
+        Label        -compare-less-51-neg-denominator 
+        JumpPos      -compare-less-51-true     
+        Jump         -compare-less-51-false    
+        Label        -compare-less-51-true     
+        PushI        1                         
+        Jump         -compare-less-51-join     
+        Label        -compare-less-51-false    
+        PushI        0                         
+        Jump         -compare-less-51-join     
+        Label        -compare-less-51-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushI        96                        
+        PushI        1                         
+        PushI        97                        
+        PushI        1                         
+        Call         $subtract-rational        
+        JumpNeg      -compare-less-52-neg-denominator 
+        JumpNeg      -compare-less-52-true     
+        Jump         -compare-less-52-false    
+        Label        -compare-less-52-neg-denominator 
+        JumpPos      -compare-less-52-true     
+        Jump         -compare-less-52-false    
+        Label        -compare-less-52-true     
+        PushI        1                         
+        Jump         -compare-less-52-join     
+        Label        -compare-less-52-false    
+        PushI        0                         
+        Jump         -compare-less-52-join     
+        Label        -compare-less-52-join     
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

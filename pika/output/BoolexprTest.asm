@@ -704,6 +704,8 @@
         Exchange                               
         StoreI                                 
         Duplicate                              
+        JumpFalse    $$over-zero-denominator   
+        Duplicate                              
         JumpPos      -print-rational-4-denominator-pos 
         PushD        $rational-print-sign      
         LoadI                                  
@@ -983,249 +985,380 @@
         PushD        $release-record-return-address 
         LoadI                                  
         Return                                 
+        Label        $subtract-rational        
+        DLabel       $subtract-rational-return-address 
+        DataZ        4                         
+        PushD        $subtract-rational-return-address 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp2 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-numerator-temp  
+        Exchange                               
+        StoreI                                 
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp2 
+        LoadI                                  
+        PushD        $rational-numerator-temp  
+        LoadI                                  
+        Multiply                               
+        PushD        $rational-denominator-temp 
+        LoadI                                  
+        PushD        $rational-numerator-temp2 
+        LoadI                                  
+        Multiply                               
+        Subtract                               
+        Exchange                               
+        Call         $lowest-term-subroutine   
+        PushD        $subtract-rational-return-address 
+        LoadI                                  
+        Return                                 
         DLabel       $usable-memory-start      
         DLabel       $global-memory-block      
-        DataZ        8                         
+        DataZ        9                         
         Label        $$main                    
         PushD        $global-memory-block      
         PushI        0                         
-        Add                                    %% i
-        PushI        6999                      
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        4                         
         Add                                    %% a
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        LoadI                                  
         PushI        1                         
-        Add                                    
-        Duplicate                              
-        JumpNeg      $$negative-length-array   
-        Duplicate                              
-        PushI        4                         
-        Multiply                               
-        Duplicate                              
-        PushD        $array-datasize-temp      
-        Exchange                               
-        StoreI                                 
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
-        Exchange                               
-        StoreI                                 
-        PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
         PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
+        StoreC                                 
+        PushD        $global-memory-block      
         PushI        2                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $array-datasize-temp      
-        LoadI                                  
-        Call         $clear-n-bytes-subroutine 
-        PushI        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        StoreI                                 
-        Label        -while-11-condition       
-        Label        -compare-greaterequal-8-arg1 
+        Add                                    %% c
         PushD        $global-memory-block      
         PushI        0                         
-        Add                                    %% i
-        LoadI                                  
-        Label        -compare-greaterequal-8-arg2 
-        PushI        0                         
-        Label        -compare-greaterequal-8-sub 
-        Subtract                               
-        JumpNeg      -compare-greaterequal-8-false 
-        Jump         -compare-greaterequal-8-true 
-        Label        -compare-greaterequal-8-true 
-        PushI        1                         
-        Jump         -compare-greaterequal-8-join 
-        Label        -compare-greaterequal-8-false 
-        PushI        0                         
-        Jump         -compare-greaterequal-8-join 
-        Label        -compare-greaterequal-8-join 
-        JumpTrue     -while-11-true            
-        Jump         -while-11-false           
-        Label        -while-11-true            
-        PushD        $global-memory-block      
-        PushI        4                         
         Add                                    %% a
-        LoadI                                  
+        LoadC                                  
+        Duplicate                              
+        JumpTrue     -SC-Or-9-short-circuit-true 
+        Pop                                    
+        PushI        1                         
+        PushI        0                         
+        Duplicate                              
+        JumpFalse    $$i-divide-by-zero        
+        Divide                                 
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castIntToBool-8-true     
+        Jump         -castIntToBool-8-false    
+        Label        -castIntToBool-8-true     
+        PushI        1                         
+        Jump         -castIntToBool-8-join     
+        Label        -castIntToBool-8-false    
+        PushI        0                         
+        Jump         -castIntToBool-8-join     
+        Label        -castIntToBool-8-join     
+        Jump         -SC-Or-9-end              
+        Label        -SC-Or-9-short-circuit-true 
+        Label        -SC-Or-9-end              
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        3                         
+        Add                                    %% c2
+        Label        -compare-boolAnd-11-arg1  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Duplicate                              
+        JumpFalse    -compare-boolAnd-11-false 
+        Pop                                    
+        PushI        1                         
+        PushI        0                         
+        Duplicate                              
+        JumpFalse    $$i-divide-by-zero        
+        Divide                                 
+        PushI        0                         
+        Subtract                               
+        JumpTrue     -castIntToBool-10-true    
+        Jump         -castIntToBool-10-false   
+        Label        -castIntToBool-10-true    
+        PushI        1                         
+        Jump         -castIntToBool-10-join    
+        Label        -castIntToBool-10-false   
+        PushI        0                         
+        Jump         -castIntToBool-10-join    
+        Label        -castIntToBool-10-join    
+        Jump         -compare-boolAnd-11-join  
+        Label        -compare-boolAnd-11-false 
+        Label        -compare-boolAnd-11-join  
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% d
+        Label        -compare-boolAnd-13-arg1  
+        Label        -compare-boolNot-12-arg1  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Label        -compare-boolNot-12-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-12-true  
+        Jump         -compare-boolNot-12-false 
+        Label        -compare-boolNot-12-true  
+        PushI        1                         
+        Jump         -compare-boolNot-12-join  
+        Label        -compare-boolNot-12-false 
+        PushI        0                         
+        Jump         -compare-boolNot-12-join  
+        Label        -compare-boolNot-12-join  
+        Duplicate                              
+        JumpFalse    -compare-boolAnd-13-false 
+        Pop                                    
         PushD        $global-memory-block      
         PushI        0                         
-        Add                                    %% i
-        LoadI                                  
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-9-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-9-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        PushI        10                        
+        Add                                    %% a
+        LoadC                                  
+        Jump         -compare-boolAnd-13-join  
+        Label        -compare-boolAnd-13-false 
+        Label        -compare-boolAnd-13-join  
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% e
+        Label        -compare-boolNot-15-arg1  
+        Label        -compare-boolNot-14-arg1  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Label        -compare-boolNot-14-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-14-true  
+        Jump         -compare-boolNot-14-false 
+        Label        -compare-boolNot-14-true  
+        PushI        1                         
+        Jump         -compare-boolNot-14-join  
+        Label        -compare-boolNot-14-false 
+        PushI        0                         
+        Jump         -compare-boolNot-14-join  
+        Label        -compare-boolNot-14-join  
+        Label        -compare-boolNot-15-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-15-true  
+        Jump         -compare-boolNot-15-false 
+        Label        -compare-boolNot-15-true  
+        PushI        1                         
+        Jump         -compare-boolNot-15-join  
+        Label        -compare-boolNot-15-false 
+        PushI        0                         
+        Jump         -compare-boolNot-15-join  
+        Label        -compare-boolNot-15-join  
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        6                         
+        Add                                    %% f
+        Label        -compare-boolNot-16-arg1  
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadC                                  
+        Label        -compare-boolNot-16-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-16-true  
+        Jump         -compare-boolNot-16-false 
+        Label        -compare-boolNot-16-true  
+        PushI        1                         
+        Jump         -compare-boolNot-16-join  
+        Label        -compare-boolNot-16-false 
+        PushI        0                         
+        Jump         -compare-boolNot-16-join  
+        Label        -compare-boolNot-16-join  
         Duplicate                              
-        JumpNeg      $$negative-length-array   
-        Duplicate                              
-        PushI        4                         
-        Multiply                               
-        Duplicate                              
-        PushD        $array-datasize-temp      
-        Exchange                               
-        StoreI                                 
-        PushI        16                        
-        Add                                    
-        Call         -mem-manager-allocate     
-        PushD        $record-creation-temp     
-        Exchange                               
-        StoreI                                 
+        JumpTrue     -SC-Or-17-short-circuit-true 
+        Pop                                    
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Jump         -SC-Or-17-end             
+        Label        -SC-Or-17-short-circuit-true 
+        Label        -SC-Or-17-end             
+        StoreC                                 
+        PushD        $global-memory-block      
         PushI        7                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        0                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        0                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $array-datasize-temp      
-        LoadI                                  
-        Call         $clear-n-bytes-subroutine 
-        PushI        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushD        $record-creation-temp     
-        LoadI                                  
-        StoreI                                 
+        Add                                    %% g
+        Label        -compare-boolNot-18-arg1  
         PushD        $global-memory-block      
-        PushI        4                         
+        PushI        0                         
         Add                                    %% a
-        LoadI                                  
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        LoadI                                  
-        PushD        $a-indexing-index         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        Exchange                               
-        StoreI                                 
-        PushD        $a-indexing-array         
-        LoadI                                  
-        JumpFalse    $$null-array              
-        PushD        $a-indexing-index         
-        LoadI                                  
-        JumpNeg      $$index-out-of-bound      
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        12                        
-        Add                                    
-        LoadI                                  
-        Subtract                               
-        JumpNeg      -array-indexing-10-in-bounds 
-        Jump         $$index-out-of-bound      
-        Label        -array-indexing-10-in-bounds 
-        Nop                                    
-        PushD        $a-indexing-array         
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $a-indexing-index         
-        LoadI                                  
-        PushI        4                         
-        Multiply                               
-        Add                                    
-        LoadI                                  
-        Call         $release-record           
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% i
-        LoadI                                  
+        LoadC                                  
+        Label        -compare-boolNot-18-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-18-true  
+        Jump         -compare-boolNot-18-false 
+        Label        -compare-boolNot-18-true  
         PushI        1                         
-        Subtract                               
-        StoreI                                 
-        Jump         -while-11-condition       
-        Label        -while-11-false           
-        Jump         -while-11-join            
-        Label        -while-11-join            
+        Jump         -compare-boolNot-18-join  
+        Label        -compare-boolNot-18-false 
+        PushI        0                         
+        Jump         -compare-boolNot-18-join  
+        Label        -compare-boolNot-18-join  
+        Duplicate                              
+        JumpTrue     -SC-Or-20-short-circuit-true 
+        Pop                                    
+        Label        -compare-boolAnd-19-arg1  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Duplicate                              
+        JumpFalse    -compare-boolAnd-19-false 
+        Pop                                    
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Jump         -compare-boolAnd-19-join  
+        Label        -compare-boolAnd-19-false 
+        Label        -compare-boolAnd-19-join  
+        Jump         -SC-Or-20-end             
+        Label        -SC-Or-20-short-circuit-true 
+        Label        -SC-Or-20-end             
+        Duplicate                              
+        JumpTrue     -SC-Or-21-short-circuit-true 
+        Pop                                    
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadC                                  
+        Jump         -SC-Or-21-end             
+        Label        -SC-Or-21-short-circuit-true 
+        Label        -SC-Or-21-end             
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% g2
+        Label        -compare-boolNot-22-arg1  
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadC                                  
+        Label        -compare-boolNot-22-not   
+        BNegate                                
+        JumpTrue     -compare-boolNot-22-true  
+        Jump         -compare-boolNot-22-false 
+        Label        -compare-boolNot-22-true  
+        PushI        1                         
+        Jump         -compare-boolNot-22-join  
+        Label        -compare-boolNot-22-false 
+        PushI        0                         
+        Jump         -compare-boolNot-22-join  
+        Label        -compare-boolNot-22-join  
+        Duplicate                              
+        JumpTrue     -SC-Or-25-short-circuit-true 
+        Pop                                    
+        Label        -compare-boolAnd-24-arg1  
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Duplicate                              
+        JumpFalse    -compare-boolAnd-24-false 
+        Pop                                    
+        PushD        $global-memory-block      
+        PushI        1                         
+        Add                                    %% b
+        LoadC                                  
+        Duplicate                              
+        JumpTrue     -SC-Or-23-short-circuit-true 
+        Pop                                    
+        PushD        $global-memory-block      
+        PushI        0                         
+        Add                                    %% a
+        LoadC                                  
+        Jump         -SC-Or-23-end             
+        Label        -SC-Or-23-short-circuit-true 
+        Label        -SC-Or-23-end             
+        Jump         -compare-boolAnd-24-join  
+        Label        -compare-boolAnd-24-false 
+        Label        -compare-boolAnd-24-join  
+        Jump         -SC-Or-25-end             
+        Label        -SC-Or-25-short-circuit-true 
+        Label        -SC-Or-25-end             
+        StoreC                                 
+        PushD        $global-memory-block      
+        PushI        2                         
+        Add                                    %% c
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        3                         
+        Add                                    %% c2
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% d
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        5                         
+        Add                                    %% e
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        6                         
+        Add                                    %% f
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        7                         
+        Add                                    %% g
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $global-memory-block      
+        PushI        8                         
+        Add                                    %% g2
+        LoadC                                  
+        Call         $convert-to-string-if-bool-subroutine 
+        PushD        $print-format-boolean     
+        Printf                                 
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

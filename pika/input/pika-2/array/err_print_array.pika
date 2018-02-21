@@ -1,0 +1,7 @@
+exec{
+	var a:= [1,2,3].
+	var b:= new[[[int]]](3).
+	b[0]:=[a].
+	b[1]:=new[[int]](2).
+	print b.
+}

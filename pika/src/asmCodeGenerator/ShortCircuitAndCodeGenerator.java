@@ -28,16 +28,9 @@ public class ShortCircuitAndCodeGenerator implements FullCodeGenerator {
 		frag.add(Pop);
 		frag.append(args[1]);//[...arg2]
 		
-		frag.add(JumpTrue, trueLabel);//if arg2 is true
-		frag.add(Jump, falseLabel);
-
-		frag.add(Label, trueLabel);
-		frag.add(PushI, 1);
 		frag.add(Jump, joinLabel);
 		
 		frag.add(Label, falseLabel);
-		frag.add(PushI, 0);
-		frag.add(Jump, joinLabel);
 		frag.add(Label, joinLabel);
 		
 		return frag;

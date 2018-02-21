@@ -330,11 +330,12 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 			FunctionSignature fSignature = new FunctionSignature(1,PrimitiveType.FLOATING, PrimitiveType.FLOATING, PrimitiveType.BOOLEAN);
 			FunctionSignature bSignature = new FunctionSignature(1,PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN, PrimitiveType.BOOLEAN);
 			FunctionSignature aSignature = new FunctionSignature(1,setS,new Array(S), new Array(S), PrimitiveType.BOOLEAN);
+			FunctionSignature rSignature = new FunctionSignature(1,PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.BOOLEAN);
 			if(comparison == Punctuator.EQUAL ||comparison == Punctuator.NOT_EQUAL) {
-				new FunctionSignatures(comparison,iSignature, sSignature, cSignature, fSignature, bSignature, aSignature);
+				new FunctionSignatures(comparison,iSignature, sSignature, cSignature, fSignature, bSignature, aSignature, rSignature);
 			}
 			else {
-				new FunctionSignatures(comparison,iSignature, cSignature, fSignature);
+				new FunctionSignatures(comparison,iSignature, cSignature, fSignature, rSignature);
 			}
 		}
 		// First, we use the operator itself (in this case the Punctuator ADD) as the key.

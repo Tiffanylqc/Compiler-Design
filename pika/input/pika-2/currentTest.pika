@@ -1,0 +1,6 @@
+exec{
+	var a:=[^a^,1,2,100,5.5].
+	const cla:=clone a.
+	cla[0]:=555.
+	print a,_n_,cla.
+}

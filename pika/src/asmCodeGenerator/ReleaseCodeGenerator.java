@@ -18,9 +18,11 @@ public class ReleaseCodeGenerator implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node) {
 		ASMCodeFragment frag=new ASMCodeFragment(CodeType.GENERATES_VOID);
 		//[...recordPtr]
-		
+//		frag.add(Memtop);
+//		frag.add(PStack);
 		frag.add(Call,RELEASE_RECORD);
-		
+//		frag.add(Memtop);
+//		frag.add(PStack);
 		return frag;
 	}
 
