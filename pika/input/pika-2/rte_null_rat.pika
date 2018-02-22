@@ -1,0 +1,7 @@
+exec{
+	var a:=new[rat](2).
+	#print a[0]///6.
+	#print a[0]////6.
+	#print [a[0]|int].
+	print [a[0]|float].
+}

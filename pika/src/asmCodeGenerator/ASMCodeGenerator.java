@@ -179,7 +179,9 @@ public class ASMCodeGenerator {
 				code.add(PushI,4);				// [... numerator a 4]
 				code.add(Add);					// [... numerator a+4]
 				code.add(LoadI);				// [... numerator a+4]-> [... numerator IMEM(a+4..a+7)(denominator)]
-				
+				//check the denominator != 0
+				code.add(Duplicate);
+				code.add(JumpFalse,RunTime.OVER_ZERO_DENOMINATOR_RUNTIME_ERROR);
 			}
 			else if(node.getType() instanceof Array){
 				code.add(LoadI);
@@ -921,6 +923,11 @@ public class ASMCodeGenerator {
 			newValueCode(node);
 			ASMCodeFragment arg = removeValueCode(node.child(0));
 			code.append(arg);
+			
+			//check null array
+			code.add(Duplicate);
+			code.add(JumpFalse,RunTime.NULL_ARRAY_RUNTIME_ERROR);
+			
 			readIOffset(code,Record.ARRAY_LENGTH_OFFSET);
 		}
 		

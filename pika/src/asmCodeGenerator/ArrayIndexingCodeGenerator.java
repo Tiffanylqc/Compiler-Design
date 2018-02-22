@@ -2,6 +2,8 @@ package asmCodeGenerator;
 
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
+import asmCodeGenerator.runtime.RunTime;
+
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 import parseTree.ParseNode;
 import semanticAnalyzer.types.Array;
@@ -20,6 +22,7 @@ public class ArrayIndexingCodeGenerator implements SimpleCodeGenerator {
 		ASMCodeFragment frag=new ASMCodeFragment(CodeType.GENERATES_ADDRESS);
 		
 		// [… arr index]
+		
 		Macros.storeITo(frag, ARRAY_INDEXING_INDEX);// [… arr]
 		Macros.storeITo(frag, ARRAY_INDEXING_ARRAY);// [… ]
 		

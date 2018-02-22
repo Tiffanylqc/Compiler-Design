@@ -1324,6 +1324,16 @@
         StoreI                                 
         StoreI                                 
         PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% _set2
+        LoadI                                  
+        PushI        1                         
+        Call         $print-array-subroutine   
+        PushD        $print-format-space       
+        Printf                                 
+        PushD        $print-format-newline     
+        Printf                                 
+        PushD        $global-memory-block      
         PushI        16                        
         Add                                    %% set
         PushI        4                         

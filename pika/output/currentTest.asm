@@ -318,6 +318,46 @@
         Label        $$negative-length-array   
         PushD        $negative-array-length    
         Jump         $$general-runtime-error   
+        DLabel       $null-string-runtime-error 
+        DataC        110                       %% "null string"
+        DataC        117                       
+        DataC        108                       
+        DataC        108                       
+        DataC        32                        
+        DataC        115                       
+        DataC        116                       
+        DataC        114                       
+        DataC        105                       
+        DataC        110                       
+        DataC        103                       
+        DataC        0                         
+        Label        $$null-string             
+        PushD        $null-string-runtime-error 
+        Jump         $$general-runtime-error   
+        DLabel       $release-null-record      
+        DataC        114                       %% "release null record"
+        DataC        101                       
+        DataC        108                       
+        DataC        101                       
+        DataC        97                        
+        DataC        115                       
+        DataC        101                       
+        DataC        32                        
+        DataC        110                       
+        DataC        117                       
+        DataC        108                       
+        DataC        108                       
+        DataC        32                        
+        DataC        114                       
+        DataC        101                       
+        DataC        99                        
+        DataC        111                       
+        DataC        114                       
+        DataC        100                       
+        DataC        0                         
+        Label        $$release-null-record     
+        PushD        $release-null-record      
+        Jump         $$general-runtime-error   
         DLabel       $a-indexing-array         
         DataZ        4                         
         DLabel       $a-indexing-index         
@@ -797,6 +837,8 @@
         Exchange                               
         StoreI                                 
         Duplicate                              
+        JumpFalse    $$null-string             
+        Duplicate                              
         PushI        12                        
         Add                                    
         PushD        $print-string-temp        
@@ -863,6 +905,8 @@
         PushD        $release-record-return-address 
         Exchange                               
         StoreI                                 
+        Duplicate                              
+        JumpFalse    $$release-null-record     
         Duplicate                              
         PushI        4                         
         Add                                    
@@ -1031,9 +1075,16 @@
         PushD        $global-memory-block      
         PushI        0                         
         Add                                    %% a
+        PushI        2                         
+        Duplicate                              
+        JumpNeg      $$negative-length-array   
+        Duplicate                              
         PushI        8                         
-        PushI        5                         
         Multiply                               
+        Duplicate                              
+        PushD        $array-datasize-temp      
+        Exchange                               
+        StoreI                                 
         PushI        16                        
         Add                                    
         Call         -mem-manager-allocate     
@@ -1054,134 +1105,37 @@
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        5                         
         PushD        $record-creation-temp     
         LoadI                                  
-        PushI        12                        
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        PushI        8                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        8                         
-        Add                                    
-        Exchange                               
-        StoreI                                 
-        DLabel       -populate-creation-8-elemAddr 
-        DataZ        4                         
-        PushD        $record-creation-temp     
-        LoadI                                  
-        Duplicate                              
         PushI        16                        
         Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
+        PushD        $array-datasize-temp      
         LoadI                                  
-        PushI        97                        
-        ConvertF                               
-        StoreF                                 
+        Call         $clear-n-bytes-subroutine 
         PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
+        PushD        $record-creation-temp     
         LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushI        1                         
-        ConvertF                               
-        StoreF                                 
         PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
         Add                                    
-        PushD        -populate-creation-8-elemAddr 
         Exchange                               
         StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushI        2                         
-        ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushI        100                       
-        ConvertF                               
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        PushF        5.500000                  
-        StoreF                                 
-        PushI        8                         
-        PushD        -populate-creation-8-elemAddr 
-        LoadI                                  
-        Add                                    
-        PushD        -populate-creation-8-elemAddr 
-        Exchange                               
-        StoreI                                 
-        StoreI                                 
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% cla
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
-        LoadI                                  
-        PushD        $cloned-array-temp        
-        Exchange                               
-        StoreI                                 
-        PushD        $cloned-array-temp        
-        LoadI                                  
-        PushI        0                         
-        Add                                    
-        LoadI                                  
-        PushD        $array-identifier-temp    
-        Exchange                               
-        StoreI                                 
-        PushD        $cloned-array-temp        
-        LoadI                                  
-        PushI        4                         
-        Add                                    
-        LoadI                                  
-        PushD        $array-status-temp        
-        Exchange                               
-        StoreI                                 
-        PushD        $cloned-array-temp        
+        PushD        $record-creation-temp     
         LoadI                                  
         PushI        12                        
         Add                                    
-        LoadI                                  
-        Duplicate                              
-        PushD        $array-length-temp        
         Exchange                               
         StoreI                                 
-        PushD        $cloned-array-temp        
+        PushD        $record-creation-temp     
         LoadI                                  
-        PushI        8                         
-        Add                                    
-        LoadI                                  
-        Duplicate                              
-        PushD        $array-subtype-size-temp  
-        Exchange                               
         StoreI                                 
+        PushD        $global-memory-block      
+        PushI        4                         
+        Add                                    %% b
+        PushI        2                         
+        Duplicate                              
+        JumpNeg      $$negative-length-array   
+        Duplicate                              
+        PushI        4                         
         Multiply                               
         Duplicate                              
         PushD        $array-datasize-temp      
@@ -1193,80 +1147,46 @@
         PushD        $record-creation-temp     
         Exchange                               
         StoreI                                 
-        PushD        $array-identifier-temp    
-        LoadI                                  
+        PushI        7                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        0                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushD        $array-status-temp        
-        LoadI                                  
+        PushI        0                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        4                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushD        $array-subtype-size-temp  
+        PushD        $record-creation-temp     
         LoadI                                  
+        PushI        16                        
+        Add                                    
+        PushD        $array-datasize-temp      
+        LoadI                                  
+        Call         $clear-n-bytes-subroutine 
+        PushI        4                         
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        8                         
         Add                                    
         Exchange                               
         StoreI                                 
-        PushD        $array-length-temp        
-        LoadI                                  
         PushD        $record-creation-temp     
         LoadI                                  
         PushI        12                        
         Add                                    
         Exchange                               
         StoreI                                 
-        PushI        0                         
-        PushD        $array-element-temp       
-        Exchange                               
-        StoreI                                 
-        Label        -clone-element-9-loop-start 
-        PushD        $array-datasize-temp      
-        LoadI                                  
-        PushD        $array-element-temp       
-        LoadI                                  
-        Subtract                               
-        JumpFalse    -clone-element-9-end      
-        PushD        $record-creation-temp     
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $array-element-temp       
-        LoadI                                  
-        Add                                    
-        PushD        $cloned-array-temp        
-        LoadI                                  
-        PushI        16                        
-        Add                                    
-        PushD        $array-element-temp       
-        LoadI                                  
-        Add                                    
-        LoadC                                  
-        StoreC                                 
-        PushI        1                         
-        PushD        $array-element-temp       
-        LoadI                                  
-        Add                                    
-        PushD        $array-element-temp       
-        Exchange                               
-        StoreI                                 
-        Jump         -clone-element-9-loop-start 
-        Label        -clone-element-9-end      
         PushD        $record-creation-temp     
         LoadI                                  
         StoreI                                 
         PushD        $global-memory-block      
         PushI        4                         
-        Add                                    %% cla
+        Add                                    %% b
         LoadI                                  
         PushI        0                         
         PushD        $a-indexing-index         
@@ -1289,9 +1209,9 @@
         Add                                    
         LoadI                                  
         Subtract                               
-        JumpNeg      -array-indexing-10-in-bounds 
+        JumpNeg      -array-indexing-8-in-bounds 
         Jump         $$index-out-of-bound      
-        Label        -array-indexing-10-in-bounds 
+        Label        -array-indexing-8-in-bounds 
         Nop                                    
         PushD        $a-indexing-array         
         LoadI                                  
@@ -1299,26 +1219,11 @@
         Add                                    
         PushD        $a-indexing-index         
         LoadI                                  
-        PushI        8                         
+        PushI        4                         
         Multiply                               
         Add                                    
-        PushI        555                       
-        ConvertF                               
-        StoreF                                 
-        PushD        $global-memory-block      
-        PushI        0                         
-        Add                                    %% a
         LoadI                                  
-        PushI        2                         
-        Call         $print-array-subroutine   
-        PushD        $print-format-newline     
-        Printf                                 
-        PushD        $global-memory-block      
-        PushI        4                         
-        Add                                    %% cla
-        LoadI                                  
-        PushI        2                         
-        Call         $print-array-subroutine   
+        Call         $release-record           
         Halt                                   
         Label        -mem-manager-make-tags    
         DLabel       $mmgr-tags-size           

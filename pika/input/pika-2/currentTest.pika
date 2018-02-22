@@ -1,6 +1,9 @@
 exec{
-	var a:=[^a^,1,2,100,5.5].
-	const cla:=clone a.
-	cla[0]:=555.
-	print a,_n_,cla.
+	var a:= new[rat](2).
+	#print a.
+	#print a[0] /// 6.
+	#print a[0] //// 6.
+
+	var b:=new[string](2).
+	release b[0].
 }

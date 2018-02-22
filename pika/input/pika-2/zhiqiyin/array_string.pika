@@ -15,4 +15,8 @@ exec
 	cc[1] := "".
 	cc[2] := "6666".
 	print cc,_n_.
+
+	var bbb := [clone bb, new [[string]](0)].
+	print bbb;_n_.
+	print new[string](0).
 }

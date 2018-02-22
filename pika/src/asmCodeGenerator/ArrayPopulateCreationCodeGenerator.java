@@ -25,7 +25,7 @@ public class ArrayPopulateCreationCodeGenerator implements FullCodeGenerator {
 		int subtypeSize=type.getSize();
 		
 		int statusFlags=0;
-		if(type instanceof Array){//set the subtype-is-reference status
+		if(type instanceof Array||type==PrimitiveType.STRING){//set the subtype-is-reference status
 			statusFlags+=2;
 		}
 		

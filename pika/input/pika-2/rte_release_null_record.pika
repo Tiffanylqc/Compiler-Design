@@ -1,0 +1,6 @@
+exec{
+	var a:= new[[int]](2).
+	# release a[0].
+	var b:= new[string](2).
+	release b[1].
+}

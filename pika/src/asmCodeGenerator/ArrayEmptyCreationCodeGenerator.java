@@ -24,7 +24,7 @@ public class ArrayEmptyCreationCodeGenerator implements SimpleCodeGenerator {
 		int subtypeSize=type.getSubtype().getSize();
 		
 		int statusFlags=0;
-		if(type.getSubtype() instanceof Array){//set the subtype-is-reference status
+		if(type.getSubtype() instanceof Array||type.getSubtype() == PrimitiveType.STRING){//set the subtype-is-reference status
 			statusFlags+=2;
 		}
 		//[...nElems]

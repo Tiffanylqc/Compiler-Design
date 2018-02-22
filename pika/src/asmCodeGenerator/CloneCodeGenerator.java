@@ -19,6 +19,9 @@ public class CloneCodeGenerator implements SimpleCodeGenerator {
 	public ASMCodeFragment generate(ParseNode node) {
 		ASMCodeFragment frag=new ASMCodeFragment(CodeType.GENERATES_VALUE);
 		//[...clonedArrPtr]
+		frag.add(Duplicate);
+		frag.add(JumpFalse,RunTime.NULL_ARRAY_RUNTIME_ERROR);
+		
 		cloneArrayRecord(frag);
 
 		return frag;

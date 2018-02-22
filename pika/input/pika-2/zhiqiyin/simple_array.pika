@@ -6,7 +6,17 @@ exec
 	print a == a; a != a; a == c; a != c; a == b; a != b.
 	print [a|[int]];.
 
-	
+	a := new [int](5).
+	print a;_n_.
+	a[0] := 5.
+	a[2 + 2] := 5.
+	print a;a[4];a[3];_n_.
+	a[3] := a[4].
+	print a;_n_.
+	const bb := a.
+	print bb;_n_.
+	bb[2] := 100.
+	print a;_n_.
 
 	var aa := new [[int]](3).
 	aa[0] := new [int](1).

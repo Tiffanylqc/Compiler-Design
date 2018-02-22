@@ -43,11 +43,13 @@ public class RunTime {
 	public static final String INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$i-divide-by-zero";
 	public static final String FLOAT_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$f-divide-by-zero";
 	public static final String NULL_ARRAY_RUNTIME_ERROR = "$$null-array";
+	public static final String NULL_STRING_RUNTIME_ERROR = "$$null-string";
 	public static final String INDEX_OUT_OF_BOUNDS_RUNTIME_ERROR = "$$index-out-of-bound";
 	public static final String OVER_ZERO_DENOMINATOR_RUNTIME_ERROR="$$over-zero-denominator";
 	public static final String EXPRESSOVER_DIVIDE_BY_ZERO_RUNTIME_ERROR="$$rational-expressover-divide-by-zero";
 	public static final String RATIONALIZE_DIVIDE_BY_ZERO_RUNTIME_ERROR="$$rationalize-divide-by-zero";
 	public static final String NEGATIVE_LENGTH_ARRAY_RUNTIME_ERROR="$$negative-length-array";
+	public static final String RELEASE_NULL_RECORD_RUNTIME_ERROR="$$release-null-record";
 	public static final String ARRAY_INDEXING_ARRAY	= "$a-indexing-array";
 	public static final String ARRAY_INDEXING_INDEX = "$a-indexing-index";
 	
@@ -207,6 +209,8 @@ public class RunTime {
 		expressoverDivideByZeroError(frag);
 		rationalizeDivideByZeroError(frag);
 		negativeArrayLengthError(frag);
+		nullStringError(frag);
+		releaseNullRecordError(frag);
 		
 		return frag;
 	}
@@ -223,7 +227,15 @@ public class RunTime {
 		frag.add(Halt);
 		return frag;
 	}
-	
+	private void releaseNullRecordError(ASMCodeFragment frag){
+		String releaseNullRecordMessage = "$release-null-record";
+		frag.add(DLabel,releaseNullRecordMessage);
+		frag.add(DataS, "release null record");
+		
+		frag.add(Label, RELEASE_NULL_RECORD_RUNTIME_ERROR);
+		frag.add(PushD, releaseNullRecordMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
+	}
 	private void negativeArrayLengthError(ASMCodeFragment frag){
 		String negativeArrayLengthMessage = "$negative-array-length";
 		frag.add(DLabel,negativeArrayLengthMessage);
@@ -277,6 +289,15 @@ public class RunTime {
 		
 		frag.add(Label,NULL_ARRAY_RUNTIME_ERROR);
 		frag.add(PushD,nullArrayMessage);
+		frag.add(Jump,GENERAL_RUNTIME_ERROR);
+	}
+	private void nullStringError(ASMCodeFragment frag){
+		String nullStringMessage="$null-string-runtime-error";
+		frag.add(DLabel,nullStringMessage);
+		frag.add(DataS,"null string");
+		
+		frag.add(Label,NULL_STRING_RUNTIME_ERROR);
+		frag.add(PushD,nullStringMessage);
 		frag.add(Jump,GENERAL_RUNTIME_ERROR);
 	}
 	private void integerDivideByZeroError(ASMCodeFragment frag) {
@@ -651,6 +672,9 @@ public class RunTime {
 		declareI(frag,RELEASE_RECORD_RETURN_ADDRESS);
 		storeITo(frag,RELEASE_RECORD_RETURN_ADDRESS);
 		//[...recordPtr]
+		// check null record
+		frag.add(Duplicate);
+		frag.add(JumpFalse,RELEASE_NULL_RECORD_RUNTIME_ERROR);
 		//check the is-deleted status and permanent status
 		frag.add(Duplicate);
 		readIOffset(frag,Record.RECORD_STATUS_OFFSET);//[...recordPtr status]
@@ -770,6 +794,9 @@ public class RunTime {
 		declareI(code,PRINT_STRING_RETURN_ADDRESS);
 		storeITo(code,PRINT_STRING_RETURN_ADDRESS);
 		//[..strAddr]
+		code.add(Duplicate);// [… arr]
+		code.add(JumpFalse, NULL_STRING_RUNTIME_ERROR);// [… ]
+		
 		code.add(Duplicate);
 		code.add(PushI,STRING_HEADER_SIZE);
 		code.add(Add);
