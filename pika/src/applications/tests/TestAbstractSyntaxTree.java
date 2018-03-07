@@ -26,7 +26,7 @@ public class TestAbstractSyntaxTree extends FileFixturesTestCase {
 	public void tokenPrinterSingleTest(Level level, String string) throws Exception {
 		ParseTreePrinter.setPrintLevel(level);
 		String actualOutput =	tokenPrinterOutput(AST_INPUT_FILENAME);
-		String expectedOutput = getContents(string);
+//		String expectedOutput = getContents(string);
 		System.out.println(actualOutput);
 //		assertEquals(expectedOutput, actualOutput);
 	}

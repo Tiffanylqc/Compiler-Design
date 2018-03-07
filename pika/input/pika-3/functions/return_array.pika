@@ -1,0 +1,13 @@
+func f<>->[float] {
+	return [1.3, 7.6, 8.2].
+}
+
+func g<>->[float] {
+	return [1.4, 7.0, 8.9].
+}
+
+
+exec {
+	print f(), _n_.
+	print g().
+}

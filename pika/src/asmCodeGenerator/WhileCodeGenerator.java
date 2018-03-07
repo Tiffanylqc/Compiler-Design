@@ -8,6 +8,7 @@ import asmCodeGenerator.ASMCodeGenerator.CodeVisitor;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import parseTree.ParseNode;
+import parseTree.nodeTypes.WhileStatementNode;
 
 public class WhileCodeGenerator implements SimpleCodeGenerator {
 	ASMCodeFragment code;
@@ -32,8 +33,11 @@ public class WhileCodeGenerator implements SimpleCodeGenerator {
 		String trueLabel  = labeller.newLabel("true");
 		String falseLabel = labeller.newLabel("false");
 		String joinLabel  = labeller.newLabel("join");
+		String breakLabel = ((WhileStatementNode) node).getBreakTarget();
+		String continueLabel = ((WhileStatementNode) node).getContinueTarget();
 		
 		code.add(Label, startLabel);
+		code.add(Label,continueLabel);
 		code.append(condition);
 		code.add(JumpTrue,trueLabel);
 		code.add(Jump,falseLabel);
@@ -41,8 +45,10 @@ public class WhileCodeGenerator implements SimpleCodeGenerator {
 		code.append(loopBody);
 		code.add(Jump,startLabel);
 		code.add(Label, falseLabel);
+		code.add(Label,breakLabel);
 		code.add(Jump, joinLabel);
 		code.add(Label,joinLabel);
+		
 		return fragment;
 	}
 

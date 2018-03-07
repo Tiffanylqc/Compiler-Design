@@ -2,6 +2,7 @@ package asmCodeGenerator;
 
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
 import asmCodeGenerator.codeStorage.ASMCodeFragment;
+import asmCodeGenerator.runtime.RunTime;
 
 public class Macros {
 	
@@ -27,8 +28,18 @@ public class Macros {
 		frag.add(PushD, location);
 		frag.add(LoadC);
 	}
+	public static void loadFFrom(ASMCodeFragment frag, String location) {
+		frag.add(PushD, location);
+		frag.add(LoadF);
+	}
 	public static void storeITo(ASMCodeFragment frag, String location) {
 		frag.add(PushD, location);
+		frag.add(Exchange);
+		frag.add(StoreI);
+	}
+	public static void storeIToIndirect(ASMCodeFragment frag, String location) {
+		frag.add(PushD, location);
+		frag.add(LoadI);
 		frag.add(Exchange);
 		frag.add(StoreI);
 	}
@@ -37,11 +48,38 @@ public class Macros {
 		frag.add(Exchange);
 		frag.add(StoreC);
 	}
+	public static void storeCToIndirect(ASMCodeFragment frag, String location) {
+		frag.add(PushD, location);
+		frag.add(LoadI);
+		frag.add(Exchange);
+		frag.add(StoreC);
+	}
+	public static void storeFTo(ASMCodeFragment frag, String location){
+		frag.add(PushD, location);
+		frag.add(Exchange);
+		frag.add(StoreF);
+	}
+	public static void storeFToIndirect(ASMCodeFragment frag, String location) {
+		frag.add(PushD, location);
+		frag.add(LoadI);
+		frag.add(Exchange);
+		frag.add(StoreF);
+	}
 	public static void declareI(ASMCodeFragment frag, String variableName) {
 		frag.add(DLabel, variableName);
 		frag.add(DataZ, 4);
 	}
-	
+	public static void storeIToSPNegOffset(ASMCodeFragment frag, int offset){
+		//store value to Mem(SP-offset)  SP NOT CHANGED!
+		//// [...value]
+		frag.add(PushD, RunTime.STACK_POINTER);
+		frag.add(LoadI);
+		frag.add(PushI, offset);
+		frag.add(Subtract);//[...value SP-offset]
+		frag.add(Exchange);//[... SP-offset value]
+		frag.add(StoreI);
+		//[...]
+	}
 	/** [... baseLocation] -> [... intValue]
 	 * @param frag ASMCodeFragment to add code to
 	 * @param offset amount to add to the base location before reading

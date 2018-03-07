@@ -1,7 +1,12 @@
+/asmCodeGenerator/
+/inputHandler/
+/lexicalAnalyzer/
+/logging/
+/optimizer/
+/parseTree/
+/parser/
 /semanticAnalyzer/
 /symbolTable/
 /tests/
 /tokens/
 /applications/
-/parseTree/
-/asmCodeGenerator/

@@ -1,0 +1,1 @@
+Couldn't read file ".\output\err_typecheck_cast_string_boolean.asm"

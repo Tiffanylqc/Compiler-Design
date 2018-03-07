@@ -1,0 +1,9 @@
+func a< int m,int n>->int{ return n+ m. }
+exec{
+	var b:=< int m,int n>->int{ return n. }.
+	const c:=b.
+	var d:=new[< int,int> ->int](2).
+	b:=a.
+	print a(123,232).
+	
+}

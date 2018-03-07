@@ -1,0 +1,1 @@
+Couldn't read file ".\output\err_typecheck_assign_string_floating.asm"

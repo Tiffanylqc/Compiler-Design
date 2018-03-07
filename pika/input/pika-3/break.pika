@@ -1,0 +1,13 @@
+exec{
+	var x:=5.
+
+	while(x>0){
+		print x,_n_.
+		if(x==3){
+			x:=x- 2.
+			continue.
+		}
+		x:=x- 1.
+	}
+	print x,_n_.
+}

@@ -6,6 +6,9 @@ import tokens.Token;
 
 public class WhileStatementNode extends ParseNode {
 
+	private String breakTarget;
+	private String continueTarget;
+	
 	public WhileStatementNode(Token token) {
 		super(token);
 		// TODO Auto-generated constructor stub
@@ -14,6 +17,22 @@ public class WhileStatementNode extends ParseNode {
 	public WhileStatementNode(ParseNode node) {
 		super(node);
 		// TODO Auto-generated constructor stub
+	}
+	
+	public void setBreakTarget(String breakTarget){
+		this.breakTarget=breakTarget;
+	}
+	
+	public void setContinueTarget(String continueTarget){
+		this.continueTarget=continueTarget;
+	}
+	
+	public String getBreakTarget(){
+		return breakTarget;
+	}
+	
+	public String getContinueTarget(){
+		return continueTarget;
 	}
 	
 	////////////////////////////////////////////////////////////

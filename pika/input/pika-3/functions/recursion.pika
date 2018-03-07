@@ -1,0 +1,15 @@
+func fib<int n>->int {
+	if (n == 0 || n == 1) {
+		return 1.
+	} else {
+		return fib(n - 1) + fib(n - 2).
+	}
+}
+
+exec {
+	var n := 1.
+	while (n < 20) {
+		print "Fib(", n, ") is ", fib(n), _n_.
+		n := n + 1.
+	}
+}

@@ -1,0 +1,56 @@
+func nested_loop<>->void {
+	print "Test for nested loop!", _n_.
+	var i := 0.
+	while (i < 10) {
+		i := i + 1.
+		if (i == 3) {
+			continue.
+		} else {
+			var j := 0.
+			while (j < 10) {
+				j := j + 1.
+				if (j == 6) {
+					break.
+				}
+				print i, ", ", j, _t_.
+			}
+			print _n_.
+		}
+	}
+	return.
+}
+
+exec {
+
+	call <>->void {
+		print "Test for break!", _n_.
+		var i := 0.
+		while (i < 10) {
+			i := i + 1.
+			if (i == 3) {
+				break.
+			} else {
+				print "i is"; i; "now!", _n_.
+			}
+		}
+		print "Outside the loop!", _n_, _n_.
+		return.
+	}().
+
+	
+	
+	
+	print "Test for continue!", _n_.
+    var i := 0.
+	while (i < 10) {
+		i := i + 1.
+		if (i == 3) {
+			continue.
+		} else {
+			print "i is"; i; "now!", _n_.
+		}
+	}
+	print "Outside the loop!", _n_, _n_.
+	
+	call nested_loop().
+}

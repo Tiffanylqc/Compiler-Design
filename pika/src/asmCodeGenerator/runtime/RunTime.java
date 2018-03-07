@@ -29,15 +29,18 @@ public class RunTime {
 	public static final String SPACE_PRINT_FORMAT     = "$print-format-space";
 	public static final String BOOLEAN_TRUE_STRING    = "$boolean-true-string";
 	public static final String BOOLEAN_FALSE_STRING   = "$boolean-false-string";
-	public static final String GLOBAL_MEMORY_BLOCK    = "$global-memory-block";
-	public static final String USABLE_MEMORY_START    = "$usable-memory-start";
-	public static final String MAIN_PROGRAM_LABEL     = "$$main";
 	public static final String DASH_PRINT_STRING	="$dash-string";
 	public static final String DIVIDE_SIGN_STRING	="$divide-sign-string";
 	public static final String MINUS_SIGN_STRING="$minus-sign-string";
 	public static final String OPEN_BRACKET_STRING = "$open-bracket-string";
 	public static final String CLOSE_BRACKET_STRING = "$close-bracket-string";
 	public static final String COMMA_STRING = "$comma-string";
+	
+	public static final String GLOBAL_MEMORY_BLOCK    = "$global-memory-block";
+	public static final String USABLE_MEMORY_START    = "$usable-memory-start";
+	public static final String MAIN_PROGRAM_LABEL     = "$$main";
+	public static final String FRAME_POINTER		  = "$frame-pointer";
+	public static final String STACK_POINTER		  = "$stack-pointer";
 	
 	public static final String GENERAL_RUNTIME_ERROR = "$$general-runtime-error";
 	public static final String INTEGER_DIVIDE_BY_ZERO_RUNTIME_ERROR = "$$i-divide-by-zero";
@@ -49,6 +52,7 @@ public class RunTime {
 	public static final String EXPRESSOVER_DIVIDE_BY_ZERO_RUNTIME_ERROR="$$rational-expressover-divide-by-zero";
 	public static final String RATIONALIZE_DIVIDE_BY_ZERO_RUNTIME_ERROR="$$rationalize-divide-by-zero";
 	public static final String NEGATIVE_LENGTH_ARRAY_RUNTIME_ERROR="$$negative-length-array";
+	public static final String NO_RETURN_RUNTIME_ERROR="$$no return";
 	public static final String ARRAY_INDEXING_ARRAY	= "$a-indexing-array";
 	public static final String ARRAY_INDEXING_INDEX = "$a-indexing-index";
 	
@@ -105,6 +109,7 @@ public class RunTime {
 	public static final String SUBTRACT_RATIONAL = "$subtract-rational";
 	public static final String SUBTRACT_RATIONAL_RETURN_ADDRESS = "$subtract-rational-return-address";
 	
+	public static final String FUNCTION_INVOCATION_PARAM_TEMP = "$function-invocation-parameter-temp";
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
 		result.append(jumpToMain());
@@ -152,6 +157,14 @@ public class RunTime {
 		Macros.declareI(frag, CLONED_ARRAY_TEMP);
 		Macros.declareI(frag, PRINT_STRING_TEMP);
 		Macros.declareI(frag, PRINT_STRING_LENGTH);
+		
+		Macros.declareI(frag, FRAME_POINTER);
+		frag.add(Memtop);
+		Macros.storeITo(frag, FRAME_POINTER);
+		Macros.declareI(frag, STACK_POINTER);
+		frag.add(Memtop);
+		Macros.storeITo(frag, STACK_POINTER);
+		
 		return frag;
 	}
 
@@ -209,6 +222,7 @@ public class RunTime {
 		rationalizeDivideByZeroError(frag);
 		negativeArrayLengthError(frag);
 		nullStringError(frag);
+		noReturnError(frag);
 		
 		return frag;
 	}
@@ -224,6 +238,15 @@ public class RunTime {
 		frag.add(Printf);
 		frag.add(Halt);
 		return frag;
+	}
+	private void noReturnError(ASMCodeFragment frag){
+		String noReturnMessage = "$no-return";
+		frag.add(DLabel,noReturnMessage);
+		frag.add(DataS, "no return");
+		
+		frag.add(Label, NO_RETURN_RUNTIME_ERROR);
+		frag.add(PushD, noReturnMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	private void negativeArrayLengthError(ASMCodeFragment frag){
 		String negativeArrayLengthMessage = "$negative-array-length";

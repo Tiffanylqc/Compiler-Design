@@ -10,7 +10,7 @@ public class Scope {
 	private Scope baseScope;
 	private MemoryAllocator allocator;
 	private SymbolTable symbolTable;
-	
+	private int ParamSize;
 //////////////////////////////////////////////////////////////////////
 // factories
 
@@ -27,6 +27,24 @@ public class Scope {
 				MemoryLocation.GLOBAL_VARIABLE_BLOCK);
 	}
 	
+	public static Scope createParameterScope(){
+		return new Scope(parameterScopeAllocator(), nullInstance());
+	}
+	private static MemoryAllocator parameterScopeAllocator(){
+		return new ParameterMemoryAllocator(
+				MemoryAccessMethod.INDIRECT_ACCESS_BASE,
+				MemoryLocation.FRAME_POINTER);
+	}
+	
+	public static Scope createProcedureScope(SymbolTable oldSymbolTable, int ParamSize){
+		return new Scope(procedureScopeAllocator(),nullInstance(), oldSymbolTable, ParamSize);
+	}
+	public static MemoryAllocator procedureScopeAllocator(){
+		return new ProcedureMemoryAllocator(
+				MemoryAccessMethod.INDIRECT_ACCESS_BASE,
+				MemoryLocation.FRAME_POINTER);
+				
+	}
 //////////////////////////////////////////////////////////////////////
 // private constructor.	
 	private Scope(MemoryAllocator allocator, Scope baseScope) {
@@ -35,6 +53,18 @@ public class Scope {
 		this.symbolTable = new SymbolTable();
 		
 		this.allocator = allocator;
+//		allocator.saveState();//TODO:comment this line
+		this.ParamSize=0;
+	}
+	private Scope(MemoryAllocator allocator, Scope baseScope, SymbolTable symbolTable, int ParamSize) {
+		super();
+		this.baseScope = (baseScope == null) ? this : baseScope;
+		this.symbolTable = symbolTable;
+		
+		this.allocator = allocator;
+		this.ParamSize=ParamSize;
+	}
+	public void enter(){
 		allocator.saveState();
 	}
 	
@@ -55,6 +85,8 @@ public class Scope {
 	// must call leave() when destroying/leaving a scope.
 	public void leave() {
 		allocator.restoreState();
+//		if(allocator instanceof ProcedureMemoryAllocator)
+//			System.out.println(this.toString());
 	}
 	public int getAllocatedSize() {
 		return allocator.getMaxAllocatedSize();
@@ -64,7 +96,7 @@ public class Scope {
 //bindings
 	public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
 		Token token = identifierNode.getToken();
-		symbolTable.errorIfAlreadyDefined(token);
+		symbolTable.errorIfAlreadyDefined(token,type);
 
 		String lexeme = token.getLexeme();
 		Binding binding = allocateNewBinding(type, token.getLocation(), lexeme,mutable);	
@@ -72,9 +104,23 @@ public class Scope {
 
 		return binding;
 	}
+	public Binding createFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
+		Token token = identifierNode.getToken();
+		symbolTable.errorIfAlreadyDefined(token,type);
+
+		String lexeme = token.getLexeme();
+		Binding binding = allocateNewFuncBinding(type, token.getLocation(), lexeme,mutable,funcStartLabel);	
+		symbolTable.install(lexeme, binding);
+
+		return binding;
+	}
 	private Binding allocateNewBinding(Type type, TextLocation textLocation, String lexeme,boolean mutable) {
 		MemoryLocation memoryLocation = allocator.allocate(type.getSize());
 		return new Binding(type, textLocation, memoryLocation, lexeme, mutable);
+	}
+	private Binding allocateNewFuncBinding(Type type, TextLocation textLocation, String lexeme,boolean mutable, String funcStartLabel) {
+		MemoryLocation memoryLocation = allocator.allocate(type.getSize());
+		return new Binding(type, textLocation, memoryLocation, lexeme, mutable,funcStartLabel);
 	}
 	
 ///////////////////////////////////////////////////////////////////////

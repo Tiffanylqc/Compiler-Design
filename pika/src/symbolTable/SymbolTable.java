@@ -6,8 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import logging.PikaLogger;
-
+import semanticAnalyzer.types.LambdaType;
 import tokens.Token;
+import semanticAnalyzer.types.*;
 
 public class SymbolTable {
 	private Map<String, Binding> table;
@@ -43,9 +44,11 @@ public class SymbolTable {
 	///////////////////////////////////////////////////////////////////////
 	//error reporting
 
-	public void errorIfAlreadyDefined(Token token) {
-		if(containsKey(token.getLexeme())) {		
-			multipleDefinitionError(token);
+	public void errorIfAlreadyDefined(Token token,Type type) {
+		if(containsKey(token.getLexeme())) {	
+			if((table.get(token.getLexeme()).getType() instanceof LambdaType) && type instanceof LambdaType
+				|| !(table.get(token.getLexeme()).getType() instanceof LambdaType) && !(type instanceof LambdaType) )		
+				multipleDefinitionError(token);
 		}
 	}
 	protected static void multipleDefinitionError(Token token) {

@@ -1,0 +1,16 @@
+func foo <int a> -> bool {
+	var c := 6.2.
+	print "inside foo(", a, ")", _n_.
+	return bar(c).
+}
+
+func bar <float a> -> bool {
+
+	var x := _true_.
+	print "inside bar(", a, ")", _n_.
+	return x.
+}
+
+exec {
+	print foo(3).
+}

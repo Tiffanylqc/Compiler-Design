@@ -1,0 +1,16 @@
+func return_1<>->int {
+	return 1.
+}
+
+func return_3<>->int {
+	return 3.
+}
+
+func add_1<int a, int b>->int {
+	print "second argument is: ", b, _n_.
+	return a + 1.
+}
+
+exec {
+	print add_1(return_1(), return_3()).
+}

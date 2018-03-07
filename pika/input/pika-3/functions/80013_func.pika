@@ -1,0 +1,45 @@
+func sort <[int] p, int n> -> void {
+	var k := 0.
+	while (k < n - 1) {
+		var index := k.
+		var i := k + 1.
+		while (i < n) {
+			if (p[i] < p[index]) {
+				index := i.
+			}
+			i := i + 1.
+		}
+		var t := p[index].
+		p[index] := p[k].
+		p[k] := t.
+	
+		k := k + 1.
+	}
+	return.
+}
+
+exec {
+	var repeat := 3.
+	var ri := 1.
+	while (ri <= repeat) {		
+		if (ri == 1) {
+			var n := 4.
+			var a := [5, 1, 7, 6].
+			call sort(a, n).
+			print "after sorted: ", a, _n_.
+		}
+		if (ri == 2) {
+			var n := 3.
+			var a := [1, 2, 3].
+			call sort(a, n).
+			print "after sorted: ", a, _n_.
+		}
+		if (ri == 3) {
+			var n := 5.
+			var a := [5, 4, 3, 2, 1].
+			call sort(a, n).
+			print "after sorted: ", a, _n_.
+		}
+		ri := ri + 1.
+	}
+}
