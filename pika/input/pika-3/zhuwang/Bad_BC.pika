@@ -1,0 +1,9 @@
+func i <int a, int b> -> int {
+    while (a>b) {
+        continue.
+    } 
+    return a.
+}
+exec {
+	var a:=1.
+}

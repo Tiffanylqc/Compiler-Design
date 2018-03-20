@@ -1,5 +1,0 @@
-exec{
-	var a:=12//16.
-	var b:=15//25.
-	print a+ b.
-}

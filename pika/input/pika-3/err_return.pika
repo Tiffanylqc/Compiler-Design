@@ -1,0 +1,18 @@
+func f1 <rat a, rat b>->rat{
+	var c:= [1|rat].
+	if(a>b){
+		return a- b.
+	}
+	else{
+		c:=b- a.
+	}
+	return c.
+}
+
+exec{
+	var rat1:=3//8.
+	var rat2:=5//8.
+
+	print f1(rat1,rat2).
+
+}

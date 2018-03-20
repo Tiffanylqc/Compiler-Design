@@ -1,0 +1,4 @@
+exec {
+	var x := new [int](200).
+	print x[^a^] == 0, _n_ .
+}

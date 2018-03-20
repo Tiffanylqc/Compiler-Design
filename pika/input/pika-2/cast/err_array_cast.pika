@@ -1,4 +1,0 @@
-exec{
-	var a:= new [int](10).
-	a:=[a|[float]].
-}

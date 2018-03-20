@@ -1,0 +1,36 @@
+func f1 <<int>->int f2, int n> -> int
+{
+	return f2(n).
+}
+
+func f2 <> -> <<int>->int, int> -> int
+{
+	return f1.
+}
+
+func f3 <int x> -> <int> -> int
+{
+	return <int x> -> int { return x + 1. }.
+}
+
+func f4 <<int>-><int>->int f3, <<int>->int, int> -> int f2> -> int
+{
+	#return f3(5)(1).
+	return <>-><<int>->int, int> -> int{ print "asd". return f2.}()(<int x>-> int {return x + 1.}, 5).
+}
+
+func f44 < < <int>->int, int > -> int f, int n > -> int
+{
+	return f(<int x>-> int {return x + 1.}, n).
+}
+
+exec
+{
+	print f44(f1, 8),_n_.
+	print f1(<int x>->int { return x + 1. }, 5);
+		f2()(<int x>->int { return x + 1. }, 5);
+		f3(5)(5);_n_.
+	var f5 := f3.
+	var f3 := [f3(0)].
+	print f3[0](5);f4(f5, f1);_n_.
+}

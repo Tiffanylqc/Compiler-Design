@@ -47,7 +47,7 @@ public class SymbolTable {
 	public void errorIfAlreadyDefined(Token token,Type type) {
 		if(containsKey(token.getLexeme())) {	
 			if((table.get(token.getLexeme()).getType() instanceof LambdaType) && type instanceof LambdaType
-				|| !(table.get(token.getLexeme()).getType() instanceof LambdaType) && !(type instanceof LambdaType) )		
+				|| !(table.get(token.getLexeme()).getType() instanceof LambdaType) )		
 				multipleDefinitionError(token);
 		}
 	}

@@ -1,0 +1,29 @@
+func f0 <>->void
+{
+	print "f0";. return.
+}
+
+func f1 <>-><>->void
+{
+	print "f1". return f0.
+}
+
+func f2 <>-><>-><>->void
+{
+	print "f2". return f1.
+}
+
+func f3 <int n>->void
+{
+	if (n <= 0) { return. }
+	call f3(n - 1).
+	print n;.
+	call f3(n - 1). 
+	return.
+}
+
+exec
+{
+	call f2()()().
+	call f3(7).
+}

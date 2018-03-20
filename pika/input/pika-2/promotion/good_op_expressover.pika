@@ -1,8 +1,0 @@
-exec{
-	var a:=1//2.
-	var b:=4.
-	var c:=5.
-	c:=a///b.
-	var d:=1.5.
-	c:=d///b.
-}

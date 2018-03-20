@@ -1,0 +1,41 @@
+func f<int a, [<>->int] b, int c>->void {
+	print "inside f(", a, ", ", b, ", ", c, ")", _n_.
+	var i := 0.
+	while (i < length b) {
+		print "b[", i, "](): ", b[i](), _n_.
+		i := i + 1.
+	}
+	return.
+}
+
+exec {
+	var a := new [<>->int] (2).
+	a := [ <>->int { 
+			var i := 0.
+			while (i < 10) {
+				i := i + 1.
+				if (i == 3) {
+					continue.
+				}
+			}
+			return i.
+		},
+		<>->int { 
+			var i := 0.
+			while (i < 20) {
+				i := i + 1.
+				if (i == 3) {
+					break.
+				}
+			}
+			return i.
+		}
+	].
+	print "a[0](): ", a[0](), _n_.
+	print "a[1](): ", a[1](), _n_.
+
+	const b := clone a.
+	print length b.
+	call f(81, b, 62).
+
+}

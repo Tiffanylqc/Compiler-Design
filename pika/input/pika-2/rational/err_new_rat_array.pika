@@ -1,4 +1,0 @@
-exec{
-	var a:= new[rat](3).
-	print a.
-}

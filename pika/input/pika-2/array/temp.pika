@@ -1,3 +1,0 @@
-exec{
-	print [5.465|rat].
-}

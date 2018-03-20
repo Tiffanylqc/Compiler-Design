@@ -1,0 +1,15 @@
+func f0 <int m, int n> -> int
+{
+	return n * m.
+}
+
+func f1 <int m, int n> -> <int, int> -> int
+{
+	print m + n;.
+	return f0.
+}
+
+exec
+{
+	print f1(5, 6)(7, 8).
+}

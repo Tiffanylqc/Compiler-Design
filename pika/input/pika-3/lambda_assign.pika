@@ -1,0 +1,15 @@
+func f1 <>->void{
+	return.
+}
+
+exec{
+	var a:=f1.
+	var b:=f1.
+	var c:=<>->int{
+		return 1.
+	}.
+
+	a:=b.
+	#a:=c.
+
+}

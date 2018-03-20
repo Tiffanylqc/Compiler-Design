@@ -36,8 +36,8 @@ public class Scope {
 				MemoryLocation.FRAME_POINTER);
 	}
 	
-	public static Scope createProcedureScope(SymbolTable oldSymbolTable, int ParamSize){
-		return new Scope(procedureScopeAllocator(),nullInstance(), oldSymbolTable, ParamSize);
+	public static Scope createProcedureScope(){
+		return new Scope(procedureScopeAllocator(),nullInstance());
 	}
 	public static MemoryAllocator procedureScopeAllocator(){
 		return new ProcedureMemoryAllocator(

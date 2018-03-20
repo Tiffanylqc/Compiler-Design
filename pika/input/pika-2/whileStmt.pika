@@ -1,8 +1,0 @@
-exec{
-	var a:=4.1.
-	a:=3.
-	while(a>1){
-		print a,_n_.
-		a:=a- 1.
-	}
-}

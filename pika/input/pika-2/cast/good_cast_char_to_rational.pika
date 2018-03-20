@@ -1,3 +1,0 @@
-exec{
-	print [^a^|rat]+[1|rat]+[^b^|rat],_n_.
-}

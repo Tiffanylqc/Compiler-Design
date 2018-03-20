@@ -1,0 +1,53 @@
+# 7 errors in total
+#func fin<int a, int b> -> int {
+#	pax(a,b):=6.
+#	return [pax(a,b)|int].
+#}
+#func pax<float a, float b> -> float {
+#	if (a<b) {
+#		return a.
+#	}
+#	return b + pax(a,b).
+#}
+func pax<int pax, int b> -> int {
+ 	if (pax<b) {
+ 		return pax.
+	} else {
+		#var pax:= pax(pax, pax).
+		#return pax.  the type is ERROR here
+	}
+	# return b + pax(pax,3*b).
+}
+func array_rebuild<[int] a>->int {
+	a[1]:=1.
+	a[2]:=2.
+	a[3]:=3.
+	a[4]:=4.
+#	a:=new[int](10).
+	return length clone a.
+}
+exec {
+	const a:=11.
+	const b:=14.
+	const c:=16.
+
+	var d:=new[int](5).
+	d[1]:=4.
+	d[2]:=3.
+	d[3]:=2.
+	d[4]:=1.
+	print d,_n_.
+	print array_rebuild(d).
+	print d,_n_.
+
+	#const d:=fin==pax.
+	#const e:=array_rebuild==pax.
+	
+	#if (a>5) {
+	#	const m:=pax(a,b).
+	#	const pax:= pax(a,b).
+	#	const pax2:= pax(a,b).
+	#	return.
+	#}
+	#const x:= pax(a,b).
+}

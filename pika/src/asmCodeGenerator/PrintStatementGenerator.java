@@ -8,6 +8,7 @@ import parseTree.nodeTypes.PrintStatementNode;
 import parseTree.nodeTypes.SpaceNode;
 import parseTree.nodeTypes.TabNode;
 import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.LambdaType;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import asmCodeGenerator.ASMCodeGenerator.CodeVisitor;
@@ -67,7 +68,7 @@ public class PrintStatementGenerator {
 			type=(Array) type.getSubtype();
 		}
 		Type oneDimType=type.getSubtype();
-		if(oneDimType==PrimitiveType.INTEGER)
+		if(oneDimType==PrimitiveType.INTEGER||oneDimType instanceof LambdaType)
 			code.add(PushI,1);
 		else if(oneDimType==PrimitiveType.FLOATING)
 			code.add(PushI,2);
@@ -97,7 +98,9 @@ public class PrintStatementGenerator {
 	}
 
 	private static String printFormat(Type type) {
-		
+		if(type instanceof LambdaType){
+			return RunTime.INTEGER_PRINT_FORMAT;
+		}
 		assert type instanceof PrimitiveType;
 		
 		switch((PrimitiveType)type) {

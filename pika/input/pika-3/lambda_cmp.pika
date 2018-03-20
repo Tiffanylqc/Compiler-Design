@@ -1,0 +1,13 @@
+func f1 <>->void{
+	return.
+}
+exec{
+	var a:=f1.
+	var b:=f1.
+	var c:=<>->void{
+		return.
+	}.
+
+	print a==b;a!=b;a==c;a!=c.
+
+}

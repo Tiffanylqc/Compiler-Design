@@ -1,0 +1,35 @@
+func f0 <char c>->int
+{
+	return [c|int].
+}
+
+func f1 <int i>->rat
+{
+	return 123//i.
+}
+
+func f2 <rat r>->float
+{
+	return [r|float].
+}
+
+func trans1 <<char>->int f1, char c> -> int
+{
+	return f1(c).
+}
+
+func trans2 < <<char>->int, char>->int f1, <int>->rat f2, char c > -> rat
+{
+	return f2(f1(f0, c)).
+}
+
+func trans3 < <<<char>->int, char>->int, <int>->rat, char> -> rat f4, <rat>->float f2, char c> -> float
+{
+	return f2(f4(trans1, f1, c)).
+}
+
+exec
+{
+	var trans3 := trans3(trans2, f2, ^a^).
+	print trans3;[123//^a^|float].
+}

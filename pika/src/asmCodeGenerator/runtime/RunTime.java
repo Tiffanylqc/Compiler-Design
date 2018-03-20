@@ -8,6 +8,8 @@ import static asmCodeGenerator.runtime.Record.STRING_LENGTH_OFFSET;
 import static asmCodeGenerator.runtime.RunTime.ARRAY_INDEXING_ARRAY;
 import static asmCodeGenerator.runtime.RunTime.NULL_ARRAY_RUNTIME_ERROR;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
+
 import asmCodeGenerator.Labeller;
 import asmCodeGenerator.Macros;
 import static asmCodeGenerator.Macros.*;
@@ -157,13 +159,8 @@ public class RunTime {
 		Macros.declareI(frag, CLONED_ARRAY_TEMP);
 		Macros.declareI(frag, PRINT_STRING_TEMP);
 		Macros.declareI(frag, PRINT_STRING_LENGTH);
-		
 		Macros.declareI(frag, FRAME_POINTER);
-		frag.add(Memtop);
-		Macros.storeITo(frag, FRAME_POINTER);
 		Macros.declareI(frag, STACK_POINTER);
-		frag.add(Memtop);
-		Macros.storeITo(frag, STACK_POINTER);
 		
 		return frag;
 	}
@@ -517,6 +514,7 @@ public class RunTime {
 		frag.add(Printf);
 		
 		//[...arrAddr]
+//		frag.add(Duplicate);
 		readIOffset(frag,Record.RECORD_STATUS_OFFSET);//[...status]
 		frag.add(PushI,2);
 		frag.add(BTAnd);//[...status&0x0010]
@@ -536,6 +534,13 @@ public class RunTime {
 		
 		loadIFrom(frag,elemLabel);
 		frag.add(LoadI);
+		
+		//if it is string jump to oneDimArray
+		frag.add(Duplicate);
+		readIOffset(frag, Record.RECORD_TYPEID_OFFSET);
+		frag.add(PushI,6);
+		frag.add(Subtract);
+		frag.add(JumpFalse,oneDimArrayLabel);
 		
 		loadIFrom(frag,typeLabel);
 		frag.add(Call,PRINT_ARRAY);
@@ -689,22 +694,24 @@ public class RunTime {
 		readIOffset(frag,Record.RECORD_STATUS_OFFSET);//[...recordPtr status]
 		frag.add(Duplicate);
 		frag.add(Duplicate);
-		frag.add(PushI,4);
+		frag.add(PushI,0x00000004);
 		frag.add(BTAnd);
 		frag.add(JumpTrue,endLabel);
-		frag.add(PushI,8);
+		frag.add(PushI,0x00000008);
 		frag.add(BTAnd);
+//		frag.add(PStack);
 		frag.add(JumpTrue,endLabel);
 		//check subtype-is-reference
-		frag.add(PushI,2);
+		frag.add(PushI,0x00000002);
 		frag.add(BTAnd);
+//		frag.add(PStack);
 		frag.add(JumpFalse,releaseLabel);
 		//[...recordPtr]
-		frag.add(Duplicate);
-		readIOffset(frag,Record.RECORD_TYPEID_OFFSET);
-		frag.add(PushI,6);
-		frag.add(Subtract);
-		frag.add(JumpFalse,stringLabel);
+//		frag.add(Duplicate);
+//		readIOffset(frag,Record.RECORD_TYPEID_OFFSET);
+//		frag.add(PushI,6);
+//		frag.add(Subtract);
+//		frag.add(JumpFalse,stringLabel);
 		
 		frag.add(Duplicate);
 		frag.add(Duplicate);
@@ -742,6 +749,13 @@ public class RunTime {
 		
 		loadIFrom(frag,elemLabel);
 		frag.add(LoadI);
+		
+		frag.add(Duplicate);
+		readIOffset(frag, Record.RECORD_TYPEID_OFFSET);
+		frag.add(PushI,6);
+		frag.add(Subtract);
+		frag.add(JumpFalse,releaseLabel);
+		
 		frag.add(Call,RELEASE_RECORD);
 		
 		storeITo(frag,RELEASE_RECORD_RETURN_ADDRESS);
@@ -759,7 +773,7 @@ public class RunTime {
 		frag.add(Duplicate);
 //		frag.add(PStack);
 		readIOffset(frag, Record.RECORD_STATUS_OFFSET);
-		frag.add(PushI,4);
+		frag.add(PushI,0x00000004);
 		frag.add(Add);
 		frag.add(Exchange);
 		writeIOffset(frag,Record.RECORD_STATUS_OFFSET);

@@ -1,0 +1,48 @@
+func f1 <>->void
+{
+#	print f1,f2.
+#	return f1().
+	return.
+}
+
+func f2 <[int] a, char c> -> rat
+{
+	return 5//6.
+}
+
+func f3 <float f, rat r, int i> -> int
+{
+}
+
+func f4 <float f, rat r, int i> -> int
+{
+	var f5 := 5.
+	print f5.
+}
+
+func f5 <> -> [ <float, rat, int> -> [int] ]
+{
+	return f5().
+}
+
+exec
+{
+#	var x := f1().
+#	var ar := [f1(), f1()].
+	var rt := f2([5,6], ^3^).
+	print f2(new [int](0), ^6^);_n_.
+#	print f3(^1^, ^2^, ^3^).
+#	print [f1(), f1()].
+
+	var far := [f3, f4].
+	print far[0](1.1, 2//3, 3).
+	print f5()[0](1.1, 2//3, 3)[1].
+
+	var f6 := <int a> -> <>->int { return <> -> int { return 5. }. }.
+	print f6(1)();_n_.
+
+	var f7 := <<float, rat, int> -> int f, float f1> -> void { return. }.
+	call f7(f3, 6.66).
+
+	print <int a, string b> -> [int] { return [1,2]. }(2, "asd")[1].
+}

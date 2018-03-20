@@ -1,3 +1,0 @@
-exec{
-	print [2|rat]+[3|rat]*[4|rat].
-}

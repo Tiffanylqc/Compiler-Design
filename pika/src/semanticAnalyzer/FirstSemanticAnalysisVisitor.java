@@ -58,7 +58,7 @@ public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 		Labeller labeller = new Labeller("function-definition");
 		String funcStartLabel = labeller.newLabel(identifier.getToken().getLexeme()+"-start");
 //		System.out.println(funcStartLabel);
-		addFuncBinding(identifier, declarationType, true, funcStartLabel);
+		addFuncBinding(identifier, declarationType, false, funcStartLabel);
 	}
 	public void visitLeave(LambdaParamTypeNode node){
 		int numOfParameter=node.nChildren();

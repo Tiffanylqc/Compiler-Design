@@ -1,0 +1,3 @@
+inside foo(3)
+inside bar(6.2)
+true

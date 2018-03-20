@@ -1027,11 +1027,9 @@ public class Parser {
 			return syntaxErrorNode("lambda type");
 		}
 		
-//		expect(Punctuator.LESS);
+		expect(Punctuator.LESS);
 		ParseNode lambdaNode=new LambdaTypeNode(previouslyRead);
-		ParseNode left=parseType();
-		lambdaNode.appendChild(left);
-		
+
 		if(!nowReading.isLextant(Punctuator.GREATER)){
 			ParseNode type1=parseType();
 			lambdaNode.appendChild(type1);
@@ -1039,9 +1037,10 @@ public class Parser {
 		}
 		expect(Punctuator.GREATER);
 		expect(Punctuator.ARROW);
-		
+			
 		ParseNode resultType=parseType();
 		lambdaNode.appendChild(resultType);
+		
 		
 		return lambdaNode;
 	}

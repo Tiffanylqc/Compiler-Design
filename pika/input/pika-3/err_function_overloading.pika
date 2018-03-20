@@ -1,0 +1,38 @@
+func pax< int a, int b > -> int {
+	if (a < b ) {
+		return a .
+	}
+	return b + pax(a, 3*b). # legal : recursion is okay.
+}
+
+#func pax< float a, float b > -> float {  
+#	if (a < b ) {
+#		return a .
+#	}
+#	return b + pax(a, 3*b) .  
+#}
+
+#func pax< int a, float b > -> int {  
+#	if (a < b ) {
+#		return a .
+#	}
+#	return b + pax(a, 3*b) .  
+#}
+
+#func pax< float a, int b > -> int {  
+#	if (a < b ) {
+#		return a .
+#	}
+#	return b + pax(a, 3*b) .  
+#}
+
+#func pax< int a, int b > -> float {  
+#	if (a < b ) {
+#		return a .
+#	}
+#	return b + pax(a, 3*b) .  
+#}
+
+exec{
+	print pax(8,3).
+}

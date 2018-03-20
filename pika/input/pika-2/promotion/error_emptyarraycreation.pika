@@ -1,4 +1,0 @@
-exec{
-	var a:= new float (10).
-	var b:= new[[char]](12.3).
-}

@@ -1,4 +1,0 @@
-exec{
-	var a:= new[[int]](3).
-	var b:= clone a[0].
-}

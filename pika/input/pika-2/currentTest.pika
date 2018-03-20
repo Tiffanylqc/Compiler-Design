@@ -1,9 +1,0 @@
-exec{
-	var a:= new[rat](2).
-	#print a.
-	#print a[0] /// 6.
-	#print a[0] //// 6.
-
-	var b:=new[string](2).
-	release b[0].
-}

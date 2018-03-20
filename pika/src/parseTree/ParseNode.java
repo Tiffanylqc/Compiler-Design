@@ -1,10 +1,17 @@
 package parseTree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import parseTree.nodeTypes.CallStatementNode;
+import parseTree.nodeTypes.LambdaParamTypeNode;
+import parseTree.nodeTypes.LambdaTypeNode;
+import parseTree.nodeTypes.ReturnStatementNode;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.VoidType;
+import semanticAnalyzer.SemanticAnalysisVisitor;
 import symbolTable.Binding;
 import symbolTable.Scope;
 import symbolTable.SymbolTable;
@@ -42,9 +49,31 @@ public class ParseNode {
 	
 ////////////////////////////////////////////////////////////////////////////////////
 // attributes
-	
+	private boolean isVoidValid(){
+		if(this instanceof ReturnStatementNode || this.getParent() instanceof CallStatementNode)
+			return true;
+		else if(this.getParent() instanceof LambdaParamTypeNode||this.getParent() instanceof LambdaTypeNode){
+			int numOfParentChild=this.getParent().nChildren();
+			if(this.getParent().child(numOfParentChild-1).equals(this))
+				return true;
+			else{
+				return false;
+			}
+		}
+		return false;
+	}
 	public void setType(Type type) {
-		this.type = type;
+		if(type instanceof VoidType){
+			if(isVoidValid()){
+				this.type = type;
+			}
+			else{
+				this.type=PrimitiveType.ERROR;
+				SemanticAnalysisVisitor.typeCheckError(this,Arrays.asList(type));
+			}
+		}
+		else
+			this.type=type;
 	}
 	public Type getType() {
 		return type;

@@ -1,0 +1,62 @@
+exec
+{
+	const z := 0.
+	var fb := <int n> -> int { return 0. }.
+	fb := <int n> -> int
+	{
+		if (n < 0)
+		{
+			print "error!";_n_.
+			return 0.
+		}
+		if (n == z) { return 0. }
+		if (n == 1) { return 1. }
+		return fb(n - 1) + fb(n - 2).
+	}.
+	print fb(8);fb(9);fb(10);_n_.
+	var min_index := <[int] ar, int i, int j> -> int
+	{
+		print "call";_n_.
+		var k := i.
+		var min := ar[k].
+		var id := i.
+		while (k <= j)
+		{
+			if (ar[k] < min) { min := ar[k]. id := k. }
+			k := k + 1.
+		}
+		return id.
+	}.
+	var sort := <[int] ar> -> [int]
+	{
+		var res := new [int](length ar).
+		var k := 0.
+		while (k < length ar) { res[k] := ar[k]. k := k + 1. }
+		k := 0.
+		while (k < length ar)
+		{
+			var min_index := min_index(res, k, length ar - 1).
+			var tmp := res[min_index].
+			res[min_index] := res[k].
+			res[k] := tmp.
+			k := k + 1.
+		}
+		return res.
+	}.
+	print sort([5,8,9,10,1,3,4,7,6,0,2]);_n_.
+	print <int a> -> int { return 66666. }(555);_n_.
+
+	var ar := ["a", "b", "c"].
+	call <[[string]] ar> -> void { ar[0][0] := "s". return. }([ar]).
+	print ar;_n_.
+
+	var ff1 := <>->void { print "ff1";. return. }.
+	var ff3 := ff1.
+	var ffar := [ff1, <>->void { print "ff2";. return. }, ff3].
+	call <[<>->void] fs>->void 
+	{
+		var k := 0.
+		while (k < length fs) { call fs[k](). k := k + 1. }
+		print _n_. return.
+	}(ffar).
+}

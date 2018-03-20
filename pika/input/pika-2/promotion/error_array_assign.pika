@@ -1,8 +1,0 @@
-exec{
-	const intArray:=[7,5].
-	const charArray:=[^a^,^z^].
-	const stringArray:=["str","str-2"].
-	var R:=intArray.
-	R:=charArray.
-	R:= stringArray.
-}

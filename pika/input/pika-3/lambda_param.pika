@@ -1,0 +1,27 @@
+func f1 <rat a, <rat ,rat >->void b >-><rat ,rat >->void{
+	print a //// 100; (57100 / 63)//100; "9_3/50", _n_.
+	call b(71 // 44,59 // 11).
+	return b.
+}
+
+func f2 <rat r,rat s>->void{
+	print [r+s | int]; 0, _n_ .
+	return.
+}
+
+func f3 <rat b,rat c>->bool{
+	print b <= c; _true_, _n_.
+	return b <= c.
+}
+
+exec{
+	var a:=571 // 63.
+	var r := 71 // 44.
+	var s := 59 // 11.
+
+	call f1(a,f2)(r,s).
+
+	var b:=7//32.
+	var c:=4//16.
+	call f3(b,c).
+}

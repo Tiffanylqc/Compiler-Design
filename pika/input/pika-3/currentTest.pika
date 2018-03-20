@@ -1,9 +1,21 @@
-func a< int m,int n>->int{ return n+ m. }
+func f1<int n>->int{
+	return 7 + n.
+}
+
+func f4 <<int> ->int f2> -> int{
+	#return <>-><int> -> int{return f2.}()(5).
+	return f2(5).
+}
 exec{
-	var b:=< int m,int n>->int{ return n. }.
-	const c:=b.
-	var d:=new[< int,int> ->int](2).
-	b:=a.
-	print a(123,232).
-	
+	var lambda0:= <int n>->int{
+						return 8 + n.
+					}.
+	var lambda1 := < <int> ->int f2 > -> int{
+						#return lambda0(1).
+						return <>-><int> -> int{return f1.}()(5).
+						#return <>-><int> -> int{return f2.}()(5).
+						#return f2(5).
+					}.
+	print lambda1(f1);_n_.
+	#print f4(f1);_n_.
 }

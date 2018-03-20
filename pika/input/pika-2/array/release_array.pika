@@ -1,9 +1,0 @@
-exec{
-	var i:= 6999.
-	var a:=new[[int]](i+ 1).
-	while(i>=0){
-		a[i]:= new[int](10).
-		release a[i].
-		i := i - 1.
-	}
-}

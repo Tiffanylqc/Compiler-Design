@@ -1,0 +1,18 @@
+exec{
+	const z:=0.
+	var fb := <int n> -> int{return 0.}.
+	fb:=<int n>->int{
+		if(n<0){
+			print "error";_n_.
+			return 0.
+		}
+		if(n==z){
+			return 0.
+		}
+		if(n==1){
+			return 1.
+		}
+		return fb(n- 1)+fb(n- 2).
+	}.
+	print fb(8);fb(9);fb(10);_n_.
+}

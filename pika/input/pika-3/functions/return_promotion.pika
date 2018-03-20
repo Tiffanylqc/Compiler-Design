@@ -1,8 +1,0 @@
-func f<>->float {
-	return 3.
-}
-
-
-exec {
-	print f(), _n_.
-}

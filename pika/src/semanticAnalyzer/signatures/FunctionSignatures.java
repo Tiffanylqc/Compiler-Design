@@ -37,6 +37,7 @@ import lexicalAnalyzer.Punctuator;
 import semanticAnalyzer.types.Type;
 import semanticAnalyzer.types.TypeVariable;
 import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.LambdaType;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.signatures.FunctionSignature;
 
@@ -208,6 +209,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		TypeVariable S = new TypeVariable("S");
 		List<TypeVariable> setS = Arrays.asList(S);
 		
+		TypeVariable S1=new TypeVariable("S1");
+		TypeVariable S2=new TypeVariable("S2");
+		List<TypeVariable> setS2 = Arrays.asList(S1,S2);
+		
 		new FunctionSignatures(Punctuator.ARRAY_INDEXING,
 				new FunctionSignature(
 						new ArrayIndexingCodeGenerator(),
@@ -296,8 +301,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 			new FunctionSignature(new FloatingToRationalCodeGenerator(),PrimitiveType.FLOATING,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
 			new FunctionSignature(ASMOpcode.Nop,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL,PrimitiveType.RATIONAL),
 			new FunctionSignature(new RationalToFloatCodeGenerator(),PrimitiveType.RATIONAL,PrimitiveType.FLOATING,PrimitiveType.FLOATING),
-			new FunctionSignature(new RationalToIntCodeGenerator(),PrimitiveType.RATIONAL,PrimitiveType.INTEGER,PrimitiveType.INTEGER),
-			new FunctionSignature(ASMOpcode.Nop,setS,S,S,S)
+			new FunctionSignature(new RationalToIntCodeGenerator(),PrimitiveType.RATIONAL,PrimitiveType.INTEGER,PrimitiveType.INTEGER)
 		);
 		
 		new FunctionSignatures(Punctuator.ADD,

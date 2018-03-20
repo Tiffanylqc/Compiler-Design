@@ -1,4 +1,0 @@
-exec{
-	var a:= new [string](3).
-	print a[0].
-}

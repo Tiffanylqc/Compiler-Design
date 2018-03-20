@@ -1,0 +1,7 @@
+exec{
+	var lambda1:=<int a,int b>->rat{
+		return (a*a)//b.
+	}.
+
+	print lambda1(2,3).
+}

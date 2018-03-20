@@ -1,0 +1,1 @@
+Couldn't read file ".\output\function_test.asm"

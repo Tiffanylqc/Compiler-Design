@@ -47,6 +47,7 @@ import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import semanticAnalyzer.types.VoidType;
 import symbolTable.Binding;
+import symbolTable.ProcedureMemoryAllocator;
 import symbolTable.Scope;
 import static asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType.*;
 import static asmCodeGenerator.codeStorage.ASMOpcode.*;
@@ -90,6 +91,12 @@ public class ASMCodeGenerator {
 		ASMCodeFragment code = new ASMCodeFragment(GENERATES_VOID);
 		
 		code.add(    Label, RunTime.MAIN_PROGRAM_LABEL);
+		
+		code.add(Memtop);
+		Macros.storeITo(code, RunTime.STACK_POINTER);
+		code.add(Memtop);
+		Macros.storeITo(code, RunTime.FRAME_POINTER);
+		
 		code.append( programCode());
 		code.add(    Halt );
 		
@@ -189,6 +196,7 @@ public class ASMCodeGenerator {
 				code.add(PushI,4);				// [... numerator a 4]
 				code.add(Add);					// [... numerator a+4]
 				code.add(LoadI);				// [... numerator a+4]-> [... numerator IMEM(a+4..a+7)(denominator)]
+				
 				//check the denominator != 0
 				code.add(Duplicate);
 				code.add(JumpFalse,RunTime.OVER_ZERO_DENOMINATOR_RUNTIME_ERROR);
@@ -304,6 +312,10 @@ public class ASMCodeGenerator {
 			ASMCodeFragment lvalue = removeAddressCode(node.child(0));	
 			ASMCodeFragment rvalue = removeValueCode(node.child(1));
 			
+//			Macros.loadIFrom(code, RunTime.FRAME_POINTER);
+//			code.add(PStack);
+//			code.add(Pop);
+			
 			Type type = node.getType();
 			if(type==PrimitiveType.RATIONAL){
 				Labeller labeller = new Labeller("rational-storage");
@@ -325,10 +337,20 @@ public class ASMCodeGenerator {
 				code.add(StoreI);//[...]
 			}
 			else{
+				
 				code.append(lvalue);
 				code.append(rvalue);
-			
+				
 				code.add(opcodeForStore(type));
+				
+//				if(node.getLocalScope().getAllocationStrategy() instanceof ProcedureMemoryAllocator){
+//					Macros.loadIFrom(code, RunTime.FRAME_POINTER);
+////					code.add(PushI, -16);
+////					code.add(Add);
+////					code.add(LoadF);
+//					code.add(PStack);
+//					code.add(Pop);
+//				}
 			}
 		}
 		
@@ -357,6 +379,7 @@ public class ASMCodeGenerator {
 			if(type instanceof LambdaType){
 				return StoreI;
 			}
+
 			assert false: "Type " + type + " unimplemented in opcodeForStore()";
 			return null;
 		}
@@ -373,7 +396,6 @@ public class ASMCodeGenerator {
 			for(ParseNode child:node.getChildren()){
 				ASMCodeFragment paramCode=removeValueCode(child);
 				code.append(paramCode);
-//				code.add(PStack);
 				int size=child.getType().getSize();
 				code.add(PushI,(-1)*size);
 				Macros.addITo(code, RunTime.STACK_POINTER);
@@ -383,11 +405,19 @@ public class ASMCodeGenerator {
 				else if(size==4){
 					Macros.storeIToIndirect(code, RunTime.STACK_POINTER);
 				}
-				else if(size==8)
+				else if(size==8 && (child.getType() == PrimitiveType.FLOATING))
 					Macros.storeFToIndirect(code, RunTime.STACK_POINTER);
-				
+				else{
+					
+					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+					code.add(PushI,4);
+					code.add(Add);
+					code.add(Exchange);
+					code.add(StoreI);
+					Macros.storeIToIndirect(code, RunTime.STACK_POINTER);
+				}
 			}
-			
+
 			//CALL the function
 			ASMCodeFragment funcAddr=removeValueCode(node.getParent().child(0));
 			code.append(funcAddr);
@@ -410,9 +440,17 @@ public class ASMCodeGenerator {
 					code.add(LoadI);
 				}
 					
-				else if(returnSize==8){
+				else if(returnSize==8 && returnType==PrimitiveType.FLOATING){
 					Macros.loadIFrom(code,RunTime.STACK_POINTER);
 					code.add(LoadF);
+				}
+				else{
+					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+					code.add(PushI,4);
+					code.add(Add);
+					code.add(LoadI);
+					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+					code.add(LoadI);
 				}
 					
 				code.add(PushI,returnSize);
@@ -432,28 +470,36 @@ public class ASMCodeGenerator {
 				ASMCodeFragment funcCode=removeValueCode(node.child(0));
 				code.append(funcCode);
 				code.add(Pop);
+				if(node.child(0).getType() == PrimitiveType.RATIONAL)
+					code.add(Pop);
 			}
-				
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
 		// FunctionDefinition in FunctionBodyNode
+		public void visitEnter(FunctionBodyNode node){
+			Labeller labeller = new Labeller("function-body");
+			String funcExitHandShakeLabel=labeller.newLabel("-exit-handshake");
+			node.setExitHandshake(funcExitHandShakeLabel);
+		}
 		public void visitLeave(FunctionBodyNode node){
 			newValueCode(node);
 			
 			Labeller labeller = new Labeller("function-body");
 			String funcEndLabel=labeller.newLabel("-end");
-			String funcExitHandShakeLabel=labeller.newLabel("-exit-handshake");
+			String funcExitHandShakeLabel=node.getExitHandshake();
+			String returnAddr=labeller.newLabel("return-addr");
+			Macros.declareI(code, returnAddr);
 			
 			String funcStartLabel;
-			if(node.getParent().getParent().child(0) instanceof IdentifierNode){
-				IdentifierNode identifier=(IdentifierNode)(node.getParent().getParent().child(0));
-				Binding binding=identifier.findVariableBinding();
-				funcStartLabel=binding.getFuncStartLabel();
-			}
-			else{
+//			if(node.getParent().getParent().child(0) instanceof IdentifierNode){
+//				IdentifierNode identifier=(IdentifierNode)(node.getParent().getParent().child(0));
+//				Binding binding=identifier.findVariableBinding();
+//				funcStartLabel=binding.getFuncStartLabel();
+//			}
+//			else{
 				funcStartLabel=labeller.newLabel("-anonymous-start");
-			}
+//			}
 			
 			
 			code.add(Jump,funcEndLabel);
@@ -466,7 +512,6 @@ public class ASMCodeGenerator {
 			Macros.storeIToSPNegOffset(code, 4);//[...returnAddr]
 			Macros.storeIToSPNegOffset(code, 8);//[...]
 			
-			
 			////set frame pointer equal to stack pointer
 			Macros.loadIFrom(code, RunTime.STACK_POINTER);//[...SP]
 			Macros.storeITo(code, RunTime.FRAME_POINTER);//[...]
@@ -475,18 +520,16 @@ public class ASMCodeGenerator {
 			int frameSize=node.getScope().getAllocatedSize();
 			code.add(PushI,(-1)*frameSize);
 			Macros.addITo(code, RunTime.STACK_POINTER);
-			
-			
-			
+
 			////
 			for(ParseNode child:node.getChildren()){
 				ASMCodeFragment childCode = removeVoidCode(child);
 				code.append(childCode);
-				if(child instanceof ReturnStatementNode){
-					code.add(Jump,funcExitHandShakeLabel);
-				}
+				
+//				if(child instanceof ReturnStatementNode){
+//					code.add(Jump,funcExitHandShakeLabel);
+//				}
 			}
-			
 			//if not jump to exit hand shake, means no return statements
 			code.add(Jump, RunTime.NO_RETURN_RUNTIME_ERROR);
 			
@@ -501,13 +544,14 @@ public class ASMCodeGenerator {
 			code.add(PushI,8);
 			code.add(Subtract);
 			code.add(LoadI);//[...returnValue Mem(FP-8)]
+			Macros.storeITo(code, returnAddr);
 			
 			////replace frame pointer with dynamic link
 			Macros.loadIFrom(code, RunTime.FRAME_POINTER);
 			code.add(PushI,4);
 			code.add(Subtract);
-			code.add(LoadI);//[...returnValue Mem(FP-8) Mem(FP-4)]
-			Macros.storeITo(code, RunTime.FRAME_POINTER);//[...returnValue Mem(FP-8)]
+			code.add(LoadI);//[...returnValue Mem(FP-4)]
+			Macros.storeITo(code, RunTime.FRAME_POINTER);//[...returnValue ]
 			
 			int paraScopeSize=node.getParent().child(0).getScope().getAllocatedSize();
 			int bodyScopeSize=node.getScope().getAllocatedSize();
@@ -516,28 +560,35 @@ public class ASMCodeGenerator {
 			Macros.addITo(code, RunTime.STACK_POINTER);
 			
 			//decrease SP by return value size
-			//[...returnValue Mem(FP-8)]
-			
+			//[...returnValue]
 			Type returnType=((LambdaType)(node.getParent().getType())).getFunctionSignature().resultType();
 			if(returnType instanceof VoidType){
 //				code.add(DataD,funcStartLabel);
 //				code.add(Exchange);
+				Macros.loadIFrom(code, returnAddr);
 				code.add(Return);
 			}
 			else{
 				int returnSize=returnType.getSize();
-				code.add(Exchange);
-				//[...Mem(FP-8) returnValue]
+				//[...returnValue]
 				code.add(PushI,(-1)*returnSize);
 				Macros.addITo(code, RunTime.STACK_POINTER);
 				if(returnSize==4)
 					Macros.storeIToIndirect(code, RunTime.STACK_POINTER);
 				else if(returnSize==1)
 					Macros.storeCToIndirect(code, RunTime.STACK_POINTER);
-				else if(returnSize==8)
+				else if(returnSize==8&&returnType==PrimitiveType.FLOATING)
 					Macros.storeFToIndirect(code, RunTime.STACK_POINTER);
-				
-//				code.add(DataD,funcStartLabel);
+				else{
+					code.add(Exchange);
+					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+					code.add(PushI,4);
+					code.add(Add);
+					code.add(Exchange);
+					code.add(StoreI);
+					Macros.storeIToIndirect(code, RunTime.STACK_POINTER);
+				}
+				Macros.loadIFrom(code, returnAddr);
 				code.add(Return);
 			}
 			
@@ -554,6 +605,12 @@ public class ASMCodeGenerator {
 				code.append(returnCode);
 			}
 			
+			for(ParseNode current:node.pathToRoot()){
+				if(current instanceof FunctionBodyNode){
+					code.add(Jump,((FunctionBodyNode)current).getExitHandshake());
+					break;
+				}
+			}
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
@@ -636,7 +693,7 @@ public class ASMCodeGenerator {
 		
 		public void visitLeave(LambdaParamTypeNode node){
 			newVoidCode(node);
-			//do nothing
+//			do nothing
 		}
 		
 		private void visitBoolNotOperatorNode(OperatorNode node, Lextant operator){

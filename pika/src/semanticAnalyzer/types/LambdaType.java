@@ -12,6 +12,9 @@ public class LambdaType implements Type {
 		// TODO Auto-generated constructor stub
 		this.signature=signature;
 	}
+	public LambdaType(){
+		
+	}
 
 	@Override
 	public int getSize() {
@@ -34,8 +37,9 @@ public class LambdaType implements Type {
 
 	@Override
 	public boolean equivalent(Type type) {
-		// TODO Auto-generated method stub
+//		 TODO Auto-generated method stub
 		if(type instanceof LambdaType){
+			
 			FunctionSignature signature=((LambdaType)type).getFunctionSignature();
 			Type[] type1=signature.getParamTypes();
 			Type[] type2=this.getFunctionSignature().getParamTypes();
@@ -52,6 +56,7 @@ public class LambdaType implements Type {
 				return false;
 		}
 		return false;
+//		return type instanceof LambdaType;
 	}
 
 	@Override

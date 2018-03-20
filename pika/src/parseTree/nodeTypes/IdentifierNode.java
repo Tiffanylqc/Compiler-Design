@@ -7,6 +7,7 @@ import symbolTable.Binding;
 import symbolTable.Scope;
 import tokens.IdentifierToken;
 import tokens.Token;
+import symbolTable.ProcedureMemoryAllocator;
 
 public class IdentifierNode extends ParseNode {
 	private Binding binding;
@@ -47,13 +48,39 @@ public class IdentifierNode extends ParseNode {
 
 	public Binding findVariableBinding() {
 		String identifier = token.getLexeme();
-
+		boolean isLambda=false;
 		for(ParseNode current : pathToRoot()) {
-			if(current.containsBindingOf(identifier)) {
+			if(isLambda==true){
+//				System.out.println(identifier);
+				if(current instanceof ProgramNode && current.containsBindingOf(identifier)){
+					declarationScope = current.getScope();
+					return current.bindingOf(identifier);
+				}
+			}
+			else if(current.containsBindingOf(identifier)&&current instanceof FunctionBodyNode) {
+				declarationScope = current.getScope();
+				return current.bindingOf(identifier);
+			}
+			else if(current instanceof OperatorNode && current.child(0) instanceof LambdaParamTypeNode){
+				if(!(current.getParent() instanceof FunctionDefinitionNode)){
+					if(current.child(0).containsBindingOf(identifier)){
+						declarationScope = current.child(0).getScope();
+						return current.child(0).bindingOf(identifier);
+					}
+					else
+						isLambda=true;
+				}
+				else if(current.child(0).containsBindingOf(identifier)){
+					declarationScope = current.child(0).getScope();
+					return current.child(0).bindingOf(identifier);
+				}
+			}
+			else if(current.containsBindingOf(identifier)){
 				declarationScope = current.getScope();
 				return current.bindingOf(identifier);
 			}
 		}
+
 		useBeforeDefineError();
 		return Binding.nullInstance();
 	}

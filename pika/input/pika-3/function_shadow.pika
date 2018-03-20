@@ -1,0 +1,48 @@
+func fin< int a, int b > -> int {
+	return pax(5*a, b). 
+}
+
+func fin_sha< int a, int b > -> int {
+	const fin_sha:=fin(a,b).
+	print fin_sha,_n_.
+	#return fin_sha(a,b).
+	return fin_sha.
+}
+
+func pax< int a, int b > -> int {
+	if (a < b ) {
+		return a .
+	}
+	return b + pax(a, 3*b) . 
+}
+
+#func pax< float a, float b > -> float { // illegal : overloading is not okay.
+#	if (a < b ) {
+#		return a .
+#	}
+#	return b + pax(a, 3*b) . // legal, if this were a legal function : recursion is okay.
+#}
+
+func param_shadow <float param_shadow>->float{
+	#call param_shadow(4.4).
+	var param_shadow:=3.3.
+	return param_shadow.
+}
+
+exec {
+	const a := 11.
+	const b := 14.
+	const c := 16.
+	if( a > 5) {
+		const m := fin(a, b).
+		print pax,_n_.
+		const pax := pax(a, b). 
+ 		#const y:= pax(a,b).
+ 		print m,_n_,pax,_n_. #111 11
+ 		
+	}
+	const x := pax(a, b). 
+	print x,_n_. #11
+	print fin_sha(a,b),_n_.
+	print param_shadow(6.6).
+}

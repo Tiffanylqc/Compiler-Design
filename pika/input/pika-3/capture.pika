@@ -1,0 +1,19 @@
+func f1 <<int>->int f2, int n> -> int
+{
+	return f2(n).
+}
+
+func f3 <int x> -> <int> -> int
+{
+	return <int x> -> int { return x + 1. }.
+}
+
+func f4 <<int>-><int>->int f3, <<int>->int, int> -> int f2> -> int
+{
+	return f3(5)(1) + <>-><<int>->int, int> -> int{ return f2.}()(<int x>-> int {return x + 1.}, 5).
+}
+
+exec
+{
+	print f4(f3, f1);_n_.
+}

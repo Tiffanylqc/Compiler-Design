@@ -1,0 +1,4 @@
+exec {
+	var x := new [int](^x^).
+	print x[50] == 0, _n_ .
+}

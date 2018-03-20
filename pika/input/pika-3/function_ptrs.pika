@@ -1,0 +1,15 @@
+func f<<int, int> -> int a> -> <int, int> -> int {
+	#var f := <int a, int b>->int {return 2.}.
+	return a.
+}
+
+exec {
+	var a := <float a, float b, float c>->float {
+			const discriminant := b*b - 4*a*c.
+			return discriminant.
+			}.
+	var b := <int a, int b>->int {return b.}.
+	#var f := 1.
+	print f(b)(1,2),_n_.
+	print a(3.1, 4.1, 5.1).
+}

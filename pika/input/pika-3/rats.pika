@@ -1,0 +1,41 @@
+exec
+{
+	var min_index := <[rat] ar, int i, int j> -> int
+	{
+		print "call";_n_.
+		var k := i.
+		var min := ar[k].
+		var id := i.
+		while (k <= j)
+		{
+			if (ar[k] < min) { min := ar[k]. id := k. }
+			k := k + 1.
+		}
+		return id.
+	}.
+	var sort := <[rat] ar> -> [rat]
+	{
+		var res := new [rat](length ar).
+		var k := 0.
+		while (k < length ar) { res[k] := ar[k]. k := k + 1. }
+		k := 0.
+		while (k < length ar)
+		{
+			var min_index := min_index(res, k, length ar - 1).
+			var tmp := res[min_index].
+			res[min_index] := res[k].
+			res[k] := tmp.
+			k := k + 1.
+		}
+		return res.
+	}.
+	print sort([5//8, 7//23, 16//12, 33//44, 5//127, 152//99]).
+
+	var fb := <int n> -> rat { return 0//1. }.
+	fb := <int n> -> rat
+	{
+		if (n <= 1) { return 1//1. }
+		return fb(n - 1) + fb(n - 2).
+	}.
+	print fb(7);fb(8);fb(12);_n_.
+}

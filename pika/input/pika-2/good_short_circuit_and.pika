@@ -1,8 +1,0 @@
-exec{
-	if(_false_&&3/0==1){
-		print _true_.
-	}
-	else{
-		print _false_.
-	}
-}

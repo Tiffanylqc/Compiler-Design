@@ -1,0 +1,23 @@
+func f0 <> -> int
+{
+	return 5.
+}
+
+func f1 <> -> rat
+{
+	return 5 // 8.
+}
+
+exec
+{
+	var k := 0.
+	var x := "asd".
+	while (k < 11000)
+	{
+		call f0().
+		call f1().
+		call <>->string { return x. }().
+		call <>->char { return ^a^. }().
+		call <>->bool { return _false_. }().
+	}
+}

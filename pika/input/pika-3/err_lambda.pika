@@ -1,0 +1,11 @@
+func f1<int n>->int{
+	return 7 + n.
+}
+
+func f4 <<int> ->int f2> -> int{
+	return <>-><int> -> int{return f2.}()(5).
+	#return f2(5).
+}
+exec{
+	print f4(f1);_n_.
+}

@@ -1,9 +1,0 @@
-exec{
-	var a:= [_true_].
-	var b:= [_true_,_false_].
-	var c:= new[[bool]](3).
-	c[0]:=a.
-	c[1]:=b.
-	c[2]:=b.
-	print c.
-}

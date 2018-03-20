@@ -1,4 +1,0 @@
-exec{
-	var a:=5//3.
-	print 3.0//2,a//2,_true_//2,"str"//3,3.0//a,_true_//_false_,"str"//"str","str"//_true_.
-}

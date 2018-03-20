@@ -1,7 +1,0 @@
-exec{
-	var a:= [3,4,5].
-	var b:=[3,4,5].
-	var c:= new [[int]](3).
-	var d:=c.
-	print a==b,_n_,c!=d,_n_,a!=b,_n_,c==d.
-}

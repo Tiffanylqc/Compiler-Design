@@ -112,6 +112,8 @@ public class ArrayPopulateCreationCodeGenerator implements FullCodeGenerator {
 		if(type instanceof Array){
 			return StoreI;
 		}
+		if(type instanceof LambdaType)
+			return StoreI;
 		assert false: "Type " + type + " unimplemented in opcodeForStore()";
 		return null;
 	}
