@@ -69,6 +69,10 @@ public class Macros {
 		frag.add(DLabel, variableName);
 		frag.add(DataZ, 4);
 	}
+	public static void declareC(ASMCodeFragment frag, String variableName){
+		frag.add(DLabel, variableName);
+		frag.add(DataZ,1);
+	}
 	public static void storeIToSPNegOffset(ASMCodeFragment frag, int offset){
 		//store value to Mem(SP-offset)  SP NOT CHANGED!
 		//// [...value]

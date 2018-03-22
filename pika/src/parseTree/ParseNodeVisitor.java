@@ -20,6 +20,8 @@ import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.LambdaParamTypeNode;
 import parseTree.nodeTypes.LambdaTypeNode;
 import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.ForElemStatementNode;
+import parseTree.nodeTypes.ForIndexStatementNode;
 import parseTree.nodeTypes.FunctionBodyNode;
 import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.NewlineNode;
@@ -98,6 +100,12 @@ public interface ParseNodeVisitor {
 	void visitEnter(FunctionBodyNode node);
 	void visitLeave(FunctionBodyNode node);
 	
+	void visitEnter(ForIndexStatementNode node);
+	void visitLeave(ForIndexStatementNode node);
+	
+	void visitEnter(ForElemStatementNode node);
+	void visitLeave(ForElemStatementNode node);
+	
 	// leaf nodes: visitLeaf only
 	void visit(BreakNode node);
 	void visit(ContinueNode node);
@@ -127,6 +135,18 @@ public interface ParseNodeVisitor {
 			defaultVisit(node);
 		}
 		
+		public void visitEnter(ForIndexStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ForIndexStatementNode node) {
+			defaultVisitLeave(node);
+		}
+		public void visitEnter(ForElemStatementNode node) {
+			defaultVisitEnter(node);
+		}
+		public void visitLeave(ForElemStatementNode node) {
+			defaultVisitLeave(node);
+		}
 		
 		public void visitEnter(FunctionBodyNode node) {
 			defaultVisitEnter(node);

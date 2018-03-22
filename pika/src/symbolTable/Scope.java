@@ -94,33 +94,33 @@ public class Scope {
 
 ///////////////////////////////////////////////////////////////////////
 //bindings
-	public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
+	public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable,boolean isStatic) {
 		Token token = identifierNode.getToken();
 		symbolTable.errorIfAlreadyDefined(token,type);
 
 		String lexeme = token.getLexeme();
-		Binding binding = allocateNewBinding(type, token.getLocation(), lexeme,mutable);	
+		Binding binding = allocateNewBinding(type, token.getLocation(), lexeme,mutable,isStatic);	
 		symbolTable.install(lexeme, binding);
 
 		return binding;
 	}
-	public Binding createFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
+	public Binding createFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel,boolean isStatic) {
 		Token token = identifierNode.getToken();
 		symbolTable.errorIfAlreadyDefined(token,type);
 
 		String lexeme = token.getLexeme();
-		Binding binding = allocateNewFuncBinding(type, token.getLocation(), lexeme,mutable,funcStartLabel);	
+		Binding binding = allocateNewFuncBinding(type, token.getLocation(), lexeme,mutable,funcStartLabel,isStatic);	
 		symbolTable.install(lexeme, binding);
 
 		return binding;
 	}
-	private Binding allocateNewBinding(Type type, TextLocation textLocation, String lexeme,boolean mutable) {
+	private Binding allocateNewBinding(Type type, TextLocation textLocation, String lexeme,boolean mutable,boolean isStatic) {
 		MemoryLocation memoryLocation = allocator.allocate(type.getSize());
-		return new Binding(type, textLocation, memoryLocation, lexeme, mutable);
+		return new Binding(type, textLocation, memoryLocation, lexeme, mutable,isStatic);
 	}
-	private Binding allocateNewFuncBinding(Type type, TextLocation textLocation, String lexeme,boolean mutable, String funcStartLabel) {
+	private Binding allocateNewFuncBinding(Type type, TextLocation textLocation, String lexeme,boolean mutable, String funcStartLabel,boolean isStatic) {
 		MemoryLocation memoryLocation = allocator.allocate(type.getSize());
-		return new Binding(type, textLocation, memoryLocation, lexeme, mutable,funcStartLabel);
+		return new Binding(type, textLocation, memoryLocation, lexeme, mutable,funcStartLabel,isStatic);
 	}
 	
 ///////////////////////////////////////////////////////////////////////
@@ -148,9 +148,9 @@ public class Scope {
 			return "scope: the-null-scope";
 		}
 		@Override
-		public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
+		public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable,boolean isStatic) {
 			unscopedIdentifierError(identifierNode.getToken());
-			return super.createBinding(identifierNode, type, true);
+			return super.createBinding(identifierNode, type, true,isStatic);
 		}
 		// subscopes of null scope need their own strategy.  Assumes global block is static.
 		public Scope createSubscope() {

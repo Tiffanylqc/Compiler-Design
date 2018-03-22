@@ -35,6 +35,8 @@ import parseTree.nodeTypes.VoidTypeNode;
 import parseTree.nodeTypes.PrimitiveTypeNode;
 import parseTree.nodeTypes.WhileStatementNode;
 import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.ForElemStatementNode;
+import parseTree.nodeTypes.ForIndexStatementNode;
 import parseTree.nodeTypes.FunctionBodyNode;
 import parseTree.nodeTypes.FunctionDefinitionNode;
 import tokens.*;
@@ -73,9 +75,15 @@ public class Parser {
 		}
 		ParseNode program = new ProgramNode(nowReading);
 		
-		while(startsFunctionDefinition(nowReading)){
-			ParseNode funcDefinition=parseFunctionDefinition();
-			program.appendChild(funcDefinition);
+		while(startsFunctionDefinition(nowReading)||startsDeclaration(nowReading)){
+			if(startsFunctionDefinition(nowReading)){
+				ParseNode funcDefinition=parseFunctionDefinition();
+				program.appendChild(funcDefinition);
+			}
+			else{
+				ParseNode globalDeclare=parseDeclaration();
+				program.appendChild(globalDeclare);
+			}
 		}
 		expect(Keyword.EXEC);
 		ParseNode mainBlock = parseBlockStatement();
@@ -88,7 +96,7 @@ public class Parser {
 		return program;
 	}
 	private boolean startsProgram(Token token) {
-		return token.isLextant(Keyword.EXEC)||token.isLextant(Keyword.FUNC);
+		return token.isLextant(Keyword.EXEC)||token.isLextant(Keyword.FUNC)||startsDeclaration(token);
 	}
 	
 	// functionDefinition
@@ -156,7 +164,7 @@ public class Parser {
 	// statements
 	
 	// statement-> declaration | printStmt | blockStmt | assignStmt |ifStmt |whileStmt | releaseStmt
-	//				breakStmt | continueStmt
+	//				breakStmt | continueStmt | forStmt
 	private ParseNode parseStatement() {
 		if(!startsStatement(nowReading)) {
 			return syntaxErrorNode("statement");
@@ -194,6 +202,9 @@ public class Parser {
 		if(startsCallStatement(nowReading)){
 			return parseCallStatement();
 		}
+		if(startsForStatement(nowReading)){
+			return parseForStatement();
+		}
 		
 		return syntaxErrorNode("statement");
 	}
@@ -208,8 +219,43 @@ public class Parser {
 			   startsBreakStatement(token)||
 			   startsContinueStatement(token)||
 			   startsReturnStatement(token)||
-			   startsCallStatement(token);
+			   startsCallStatement(token)||
+			   startsForStatement(token);
 	}
+	
+	// forStmt -> 	for index identifier  of expression blockStmt
+	// 				for elem identifier  of expression blockStmt
+	private ParseNode parseForStatement(){
+		if(!startsForStatement(nowReading)){
+			return syntaxErrorNode("for statement");
+		}
+		readToken();
+		expect(Keyword.INDEX,Keyword.ELEM);
+		Token forToken=previouslyRead;
+		
+		ParseNode forNode;
+		if(forToken.isLextant(Keyword.INDEX)){
+			forNode=new ForIndexStatementNode(forToken);
+		}
+		else //if (forToken.isLextant(Keyword.ELEM))
+		{
+			forNode=new ForElemStatementNode(forToken);
+		}
+		
+		ParseNode identifier=parseIdentifier();
+		forNode.appendChild(identifier);
+		expect(Keyword.OF);
+		ParseNode expr=parseExpression();
+		forNode.appendChild(expr);
+		ParseNode blockStmt=parseStatement();
+		forNode.appendChild(blockStmt);
+		
+		return forNode;
+	}
+	private boolean startsForStatement(Token token){
+		return token.isLextant(Keyword.FOR);
+	}
+	
 	// callStmt -> call functionInvocation
 	private ParseNode parseCallStatement(){
 		if(!startsCallStatement(nowReading)){
@@ -281,12 +327,19 @@ public class Parser {
 		while(nowReading.isLextant(Punctuator.OPEN_BRACKET,Punctuator.OPEN_PARENTHESE)){
 			Token realToken=nowReading;
 			if(nowReading.isLextant(Punctuator.OPEN_BRACKET)){
-				
-				Token indexToken=LextantToken.artificial(realToken.getLocation(),Punctuator.ARRAY_INDEXING);
 				readToken();
 				ParseNode index=parseExpression();
-				expect(Punctuator.CLOSE_BRACKET);
-				node=OperatorNode.withChildren(indexToken, node, index);
+				expect(Punctuator.CLOSE_BRACKET,Punctuator.SEPARATOR);
+				if(previouslyRead.isLextant(Punctuator.CLOSE_BRACKET)){
+					Token indexToken=LextantToken.artificial(realToken.getLocation(),Punctuator.ARRAY_INDEXING);
+					node=OperatorNode.withChildren(indexToken, node, index);
+				}
+				else{
+					Token sliceToken=LextantToken.artificial(realToken.getLocation(),Punctuator.STRING_SLICE);
+					ParseNode index2=parseExpression();
+					expect(Punctuator.CLOSE_BRACKET);
+					node=OperatorNode.withChildren(sliceToken, node, index,index2);
+				}
 			}
 			else{
 				
@@ -539,25 +592,38 @@ public class Parser {
 		return token.isLextant(Punctuator.SEPARATOR, Punctuator.SPACE) ;
 	}
 	
-	// declaration -> CONST identifier := expression .
-	//				  VAR identifier := expression .
+	// declaration -> static? CONST identifier := expression .
+	//				  static? VAR identifier := expression .
 	private ParseNode parseDeclaration() {
 		if(!startsDeclaration(nowReading)) {
 			return syntaxErrorNode("declaration");
 		}
 		Token declarationToken = nowReading;
-		readToken();
+		boolean isStatic=false;
+		if(declarationToken.isLextant(Keyword.STATIC)){
+			isStatic=true;
+			readToken();
+			expect(Keyword.CONST,Keyword.VAR);
+			declarationToken=previouslyRead;
+		}
+		else{
+			readToken();
+		}
 		
 		ParseNode identifier = parseIdentifier();
 		expect(Punctuator.ASSIGN);
 		ParseNode initializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 		
-		return DeclarationNode.withChildren(declarationToken, identifier, initializer);
+		DeclarationNode declareNode=DeclarationNode.withChildren(declarationToken, identifier, initializer);
+		if(isStatic)
+			declareNode.setStatic();
+		return declareNode;
 	}
 	private boolean startsDeclaration(Token token) {
-		return token.isLextant(Keyword.CONST)||
-				token.isLextant(Keyword.VAR);
+		return  token.isLextant(Keyword.CONST)||
+				token.isLextant(Keyword.VAR)||
+				token.isLextant(Keyword.STATIC);
 	}
 	
 	
@@ -748,17 +814,66 @@ public class Parser {
 			return syntaxErrorNode("multiplicative and dividing Expression");
 		}
 
-		ParseNode left = parseUnaryExpression();
+		ParseNode left = parseFoldExpression();
 		while(nowReading.isLextant(Punctuator.MULTIPLY,Punctuator.DIVIDE,Punctuator.OVER,Punctuator.EXPRESS_OVER,Punctuator.RATIONALIZE)) {
 			Token multiplicativeToken = nowReading;
 			readToken();
-			ParseNode right = parseUnaryExpression();
+			ParseNode right = parseFoldExpression();
 			
 			left = OperatorNode.withChildren(multiplicativeToken, left, right);
 		}
 		return left;
 	}
 	private boolean startsMultiplicativeExpression(Token token) {
+		return startsFoldExpression(token);
+	}
+	
+	// fold expression
+	private ParseNode parseFoldExpression(){
+		if(!startsFoldExpression(nowReading)){
+			return syntaxErrorNode("Fold Expression");
+		}
+		ParseNode left=parseMapReduceExpression();
+		
+		while(nowReading.isLextant(Keyword.FOLD)){
+			Token foldToken=nowReading;
+			readToken();
+			
+			if(nowReading.isLextant(Punctuator.OPEN_BRACKET)){
+				readToken();
+				ParseNode middle=parseExpression();
+				expect(Punctuator.CLOSE_BRACKET);
+				ParseNode right = parseMapReduceExpression();
+				left = OperatorNode.withChildren(foldToken, left, middle,right);
+			}
+			else{
+				ParseNode right = parseMapReduceExpression();
+				left = OperatorNode.withChildren(foldToken, left, right);
+			}
+		}
+		return left;
+	}
+	private boolean startsFoldExpression(Token token){
+		return startsMapReduceExpression(token);
+	}
+	
+	// map reduce expression
+	private ParseNode parseMapReduceExpression(){
+		if(!startsMapReduceExpression(nowReading)){
+			return syntaxErrorNode("Map Reduce Expression");
+		}
+		
+		ParseNode left = parseUnaryExpression();
+		while(nowReading.isLextant(Keyword.MAP,Keyword.REDUCE)) {
+			Token mapreduceToken = nowReading;
+			readToken();
+			ParseNode right = parseUnaryExpression();
+			
+			left = OperatorNode.withChildren(mapreduceToken, left, right);
+		}
+		return left;
+	}
+	private boolean startsMapReduceExpression(Token token){
 		return startsUnaryExpression(token);
 	}
 	
@@ -772,19 +887,33 @@ public class Parser {
 		}
 		ParseNode result=new OperatorNode(nowReading);
 		
-		while(nowReading.isLextant(Keyword.CLONE)||nowReading.isLextant(Punctuator.BOOL_NOT)||nowReading.isLextant(Keyword.LENGTH)){
+		while(nowReading.isLextant(Keyword.CLONE)||nowReading.isLextant(Punctuator.BOOL_NOT)||nowReading.isLextant(Keyword.LENGTH)
+			||nowReading.isLextant(Keyword.REVERSE)||nowReading.isLextant(Keyword.ZIP)){
 			Token unaryToken=nowReading;
 			readToken();
-			ParseNode right=parseUnaryExpression();
-			result=OperatorNode.withChild(unaryToken, right);
+			if(previouslyRead.isLextant(Keyword.ZIP)){
+				ParseNode expr1=parseUnaryExpression();
+				expect(Punctuator.SEPARATOR);
+				ParseNode expr2=parseUnaryExpression();
+				expect(Punctuator.SEPARATOR);
+				ParseNode expr3=parseUnaryExpression();
+				result=OperatorNode.withChildren(unaryToken, expr1, expr2, expr3);
+//				result=OperatorNode.withChild(unaryToken, right);
+			}
+			else{
+//				Token unaryToken=nowReading;
+//				readToken();
+				ParseNode right=parseUnaryExpression();
+				result=OperatorNode.withChild(unaryToken, right);
+			}
 		}
-		
 		return result;
 	}
 	
 	private boolean startsUnaryExpression(Token token){
-		return nowReading.isLextant(Keyword.CLONE)||nowReading.isLextant(Punctuator.BOOL_NOT)||
-			   nowReading.isLextant(Keyword.LENGTH)||startsArrayIndexingExpression(token);
+		return 	token.isLextant(Keyword.CLONE)||token.isLextant(Punctuator.BOOL_NOT)||
+				token.isLextant(Keyword.LENGTH)||startsArrayIndexingExpression(token)||
+				token.isLextant(Keyword.REVERSE)||token.isLextant(Keyword.ZIP);
 	}
 	
 

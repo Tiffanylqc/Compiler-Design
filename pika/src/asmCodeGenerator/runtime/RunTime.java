@@ -55,6 +55,7 @@ public class RunTime {
 	public static final String RATIONALIZE_DIVIDE_BY_ZERO_RUNTIME_ERROR="$$rationalize-divide-by-zero";
 	public static final String NEGATIVE_LENGTH_ARRAY_RUNTIME_ERROR="$$negative-length-array";
 	public static final String NO_RETURN_RUNTIME_ERROR="$$no return";
+	public static final String STRING_SLICE_INDEX_RUNTIME_ERROR="$$string-slice-index-error";
 	public static final String ARRAY_INDEXING_ARRAY	= "$a-indexing-array";
 	public static final String ARRAY_INDEXING_INDEX = "$a-indexing-index";
 	
@@ -111,7 +112,22 @@ public class RunTime {
 	public static final String SUBTRACT_RATIONAL = "$subtract-rational";
 	public static final String SUBTRACT_RATIONAL_RETURN_ADDRESS = "$subtract-rational-return-address";
 	
-	public static final String FUNCTION_INVOCATION_PARAM_TEMP = "$function-invocation-parameter-temp";
+	public static final String STRING_SLICE_STRADDR = "$slice-string-address";
+	public static final String STRING_SLICE_INDEX1 = "$slice-string-index1";
+	public static final String STRING_SLICE_INDEX2 = "$slice-string-index2";
+	public static final String STRING_ELEM_TEMP1 = "$string-element-temp1";
+	public static final String STRING_ELEM_TEMP2 = "$string-element-temp2";
+	public static final String STRING_LENGTH_TEMP = "$string-length-temp";
+	public static final String STRING_ADDR_TEMP1 = "$string-addr-temp1";
+	public static final String STRING_ADDR_TEMP2 = "$string-addr-temp2";
+	
+	public static final String CHAR_TEMP = "$char-temp";
+	public static final String FOR_INDEX = "$for-index";
+	public static final String FOR_EXPR = "$for-expression";
+	public static final String FOR_LENGTH = "$for-length";
+	public static final String FOR_SUBSIZE = "$for-subsize";
+	public static final String FOR_IDEN = "$for-identifier";
+//	public static final String FUNCTION_INVOCATION_PARAM_TEMP = "$function-invocation-parameter-temp";
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
 		result.append(jumpToMain());
@@ -161,6 +177,21 @@ public class RunTime {
 		Macros.declareI(frag, PRINT_STRING_LENGTH);
 		Macros.declareI(frag, FRAME_POINTER);
 		Macros.declareI(frag, STACK_POINTER);
+		Macros.declareI(frag, STRING_SLICE_INDEX1);
+		Macros.declareI(frag, STRING_SLICE_INDEX2);
+		Macros.declareI(frag, STRING_SLICE_STRADDR);
+		Macros.declareI(frag, STRING_ELEM_TEMP1);
+		Macros.declareI(frag, STRING_ELEM_TEMP2);
+		Macros.declareI(frag, STRING_LENGTH_TEMP);
+		Macros.declareI(frag, STRING_ADDR_TEMP1);
+		Macros.declareI(frag, STRING_ADDR_TEMP2);
+		Macros.declareI(frag, FOR_INDEX);
+		Macros.declareI(frag, FOR_EXPR);
+		Macros.declareI(frag, FOR_LENGTH);
+		Macros.declareI(frag, FOR_SUBSIZE);
+		Macros.declareI(frag, FOR_IDEN);
+		
+		Macros.declareC(frag, CHAR_TEMP);
 		
 		return frag;
 	}
@@ -220,6 +251,7 @@ public class RunTime {
 		negativeArrayLengthError(frag);
 		nullStringError(frag);
 		noReturnError(frag);
+		stringSliceIndexError(frag);
 		
 		return frag;
 	}
@@ -235,6 +267,15 @@ public class RunTime {
 		frag.add(Printf);
 		frag.add(Halt);
 		return frag;
+	}
+	private void stringSliceIndexError(ASMCodeFragment frag){
+		String stringSliceMessage = "$string-slice-index-error";
+		frag.add(DLabel,stringSliceMessage);
+		frag.add(DataS, "string slice index error");
+		
+		frag.add(Label, STRING_SLICE_INDEX_RUNTIME_ERROR);
+		frag.add(PushD, stringSliceMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	private void noReturnError(ASMCodeFragment frag){
 		String noReturnMessage = "$no-return";

@@ -44,6 +44,14 @@ public class OperatorNode extends ParseNode {
 		return node;
 	}
 	
+	public static OperatorNode withChildren(Token token, ParseNode expr1, ParseNode expr2, ParseNode expr3){
+		OperatorNode node = new OperatorNode(token);
+		node.appendChild(expr1);
+		node.appendChild(expr2);
+		node.appendChild(expr3);
+		return node;
+	}
+	
 	public static OperatorNode withChild(Token token,ParseNode right) {
 		OperatorNode node = new OperatorNode(token);
 		node.appendChild(right);

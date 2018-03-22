@@ -10,6 +10,7 @@ import logging.PikaLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.ArrayTypeNode;
+import parseTree.nodeTypes.ForIndexStatementNode;
 import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.LambdaParamTypeNode;
@@ -35,9 +36,9 @@ public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 		// TODO Auto-generated constructor stub
 	}
 	@Override
-	public void visitLeave(ParseNode node) {
-		throw new RuntimeException("Node class unimplemented in SemanticAnalysisVisitor: " + node.getClass());
-	}
+//	public void visitLeave(ParseNode node) {
+//		throw new RuntimeException("Node class unimplemented in SemanticAnalysisVisitor: " + node.getClass());
+//	}
 	public void visitEnter(ProgramNode node){
 		createProgramScope(node);
 	}
@@ -129,7 +130,7 @@ public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 	
 	private void addFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel);
+		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel,false);
 		identifierNode.setBinding(binding);
 	}
 	

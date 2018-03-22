@@ -43,11 +43,6 @@ public class StringCreationCodeGenerator implements SimpleCodeGenerator {
 			writeCPBaseOffset(frag,RECORD_CREATION_TEMP,STRING_HEADER_SIZE+i,(int)strValue.charAt(i));
 		}
 		
-//		loadIFrom(frag, RECORD_CREATION_TEMP);
-//		readCOffset(frag,15);
-//		frag.add(PStack);
-//		frag.add(Pop);
-		
 		loadIFrom(frag, RECORD_CREATION_TEMP);
 		return frag;
 	}

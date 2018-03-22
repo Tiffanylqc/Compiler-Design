@@ -10,6 +10,7 @@ import asmCodeGenerator.ArrayEmptyCreationCodeGenerator;
 import asmCodeGenerator.ArrayIndexingCodeGenerator;
 import asmCodeGenerator.ArrayPopulateCreationCodeGenerator;
 import asmCodeGenerator.CharIntToRationalCodeGenerator;
+import asmCodeGenerator.CharStringAddCodeGenerator;
 import asmCodeGenerator.CharToBoolCodeGenerator;
 import asmCodeGenerator.CharToIntCodeGenerator;
 import asmCodeGenerator.CloneCodeGenerator;
@@ -29,8 +30,13 @@ import asmCodeGenerator.RationalRationalizeCodeGenerator;
 import asmCodeGenerator.RationalSubtractCodeGenerator;
 import asmCodeGenerator.RationalToFloatCodeGenerator;
 import asmCodeGenerator.RationalToIntCodeGenerator;
+import asmCodeGenerator.ReverseCodeGenerator;
 import asmCodeGenerator.ShortCircuitAndCodeGenerator;
 import asmCodeGenerator.ShortCircuitOrCodeGenerator;
+import asmCodeGenerator.StringCharAddCodeGenerator;
+import asmCodeGenerator.StringIndexingCodeGenerator;
+import asmCodeGenerator.StringSliceCodeGenerator;
+import asmCodeGenerator.StringStringAddCodeGenerator;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
@@ -209,16 +215,14 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		TypeVariable S = new TypeVariable("S");
 		List<TypeVariable> setS = Arrays.asList(S);
 		
-		TypeVariable S1=new TypeVariable("S1");
-		TypeVariable S2=new TypeVariable("S2");
-		List<TypeVariable> setS2 = Arrays.asList(S1,S2);
-		
 		new FunctionSignatures(Punctuator.ARRAY_INDEXING,
 				new FunctionSignature(
 						new ArrayIndexingCodeGenerator(),
 						setS,
 						new Array(S),PrimitiveType.INTEGER,S
-				));
+				),
+				new FunctionSignature(new StringIndexingCodeGenerator(), PrimitiveType.STRING, PrimitiveType.INTEGER, PrimitiveType.CHARACTER)
+		);
 		
 		new FunctionSignatures(Keyword.NEW,
 				new FunctionSignature(
@@ -231,12 +235,22 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 						1,
 						setS,
 						new Array(S),PrimitiveType.INTEGER
-				));
+				),
+				new FunctionSignature(1, PrimitiveType.STRING, PrimitiveType.INTEGER)
+		);
+		new FunctionSignatures(Punctuator.STRING_SLICE,
+				new FunctionSignature(new StringSliceCodeGenerator(), PrimitiveType.STRING, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.STRING)
+		);
 		new FunctionSignatures(Keyword.CLONE,
 				new FunctionSignature(
 						new CloneCodeGenerator(),
 						setS,
 						new Array(S),new Array(S)
+				));
+		new FunctionSignatures(Keyword.REVERSE,
+				new FunctionSignature(
+						new ReverseCodeGenerator(),
+						PrimitiveType.STRING,PrimitiveType.STRING
 				));
 		new FunctionSignatures(Punctuator.OPEN_BRACKET,
 				new FunctionSignature(
@@ -307,7 +321,10 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		new FunctionSignatures(Punctuator.ADD,
 		    new FunctionSignature(ASMOpcode.Add, PrimitiveType.INTEGER, PrimitiveType.INTEGER, PrimitiveType.INTEGER),
 		    new FunctionSignature(ASMOpcode.FAdd, PrimitiveType.FLOATING, PrimitiveType.FLOATING, PrimitiveType.FLOATING),
-		    new FunctionSignature(new RationalAddCodeGenerator(), PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL)
+		    new FunctionSignature(new RationalAddCodeGenerator(), PrimitiveType.RATIONAL, PrimitiveType.RATIONAL, PrimitiveType.RATIONAL),
+		    new FunctionSignature(new StringCharAddCodeGenerator(), PrimitiveType.STRING, PrimitiveType.CHARACTER, PrimitiveType.STRING),
+		    new FunctionSignature(new CharStringAddCodeGenerator(), PrimitiveType.CHARACTER, PrimitiveType.STRING, PrimitiveType.STRING),
+		    new FunctionSignature(new StringStringAddCodeGenerator(), PrimitiveType.STRING, PrimitiveType.STRING, PrimitiveType.STRING)
 		);
 		
 		new FunctionSignatures(Punctuator.MULTIPLY,

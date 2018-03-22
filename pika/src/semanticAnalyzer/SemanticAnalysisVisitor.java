@@ -31,6 +31,8 @@ import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.LambdaParamTypeNode;
 import parseTree.nodeTypes.LambdaTypeNode;
 import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.ForElemStatementNode;
+import parseTree.nodeTypes.ForIndexStatementNode;
 import parseTree.nodeTypes.FunctionBodyNode;
 import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.NewlineNode;
@@ -78,6 +80,32 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	public void visitEnter(BlockStatementNode node) {
 		enterSubscope(node);
+		
+		if(node.getParent() instanceof ForIndexStatementNode){
+			IdentifierNode identifier = (IdentifierNode) node.getParent().child(0);
+			identifier.setType(PrimitiveType.INTEGER);
+			Scope scope = node.getScope();
+			
+			Binding binding = scope.createBinding(identifier, PrimitiveType.INTEGER, false, false);
+			identifier.setBinding(binding);
+		}
+		else if(node.getParent() instanceof ForElemStatementNode){
+			if(node.getParent().child(1).getType()==PrimitiveType.STRING){
+				IdentifierNode identifier = (IdentifierNode) node.getParent().child(0);
+				identifier.setType(PrimitiveType.CHARACTER);
+				Scope scope = node.getScope();
+				Binding binding = scope.createBinding(identifier, PrimitiveType.CHARACTER, false, false);
+				identifier.setBinding(binding);
+			}
+			else if(node.getParent().child(1).getType() instanceof Array){
+				Array type=(Array)node.getParent().child(1).getType();
+				IdentifierNode identifier = (IdentifierNode) node.getParent().child(0);
+				identifier.setType(type.getSubtype());
+				Scope scope = node.getScope();
+				Binding binding = scope.createBinding(identifier, type.getSubtype(), false, false);
+				identifier.setBinding(binding);
+			}
+		}
 	}
 	public void visitLeave(BlockStatementNode node) {
 		leaveScope(node);
@@ -153,18 +181,18 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			Labeller labeller = new Labeller("function-definition");
 			String funcStartLabel = labeller.newLabel(identifier.getToken().getLexeme()+"-start");
 			if(node.getToken().isLextant(Keyword.CONST))
-				addFuncBinding(identifier, declarationType, false, funcStartLabel);
+				addFuncBinding(identifier, declarationType, false, funcStartLabel, node.getStatic());
 			else if(node.getToken().isLextant(Keyword.VAR))
-				addFuncBinding(identifier, declarationType, true, funcStartLabel);
+				addFuncBinding(identifier, declarationType, true, funcStartLabel, node.getStatic());
 			
 			return;
 		}
 		
 		if(node.getToken().isLextant(Keyword.CONST)){
-			addBinding(identifier, declarationType, false);
+				addBinding(identifier, declarationType, false,node.getStatic());
 		}
 		else if(node.getToken().isLextant(Keyword.VAR))
-			addBinding(identifier, declarationType, true);
+			addBinding(identifier, declarationType, true, node.getStatic());
 		
 	}
 	
@@ -173,6 +201,28 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	@Override
 	public void visitLeave(ArrayTypeNode node){
 		node.setType(new Array(node.child(0).getType().getConcreteType()));
+		
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// For index
+	public void visitLeave(ForIndexStatementNode node){
+		if(!(node.child(1).getType() instanceof Array) && node.child(1).getType()!=PrimitiveType.STRING){
+			typeCheckError(node.child(1),Arrays.asList(node.child(1).getType()));
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// For elem
+	public void visitLeave(ForElemStatementNode node){
+		if(!(node.child(1).getType() instanceof Array) && node.child(1).getType()!=PrimitiveType.STRING){
+			typeCheckError(node.child(1),Arrays.asList(node.child(1).getType()));
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
 		
 	}
 	
@@ -193,7 +243,12 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		}
 		else if(!(node.child(0).getToken().isLextant(Punctuator.ARRAY_INDEXING)))//illegal type
 			return;
-		else//array indexing no need to do type check
+		else if(node.child(0).getToken().isLextant(Punctuator.ARRAY_INDEXING)&&node.child(0).child(0).getType()==PrimitiveType.STRING){
+			typeCheckError(node.child(0),Arrays.asList(node.child(0).child(0).getType()));
+			node.setType(PrimitiveType.ERROR);
+			return;
+		}
+		else//array indexing no need to do var/const check
 			;
 		
 		ParseNode left = node.child(0);
@@ -359,7 +414,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	///////////////////////////////////////////////////////////////////////////
 	// expressions
 	public void visitLeave(ParamSpecificationNode node){
-		addBinding((IdentifierNode)node.child(1),node.child(0).getType(),false);
+		addBinding((IdentifierNode)node.child(1),node.child(0).getType(),false,false);
 		node.setType(node.child(0).getType());
 		node.child(1).setType(node.child(0).getType());
 	}
@@ -500,6 +555,13 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			ParseNode right = node.child(1);
 			childTypes = Arrays.asList(left.getType().getConcreteType(), right.getType().getConcreteType());
 		}
+		else if(node.nChildren()==3){
+			ParseNode first  = node.child(0);
+			
+			ParseNode second = node.child(1);
+			ParseNode third = node.child(2);
+			childTypes = Arrays.asList(first.getType().getConcreteType(), second.getType().getConcreteType(),third.getType().getConcreteType());
+		}
 		else{//unary operator
 			ParseNode child=node.child(0);
 			childTypes = Arrays.asList(child.getType().getConcreteType());
@@ -520,10 +582,10 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		
 		FunctionSignatures signatures = FunctionSignatures.signaturesOf(operator);
 		FunctionSignature signature = signatures.acceptingSignature(childTypes);
-		
+
 //		if(signature.accepts(childTypes)) {
 		if(!signature.isNull()){
-			if(node.nChildren()==2&&!node.getToken().isLextant(Punctuator.OPEN_BRACKET)){
+			if(node.nChildren()==3&&!node.getToken().isLextant(Punctuator.OPEN_BRACKET)){
 				if(node.child(0).getType().getConcreteType()!=signature.getParamTypes()[0].getConcreteType()&&!(node.child(0).getType().getConcreteType() instanceof Array)&&!(node.child(0).getType() instanceof LambdaType)){
 					LextantToken token=LextantToken.make(node.child(0).getToken().getLocation(), node.child(0).getToken().getLexeme(), Punctuator.BAR);
 					CastOperatorNode insertedNode=new CastOperatorNode(token);
@@ -540,7 +602,55 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 					visitLeave(insertedNode);
 //					node.replaceChild(node.child(0), insertedNode);
 				}
-				if(node.child(1).getType().getConcreteType()!=signature.getParamTypes()[1].getConcreteType()&&!(node.child(1).getType().getConcreteType() instanceof Array)&&!(node.child(0).getType() instanceof LambdaType)){
+				if(node.child(1).getType().getConcreteType()!=signature.getParamTypes()[1].getConcreteType()&&!(node.child(1).getType().getConcreteType() instanceof Array)&&!(node.child(1).getType() instanceof LambdaType)){
+					LextantToken token=LextantToken.make(node.child(1).getToken().getLocation(), node.child(1).getToken().getLexeme(), Punctuator.BAR);
+					CastOperatorNode insertedNode=new CastOperatorNode(token);
+					
+					PrimitiveTypeNode type=new PrimitiveTypeNode(node.child(1).getToken());
+					type.setType(signature.getParamTypes()[1].getConcreteType());
+					
+					insertedNode.appendChild(node.child(1));
+					insertedNode.appendChild(type);
+					insertedNode.setType(signature.getParamTypes()[1].getConcreteType());
+					node.getChildren().remove(1);
+					node.getChildren().add(1, insertedNode);
+					insertedNode.setParent(node);
+					visitLeave(insertedNode);
+				}
+				if(node.child(2).getType().getConcreteType()!=signature.getParamTypes()[2].getConcreteType()&&!(node.child(2).getType().getConcreteType() instanceof Array)&&!(node.child(2).getType() instanceof LambdaType)){
+					LextantToken token=LextantToken.make(node.child(2).getToken().getLocation(), node.child(1).getToken().getLexeme(), Punctuator.BAR);
+					CastOperatorNode insertedNode=new CastOperatorNode(token);
+					
+					PrimitiveTypeNode type=new PrimitiveTypeNode(node.child(1).getToken());
+					type.setType(signature.getParamTypes()[2].getConcreteType());
+					
+					insertedNode.appendChild(node.child(2));
+					insertedNode.appendChild(type);
+					insertedNode.setType(signature.getParamTypes()[2].getConcreteType());
+					node.getChildren().remove(2);
+					node.getChildren().add(2, insertedNode);
+					insertedNode.setParent(node);
+					visitLeave(insertedNode);
+				}
+			}
+			else if(node.nChildren()==2&&!node.getToken().isLextant(Punctuator.OPEN_BRACKET)){
+				if(node.child(0).getType().getConcreteType()!=signature.getParamTypes()[0].getConcreteType()&&!(node.child(0).getType().getConcreteType() instanceof Array)&&!(node.child(0).getType() instanceof LambdaType)){
+					LextantToken token=LextantToken.make(node.child(0).getToken().getLocation(), node.child(0).getToken().getLexeme(), Punctuator.BAR);
+					CastOperatorNode insertedNode=new CastOperatorNode(token);
+					
+					PrimitiveTypeNode type=new PrimitiveTypeNode(node.child(0).getToken());
+					type.setType(signature.getParamTypes()[0].getConcreteType());
+					
+					insertedNode.appendChild(node.child(0));
+					insertedNode.appendChild(type);
+					insertedNode.setType(signature.getParamTypes()[0].getConcreteType());
+					node.getChildren().remove(0);
+					node.getChildren().add(0, insertedNode);
+					insertedNode.setParent(node);
+					visitLeave(insertedNode);
+//					node.replaceChild(node.child(0), insertedNode);
+				}
+				if(node.child(1).getType().getConcreteType()!=signature.getParamTypes()[1].getConcreteType()&&!(node.child(1).getType().getConcreteType() instanceof Array)&&!(node.child(1).getType() instanceof LambdaType)){
 					LextantToken token=LextantToken.make(node.child(1).getToken().getLocation(), node.child(1).getToken().getLexeme(), Punctuator.BAR);
 					CastOperatorNode insertedNode=new CastOperatorNode(token);
 					
@@ -578,7 +688,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			}
 			else {
 				for(int i=0;i<node.nChildren();i++){
-					if(node.getChildren().get(i).getType().getConcreteType()!=childTypes.get(0).getConcreteType()&&!(node.getChildren().get(i).getType().getConcreteType() instanceof Array)&&!(node.child(0).getType() instanceof LambdaType)){
+					if(node.getChildren().get(i).getType().getConcreteType()!=childTypes.get(0).getConcreteType()&&!(node.getChildren().get(i).getType().getConcreteType() instanceof Array)&&!(node.child(i).getType() instanceof LambdaType)){
 						ParseNode child=node.getChildren().get(i);
 						LextantToken token=LextantToken.make(child.getToken().getLocation(), child.getToken().getLexeme(), Punctuator.BAR);
 						CastOperatorNode insertedNode=new CastOperatorNode(token);
@@ -717,7 +827,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// Break
 	public void visit(BreakNode node){
 		for(ParseNode current : node.pathToRoot()){
-			if(current instanceof WhileStatementNode){
+			if(current instanceof WhileStatementNode||current instanceof ForIndexStatementNode||current instanceof ForElemStatementNode){
 				node.setType(PrimitiveType.NO_TYPE);
 				return;
 			}	
@@ -729,7 +839,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// Continue
 	public void visit(ContinueNode node){
 		for(ParseNode current : node.pathToRoot()){
-			if(current instanceof WhileStatementNode){
+			if(current instanceof WhileStatementNode||current instanceof ForIndexStatementNode||current instanceof ForElemStatementNode){
 				node.setType(PrimitiveType.NO_TYPE);
 				return;
 			}
@@ -742,6 +852,8 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	// IdentifierNodes, with helper methods
 	@Override
 	public void visit(IdentifierNode node) {
+		if((node.getParent() instanceof ForIndexStatementNode||node.getParent() instanceof ForElemStatementNode)&&node==node.getParent().child(0))
+			return;
 		if(!isBeingDeclared(node)) {		
 			Binding binding = node.findVariableBinding();
 			
@@ -756,15 +868,15 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 		return (parent instanceof DeclarationNode) && (node == parent.child(0))
 				||parent instanceof ParamSpecificationNode;
 	}
-	private void addBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
+	private void addBinding(IdentifierNode identifierNode, Type type, boolean mutable,boolean isStatic) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createBinding(identifierNode, type, mutable);
+		Binding binding = scope.createBinding(identifierNode, type, mutable,isStatic);
 		identifierNode.setBinding(binding);
 	}
 	
-	private void addFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
+	private void addFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel,boolean isStatic) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel);
+		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel,isStatic);
 		identifierNode.setBinding(binding);
 	}
 	

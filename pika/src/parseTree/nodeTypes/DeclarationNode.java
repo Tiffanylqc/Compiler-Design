@@ -9,13 +9,16 @@ import tokens.Token;
 
 public class DeclarationNode extends ParseNode {
 
+	private boolean isStatic;
 	public DeclarationNode(Token token) {
 		super(token);
 		assert(token.isLextant(Keyword.CONST)||token.isLextant(Keyword.VAR));
+		isStatic=false;
 	}
 
 	public DeclarationNode(ParseNode node) {
 		super(node);
+		isStatic=false;
 	}
 	
 	////////////////////////////////////////////////////////////
@@ -28,7 +31,12 @@ public class DeclarationNode extends ParseNode {
 		return (LextantToken)token;
 	}	
 	
-	
+	public void setStatic(){
+		this.isStatic=true;
+	}
+	public boolean getStatic(){
+		return this.isStatic;
+	}
 	////////////////////////////////////////////////////////////
 	// convenience factory
 	

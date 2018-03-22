@@ -1,0 +1,41 @@
+#static const a:= b map c fold ["list"] (b reduce zip zip b,c,d, zip b,c,d, zip b,c,d fold ["list"] d[2]).
+#static const a:=1.
+exec{
+	#static const a:= 1 + 1 + 1.
+	#static var b:= 1 + 1 + 1 .
+	#for elem a of "rabbit"{
+	#	static const a:= 1 + 1 + 1.
+	#	static var b:= 1 + 1 + 1 .
+	#}
+	#static const a:= zip clone b, reverse c, length length length reverse clone !d(2,3).
+	#const a:= zip zip b,c,d, zip b,c,d, zip b,c,d.
+	#const a:= b map c fold ["list"] (b reduce zip zip b,c,d, zip b,c,d, zip b,c,d fold ["list"] d[2]).
+	#a:= numbers fold max.
+	#a:= b map c fold ["list"] (b reduce c fold ["list"] d[2]) * b map c fold ["list"] (b reduce c fold ["list"] d[2]).
+	#a:= b reduce c.
+	#var sa:=new[string](2).
+	#var aa:=new[int](3).
+	
+	#var s:="rabbit".
+	#print clone s.
+	#print length (s+s).
+	#print length ([d | char]+s).
+	#print length ([n | char]+s).
+	#print s[0];s[1];s[2];s[3];s[4];s[5].
+	#print length s.
+	#var ii:=1.
+	#var a:=[13//12,13//14,25//15].
+	#var i:=3.
+	#for elem i of s{
+	#	print i;.
+	#}
+	var a:=[ [1,2],[2,3],[3,4] ].
+	for index ii of a{
+		if(ii==1){
+			break.
+		}
+		else{
+			print a[ii];.
+		}
+	}
+}

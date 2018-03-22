@@ -29,6 +29,8 @@ import parseTree.nodeTypes.IfStatementNode;
 import parseTree.nodeTypes.IntegerConstantNode;
 import parseTree.nodeTypes.LambdaParamTypeNode;
 import parseTree.nodeTypes.FloatingConstantNode;
+import parseTree.nodeTypes.ForElemStatementNode;
+import parseTree.nodeTypes.ForIndexStatementNode;
 import parseTree.nodeTypes.FunctionBodyNode;
 import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.NewlineNode;
@@ -342,15 +344,6 @@ public class ASMCodeGenerator {
 				code.append(rvalue);
 				
 				code.add(opcodeForStore(type));
-				
-//				if(node.getLocalScope().getAllocationStrategy() instanceof ProcedureMemoryAllocator){
-//					Macros.loadIFrom(code, RunTime.FRAME_POINTER);
-////					code.add(PushI, -16);
-////					code.add(Add);
-////					code.add(LoadF);
-//					code.add(PStack);
-//					code.add(Pop);
-//				}
 			}
 		}
 		
@@ -384,6 +377,44 @@ public class ASMCodeGenerator {
 			return null;
 		}
 
+		///////////////////////////////////////////////////////////////////////////
+		// for index 
+		public void visitEnter(ForIndexStatementNode node){
+			Labeller labeller = new Labeller("for-index-enter");
+			String breakLabel = labeller.newLabel("break-target");
+			String continueLabel = labeller.newLabel("continue-target");
+			((ForIndexStatementNode) node).setBreakTarget(breakLabel);
+			((ForIndexStatementNode) node).setContinueTarget(continueLabel);
+		}
+		public void visitLeave(ForIndexStatementNode node){
+			newVoidCode(node);
+			ASMCodeFragment index = removeAddressCode(node.child(0));
+			ASMCodeFragment record = removeValueCode(node.child(1));
+			ASMCodeFragment blocStmt = removeVoidCode(node.child(2));
+			FullCodeGenerator generator = new ForIndexCodeGenerator();
+			ASMCodeFragment fragment = generator.generate(node,index, record, blocStmt);
+			code.append(fragment);
+		}
+		
+		///////////////////////////////////////////////////////////////////////////
+		// for elem
+		public void visitEnter(ForElemStatementNode node){
+			Labeller labeller = new Labeller("for-elem-enter");
+			String breakLabel = labeller.newLabel("break-target");
+			String continueLabel = labeller.newLabel("continue-target");
+			((ForElemStatementNode) node).setBreakTarget(breakLabel);
+			((ForElemStatementNode) node).setContinueTarget(continueLabel);
+		}
+		public void visitLeave(ForElemStatementNode node){
+			newVoidCode(node);
+			ASMCodeFragment index = removeAddressCode(node.child(0));
+			ASMCodeFragment record = removeValueCode(node.child(1));
+			ASMCodeFragment blocStmt = removeVoidCode(node.child(2));
+			FullCodeGenerator generator = new ForElemCodeGenerator();
+			ASMCodeFragment fragment = generator.generate(node,index, record, blocStmt);
+			code.append(fragment);
+		}
+		
 		///////////////////////////////////////////////////////////////////////////
 		// FunctionInvocation in ExpressionListNode		
 		public void visitLeave(ExpressionListNode node){
@@ -535,8 +566,6 @@ public class ASMCodeGenerator {
 			
 			code.add(Label,funcExitHandShakeLabel);
 
-
-			
 			//[...returnValue]
 //			code.add(PStack);
 			//// push return address(FP-8) on accumulator stack 
@@ -650,6 +679,9 @@ public class ASMCodeGenerator {
 			else if(operator==Keyword.LENGTH){
 				visitLengthOperatorNode(node);
 			}
+			else if(operator==Keyword.REVERSE){
+				visitReverseOperatorNode(node);
+			}
 			else if(operator==Punctuator.OPEN_BRACKET){
 				visitArrayPopulateCreationNode(node);
 			}
@@ -658,6 +690,9 @@ public class ASMCodeGenerator {
 			}
 			else if(operator==Punctuator.OPEN_PARENTHESE){
 				visitFunctionInvocationOperatorNode(node);
+			}
+			else if(operator==Punctuator.STRING_SLICE){
+				visitStringSliceOperatorNode(node);
 			}
 			else {
 				visitNormalBinaryOperatorNode(node);
@@ -1239,11 +1274,31 @@ public class ASMCodeGenerator {
 			ASMCodeFragment arg = removeValueCode(node.child(0));
 			code.append(arg);
 			
-			//check null array
-			code.add(Duplicate);
-			code.add(JumpFalse,RunTime.NULL_ARRAY_RUNTIME_ERROR);
+			if(node.child(0).getType()==PrimitiveType.STRING){
+				code.add(Duplicate);
+				code.add(JumpFalse,RunTime.NULL_STRING_RUNTIME_ERROR);
+				readIOffset(code,Record.STRING_LENGTH_OFFSET);
+			}
+			else{
+				//check null array
+				code.add(Duplicate);
+				code.add(JumpFalse,RunTime.NULL_ARRAY_RUNTIME_ERROR);
+				readIOffset(code,Record.ARRAY_LENGTH_OFFSET);
+			}
 			
-			readIOffset(code,Record.ARRAY_LENGTH_OFFSET);
+		}
+		
+		private void visitReverseOperatorNode(OperatorNode node){
+			newValueCode(node);
+			ASMCodeFragment arg=removeValueCode(node.child(0));//get the starting address of the array to be cloned
+			code.append(arg);
+			Object variant = node.getSignature().getVariant();
+			SimpleCodeGenerator generator =(SimpleCodeGenerator)variant;
+			ASMCodeFragment fragment = generator.generate(node);
+			code.append(fragment);
+			if(fragment.isAddress()) {
+				code.markAsAddress();
+			}
 		}
 		
 		private void visitArrayPopulateCreationNode(OperatorNode node){
@@ -1263,7 +1318,7 @@ public class ASMCodeGenerator {
 		}
 		
 		//////////////////////////////////////////////////////////////////////////
-		// array indexing
+		// array indexing or String indexing
 		private void visitArrayIndexingOperatorNode(OperatorNode node){
 			newAddressCode(node);
 			ASMCodeFragment arg1 = removeValueCode(node.child(0));
@@ -1278,6 +1333,27 @@ public class ASMCodeGenerator {
 			code.append(fragment);
 			
 			//[...(arrPtr+index)]
+			if(fragment.isAddress()) {
+				code.markAsAddress();
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		// string slicing
+		private void visitStringSliceOperatorNode(OperatorNode node){
+			newValueCode(node);
+			ASMCodeFragment str = removeValueCode(node.child(0));
+			ASMCodeFragment index1 = removeValueCode(node.child(1));
+			ASMCodeFragment index2 = removeValueCode(node.child(2));
+			code.append(str);
+			code.append(index1);
+			code.append(index2);
+			
+			//[...strAddr index1 index2]
+			Object variant = node.getSignature().getVariant();
+			SimpleCodeGenerator generator=(SimpleCodeGenerator)variant;
+			ASMCodeFragment fragment=generator.generate(node);
+			code.append(fragment);
+			
 			if(fragment.isAddress()) {
 				code.markAsAddress();
 			}
@@ -1337,6 +1413,14 @@ public class ASMCodeGenerator {
 					target=((WhileStatementNode) current).getBreakTarget();
 					code.add(Jump,target);
 				}
+				else if(current instanceof ForIndexStatementNode){
+					target=((ForIndexStatementNode) current).getBreakTarget();
+					code.add(Jump,target);
+				}
+				else if(current instanceof ForElemStatementNode){
+					target=((ForElemStatementNode) current).getBreakTarget();
+					code.add(Jump,target);
+				}
 			}
 		}
 		
@@ -1348,6 +1432,14 @@ public class ASMCodeGenerator {
 			for(ParseNode current : node.pathToRoot()){
 				if(current instanceof WhileStatementNode){
 					target=((WhileStatementNode) current).getContinueTarget();
+					code.add(Jump,target);
+				}
+				else if(current instanceof ForIndexStatementNode){
+					target=((ForIndexStatementNode) current).getContinueTarget();
+					code.add(Jump,target);
+				}
+				else if(current instanceof ForElemStatementNode){
+					target=((ForElemStatementNode) current).getContinueTarget();
 					code.add(Jump,target);
 				}
 			}

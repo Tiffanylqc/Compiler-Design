@@ -12,15 +12,17 @@ public class Binding {
 	private String lexeme;
 	private boolean mutable;
 	private String funcStartLabel;
-	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, boolean mutable) {
+	private boolean isStatic;
+	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, boolean mutable, boolean isStatic) {
 		super();
 		this.type = type;
 		this.textLocation = location;
 		this.memoryLocation = memoryLocation;
 		this.lexeme = lexeme;
 		this.mutable=mutable;
+		this.isStatic=isStatic;
 	}
-	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, boolean mutable, String funcStartLabel) {
+	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, boolean mutable, String funcStartLabel, boolean isStatic) {
 		super();
 		this.type = type;
 		this.textLocation = location;
@@ -28,6 +30,7 @@ public class Binding {
 		this.lexeme = lexeme;
 		this.mutable=mutable;
 		this.funcStartLabel=funcStartLabel;
+		this.isStatic=isStatic;
 	} 
 	
 
@@ -59,6 +62,9 @@ public class Binding {
 	public String getFuncStartLabel(){
 		return funcStartLabel;
 	}
+	public boolean getIsStatic(){
+		return isStatic;
+	}
 
 	
 ////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +80,7 @@ public class Binding {
 			super(PrimitiveType.ERROR,
 					TextLocation.nullInstance(),
 					MemoryLocation.nullInstance(),
-					"the-null-binding",true);
+					"the-null-binding",true,false);
 		}
 		public static NullBinding getInstance() {
 			if(instance==null)
