@@ -12,14 +12,17 @@ import symbolTable.ProcedureMemoryAllocator;
 public class IdentifierNode extends ParseNode {
 	private Binding binding;
 	private Scope declarationScope;
+	private boolean isStatic;
 	
 	public IdentifierNode(Token token) {
 		super(token);
 		assert(token instanceof IdentifierToken);
 		this.binding = null;
+		this.isStatic=false;
 	}
 	public IdentifierNode(ParseNode node) {
 		super(node);
+		this.isStatic=false;
 		
 		if(node instanceof IdentifierNode) {
 			this.binding = ((IdentifierNode)node).binding;
@@ -43,6 +46,20 @@ public class IdentifierNode extends ParseNode {
 		return binding;
 	}
 	
+	public void setStatic(){
+		this.isStatic=true;
+	}
+	public boolean getStatic(){
+		return this.isStatic;
+	}
+	public Scope getGlobalScope(){
+		for(ParseNode current : pathToRoot()) {
+			if(current instanceof ProgramNode) {
+				return current.getScope();
+			}
+		}
+		return Scope.nullInstance();
+	}
 ////////////////////////////////////////////////////////////
 // Speciality functions
 
@@ -52,9 +69,18 @@ public class IdentifierNode extends ParseNode {
 		for(ParseNode current : pathToRoot()) {
 			if(isLambda==true){
 //				System.out.println(identifier);
-				if(current instanceof ProgramNode && current.containsBindingOf(identifier)){
-					declarationScope = current.getScope();
-					return current.bindingOf(identifier);
+				if(current.containsBindingOf(identifier)){
+					if(current instanceof ProgramNode){
+						declarationScope = current.getScope();
+						return current.bindingOf(identifier);
+					}
+					else{
+						Binding binding = current.bindingOf(identifier);
+						if(binding.getIsStatic())
+							return binding;
+						else
+							continue;
+					}
 				}
 			}
 			else if(current.containsBindingOf(identifier)&&current instanceof FunctionBodyNode) {

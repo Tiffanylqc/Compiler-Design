@@ -39,23 +39,26 @@ public class LambdaType implements Type {
 	public boolean equivalent(Type type) {
 //		 TODO Auto-generated method stub
 		if(type instanceof LambdaType){
-			
 			FunctionSignature signature=((LambdaType)type).getFunctionSignature();
 			Type[] type1=signature.getParamTypes();
 			Type[] type2=this.getFunctionSignature().getParamTypes();
 			if(type1.length==type2.length){
 				for(int i=0;i<type1.length;i++){
-					if(!type1[i].equivalent(type2[i]))
+					if(!type2[i].equivalent(type1[i])){
 						return false;
+					}
 				}
-				if(!signature.resultType().equivalent(this.getFunctionSignature().resultType()))
+				if(!this.getFunctionSignature().rawResultType().equivalent(signature.resultType())){
+					System.out.println("yes");
 					return false;
+				}
 				return true;
 			}
 			else
 				return false;
 		}
 		return false;
+		
 //		return type instanceof LambdaType;
 	}
 

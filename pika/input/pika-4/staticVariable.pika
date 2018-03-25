@@ -1,0 +1,22 @@
+var s1:=6.
+exec{
+	static var s1:=3.
+
+	var l1:= <int v1,int v2>->int{
+		print "s1 in l1: ";s1,_n_.
+		const s1:=1.
+		print "s1 in l1: ";s1,_n_.
+		return v1 + v2.
+	}.
+
+	if(4>3){
+		static var billyJoeBob:=15.
+		while(billyJoeBob<14){
+			print "billyJoeBob: ";billyJoeBob,_n_.
+			static var billyJoeBob:=12.
+			billyJoeBob := billyJoeBob + 1.
+		}
+		print "billyJoeBob: ";billyJoeBob,_n_.
+	}
+	call l1(s1,s1 + 3).
+}

@@ -33,6 +33,11 @@ public class ForIndexCodeGenerator implements FullCodeGenerator {
 		
 		frag.append(record);
 		frag.add(Duplicate);
+		if(node.child(1).getType() ==PrimitiveType.STRING)
+			frag.add(JumpFalse, RunTime.NULL_STRING_RUNTIME_ERROR);
+		else
+			frag.add(JumpFalse, RunTime.NULL_ARRAY_RUNTIME_ERROR);
+		frag.add(Duplicate);
 		Macros.storeITo(frag, RunTime.FOR_EXPR);
 		//store length
 		if(node.child(1).getType() ==PrimitiveType.STRING)
@@ -57,15 +62,34 @@ public class ForIndexCodeGenerator implements FullCodeGenerator {
 		Macros.loadIFrom(frag, RunTime.FOR_INDEX);
 			
 		frag.add(StoreI);
-			
+		
+		Macros.loadIFrom(frag, RunTime.FOR_LENGTH);
+		Macros.loadIFrom(frag, RunTime.FOR_INDEX);
+		Macros.loadIFrom(frag, RunTime.FOR_EXPR);
+//		frag.add(PStack);
 		frag.append(blocStmt);
-			
-		frag.add(Label,continueLabel);
+//		frag.add(PStack);
+		Macros.storeITo(frag, RunTime.FOR_EXPR);
+		Macros.storeITo(frag, RunTime.FOR_INDEX);
+		Macros.storeITo(frag, RunTime.FOR_LENGTH);
+		
 		Macros.incrementInteger(frag, RunTime.FOR_INDEX);
 		frag.add(Jump, loopLabel);
+//		frag.add(Label, breakLabel);
 		frag.add(Label, breakLabel);
+		Macros.storeITo(frag, RunTime.FOR_EXPR);
+		Macros.storeITo(frag, RunTime.FOR_INDEX);
+		Macros.storeITo(frag, RunTime.FOR_LENGTH);
+		frag.add(Jump, exitLabel);
+		
+		frag.add(Label,continueLabel);
+		Macros.storeITo(frag, RunTime.FOR_EXPR);
+		Macros.storeITo(frag, RunTime.FOR_INDEX);
+		Macros.storeITo(frag, RunTime.FOR_LENGTH);
+		Macros.incrementInteger(frag, RunTime.FOR_INDEX);
+		frag.add(Jump, loopLabel);
+		
 		frag.add(Label,exitLabel);
-			
 		return frag;
 	}
 

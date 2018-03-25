@@ -86,7 +86,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			identifier.setType(PrimitiveType.INTEGER);
 			Scope scope = node.getScope();
 			
-			Binding binding = scope.createBinding(identifier, PrimitiveType.INTEGER, false, false);
+			Binding binding = scope.createBinding(identifier, PrimitiveType.INTEGER, false);
 			identifier.setBinding(binding);
 		}
 		else if(node.getParent() instanceof ForElemStatementNode){
@@ -94,7 +94,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 				IdentifierNode identifier = (IdentifierNode) node.getParent().child(0);
 				identifier.setType(PrimitiveType.CHARACTER);
 				Scope scope = node.getScope();
-				Binding binding = scope.createBinding(identifier, PrimitiveType.CHARACTER, false, false);
+				Binding binding = scope.createBinding(identifier, PrimitiveType.CHARACTER, false);
 				identifier.setBinding(binding);
 			}
 			else if(node.getParent().child(1).getType() instanceof Array){
@@ -102,7 +102,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 				IdentifierNode identifier = (IdentifierNode) node.getParent().child(0);
 				identifier.setType(type.getSubtype());
 				Scope scope = node.getScope();
-				Binding binding = scope.createBinding(identifier, type.getSubtype(), false, false);
+				Binding binding = scope.createBinding(identifier, type.getSubtype(), false);
 				identifier.setBinding(binding);
 			}
 		}
@@ -181,18 +181,18 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			Labeller labeller = new Labeller("function-definition");
 			String funcStartLabel = labeller.newLabel(identifier.getToken().getLexeme()+"-start");
 			if(node.getToken().isLextant(Keyword.CONST))
-				addFuncBinding(identifier, declarationType, false, funcStartLabel, node.getStatic());
+				addFuncBinding(identifier, declarationType, false, funcStartLabel);
 			else if(node.getToken().isLextant(Keyword.VAR))
-				addFuncBinding(identifier, declarationType, true, funcStartLabel, node.getStatic());
+				addFuncBinding(identifier, declarationType, true, funcStartLabel);
 			
 			return;
 		}
 		
 		if(node.getToken().isLextant(Keyword.CONST)){
-				addBinding(identifier, declarationType, false,node.getStatic());
+				addBinding(identifier, declarationType, false);
 		}
 		else if(node.getToken().isLextant(Keyword.VAR))
-			addBinding(identifier, declarationType, true, node.getStatic());
+			addBinding(identifier, declarationType, true);
 		
 	}
 	
@@ -414,7 +414,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	///////////////////////////////////////////////////////////////////////////
 	// expressions
 	public void visitLeave(ParamSpecificationNode node){
-		addBinding((IdentifierNode)node.child(1),node.child(0).getType(),false,false);
+		addBinding((IdentifierNode)node.child(1),node.child(0).getType(),false);
 		node.setType(node.child(0).getType());
 		node.child(1).setType(node.child(0).getType());
 	}
@@ -850,7 +850,7 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	
 	///////////////////////////////////////////////////////////////////////////
 	// IdentifierNodes, with helper methods
-	@Override
+//	@Override
 	public void visit(IdentifierNode node) {
 		if((node.getParent() instanceof ForIndexStatementNode||node.getParent() instanceof ForElemStatementNode)&&node==node.getParent().child(0))
 			return;
@@ -863,20 +863,20 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 
 		// else parent DeclarationNode does the processing.
 	}
-	private boolean isBeingDeclared(IdentifierNode node) {
+	public static boolean isBeingDeclared(IdentifierNode node) {
 		ParseNode parent = node.getParent();
 		return (parent instanceof DeclarationNode) && (node == parent.child(0))
 				||parent instanceof ParamSpecificationNode;
 	}
-	private void addBinding(IdentifierNode identifierNode, Type type, boolean mutable,boolean isStatic) {
+	public static void addBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createBinding(identifierNode, type, mutable,isStatic);
+		Binding binding = scope.createBinding(identifierNode, type, mutable);
 		identifierNode.setBinding(binding);
 	}
 	
-	private void addFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel,boolean isStatic) {
+	public static void addFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
 		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel,isStatic);
+		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel);
 		identifierNode.setBinding(binding);
 	}
 	

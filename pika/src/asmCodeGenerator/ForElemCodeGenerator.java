@@ -7,6 +7,7 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import asmCodeGenerator.runtime.Record;
 import asmCodeGenerator.runtime.RunTime;
 import parseTree.ParseNode;
+import parseTree.nodeTypes.ForElemStatementNode;
 import semanticAnalyzer.types.Array;
 import semanticAnalyzer.types.PrimitiveType;
 
@@ -31,11 +32,20 @@ public class ForElemCodeGenerator implements FullCodeGenerator {
 		String ifEnd = labeller.newLabel("if-end");
 		String sizeFour = labeller.newLabel("subsize-four");
 		String sizeEight = labeller.newLabel("subsize-eight");
+		String breakLabel = ((ForElemStatementNode) node).getBreakTarget();
+		String continueLabel = ((ForElemStatementNode) node).getContinueTarget();
 		
 		frag.append(record);
 		frag.add(Duplicate);
 		
+		frag.add(Duplicate);
+		if(node.child(1).getType() ==PrimitiveType.STRING)
+			frag.add(JumpFalse, RunTime.NULL_STRING_RUNTIME_ERROR);
+		else
+			frag.add(JumpFalse, RunTime.NULL_ARRAY_RUNTIME_ERROR);
+		
 		if(node.child(1).getType()==PrimitiveType.STRING){
+//			frag.add(PStack);
 			Macros.storeITo(frag, RunTime.FOR_EXPR);
 			//store length
 			Macros.readIOffset(frag, Record.STRING_LENGTH_OFFSET);
@@ -62,10 +72,40 @@ public class ForElemCodeGenerator implements FullCodeGenerator {
 			frag.add(LoadC);
 			frag.add(StoreC);
 				
+			Macros.loadIFrom(frag, RunTime.FOR_LENGTH);
+			Macros.loadIFrom(frag, RunTime.FOR_INDEX);
+			Macros.loadIFrom(frag, RunTime.FOR_EXPR);
+			Macros.loadIFrom(frag, RunTime.FOR_SUBSIZE);
+			Macros.loadIFrom(frag, RunTime.FOR_IDEN);
+			
 			frag.append(blocStmt);
 				
+			Macros.storeITo(frag, RunTime.FOR_IDEN);
+			Macros.storeITo(frag, RunTime.FOR_SUBSIZE);
+			Macros.storeITo(frag, RunTime.FOR_EXPR);
+			Macros.storeITo(frag, RunTime.FOR_INDEX);
+			Macros.storeITo(frag, RunTime.FOR_LENGTH);
+			
 			Macros.incrementInteger(frag, RunTime.FOR_INDEX);
 			frag.add(Jump, loopLabel);
+			
+			frag.add(Label, breakLabel);
+			Macros.storeITo(frag, RunTime.FOR_IDEN);
+			Macros.storeITo(frag, RunTime.FOR_SUBSIZE);
+			Macros.storeITo(frag, RunTime.FOR_EXPR);
+			Macros.storeITo(frag, RunTime.FOR_INDEX);
+			Macros.storeITo(frag, RunTime.FOR_LENGTH);
+			frag.add(Jump, exitLabel);
+			
+			frag.add(Label,continueLabel);
+			Macros.storeITo(frag, RunTime.FOR_IDEN);
+			Macros.storeITo(frag, RunTime.FOR_SUBSIZE);
+			Macros.storeITo(frag, RunTime.FOR_EXPR);
+			Macros.storeITo(frag, RunTime.FOR_INDEX);
+			Macros.storeITo(frag, RunTime.FOR_LENGTH);
+			Macros.incrementInteger(frag, RunTime.FOR_INDEX);
+			frag.add(Jump, loopLabel);
+			
 			frag.add(Label,exitLabel);
 		}
 		else{
@@ -148,10 +188,40 @@ public class ForElemCodeGenerator implements FullCodeGenerator {
 			
 			frag.add(Label,ifEnd);
 			///
+			Macros.loadIFrom(frag, RunTime.FOR_LENGTH);
+			Macros.loadIFrom(frag, RunTime.FOR_INDEX);
+			Macros.loadIFrom(frag, RunTime.FOR_EXPR);
+			Macros.loadIFrom(frag, RunTime.FOR_SUBSIZE);
+			Macros.loadIFrom(frag, RunTime.FOR_IDEN);
+			
 			frag.append(blocStmt);
+			
+			Macros.storeITo(frag, RunTime.FOR_IDEN);
+			Macros.storeITo(frag, RunTime.FOR_SUBSIZE);
+			Macros.storeITo(frag, RunTime.FOR_EXPR);
+			Macros.storeITo(frag, RunTime.FOR_INDEX);
+			Macros.storeITo(frag, RunTime.FOR_LENGTH);
 			
 			Macros.incrementInteger(frag, RunTime.FOR_INDEX);
 			frag.add(Jump, loopLabel);
+			
+			frag.add(Label, breakLabel);
+			Macros.storeITo(frag, RunTime.FOR_IDEN);
+			Macros.storeITo(frag, RunTime.FOR_SUBSIZE);
+			Macros.storeITo(frag, RunTime.FOR_EXPR);
+			Macros.storeITo(frag, RunTime.FOR_INDEX);
+			Macros.storeITo(frag, RunTime.FOR_LENGTH);
+			frag.add(Jump, exitLabel);
+			
+			frag.add(Label,continueLabel);
+			Macros.storeITo(frag, RunTime.FOR_IDEN);
+			Macros.storeITo(frag, RunTime.FOR_SUBSIZE);
+			Macros.storeITo(frag, RunTime.FOR_EXPR);
+			Macros.storeITo(frag, RunTime.FOR_INDEX);
+			Macros.storeITo(frag, RunTime.FOR_LENGTH);
+			Macros.incrementInteger(frag, RunTime.FOR_INDEX);
+			frag.add(Jump, loopLabel);
+			
 			frag.add(Label,exitLabel);
 		}
 			

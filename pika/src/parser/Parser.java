@@ -82,7 +82,12 @@ public class Parser {
 			}
 			else{
 				ParseNode globalDeclare=parseDeclaration();
-				program.appendChild(globalDeclare);
+				if(globalDeclare.child(1) instanceof OperatorNode && globalDeclare.child(1).getToken().isLextant(Punctuator.LAMBDA))
+					program.appendChild(globalDeclare);
+				else
+					program.insertChild(globalDeclare);
+//				IdentifierNode child=(IdentifierNode) globalDeclare.child(0);
+//				child.setStatic();
 			}
 		}
 		expect(Keyword.EXEC);
@@ -610,14 +615,15 @@ public class Parser {
 			readToken();
 		}
 		
-		ParseNode identifier = parseIdentifier();
+		IdentifierNode identifier = (IdentifierNode) parseIdentifier();
 		expect(Punctuator.ASSIGN);
 		ParseNode initializer = parseExpression();
 		expect(Punctuator.TERMINATOR);
 		
 		DeclarationNode declareNode=DeclarationNode.withChildren(declarationToken, identifier, initializer);
-		if(isStatic)
-			declareNode.setStatic();
+		if(isStatic){
+			identifier.setStatic();
+		}
 		return declareNode;
 	}
 	private boolean startsDeclaration(Token token) {

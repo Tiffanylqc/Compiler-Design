@@ -1,5 +1,11 @@
 #static const a:= b map c fold ["list"] (b reduce zip zip b,c,d, zip b,c,d, zip b,c,d fold ["list"] d[2]).
 #static const a:=1.
+#func a <>->void{
+#	const x:= y + 4.
+#}
+
+#const y:=10.
+
 exec{
 	#static const a:= 1 + 1 + 1.
 	#static var b:= 1 + 1 + 1 .
@@ -29,13 +35,60 @@ exec{
 	#for elem i of s{
 	#	print i;.
 	#}
-	var a:=[ [1,2],[2,3],[3,4] ].
-	for index ii of a{
-		if(ii==1){
-			break.
-		}
-		else{
-			print a[ii];.
-		}
-	}
+	#var a:=[ [1,2],[2,3],[3,4] ].
+	#for index ii of a{
+	#	if(ii==1){
+	#		break.
+	#	}
+	#	else{
+	#		print a[ii];.
+	#	}
+	#}
+
+	#var numbers:=[1,3,5,8,11,12].
+	#var parityString:= <int a> -> bool {
+	#	return x!=(x/2)*2.
+	#}.
+
+	#var isOdd:=<int x>->bool{ return x!=(x/2)*2.}.
+
+	#var numbers:=new[int](3).
+	#var c:=new[char](3).
+	#var zipf:=<int a,char b>->float{}.
+	#var zipt:=zip numbers,c,zipf.
+	#var pos:="list".
+	#var max:=<string x,int y>->string{}.
+	#var foldTest:=numbers fold [pos] max.
+
+	#var oddities:=numbers reduce isOdd.
+	#print oddities.
+	#var parities := numbers map parityString.
+	#print parities.
+
+	#var s:="121".
+	#print s[^1^,2].
+
+	#zip
+	#var nn:=[1,5,3,9,2].
+	#var ff:=[2.1,-3.3,4.2,5.0,17.79].
+	#var ratIt:=<int n,float f>->rat{ return n//[f|int]. }.
+	#var numList:=zip nn,ff,ratIt.
+	#print numList.
+
+	#fold-1
+	var numbers:=[1,5,3,9,2].
+	#var max:=<int x,int y>->int{ 
+	#	if(x>y){return x.} 
+	#	else { return y.} 
+	#}.
+	#var maxity:=numbers fold [12] max.
+	#print maxity.
+
+	#fold-2
+	var catNumber:=<string s, int x>->string { return s+^ ^+[x + 48|char].}.
+	var numList:=numbers fold ["list:"] catNumber.
+	print numList.
 }
+
+
+

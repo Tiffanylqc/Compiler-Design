@@ -1,0 +1,48 @@
+var s1:="It is a good day".
+var c1:=^!^.
+var c2:=^&^.
+exec{
+	var x1:=0.
+	while(x1<length s1){
+		print s1[x1].
+		x1:=x1 + 1.
+	}
+	print _n_.
+	#print s1[x1].
+
+	var sa:=new[string](3).
+	sa[0]:=s1.
+	#sa[0]:=clone s1.
+
+	x1:=0.
+	while(x1<length sa[0]){
+		print sa[0][x1].
+		x1:=x1 + 1.
+	}
+	print _n_.
+
+	print s1[0,3];s1[0,length s1];_n_.
+	#print s1[0,length s1 + 1];.
+	#print s1[-1,length s1];.
+	#print s1[2,1].
+	#print s1[1,1].
+
+	print sa[0][0,3];sa[0][0,length sa[0]];_n_.
+	#print sa[0][0,length sa[0] + 1];.
+	#print sa[0][-1,length sa[0]];.
+	#print sa[0][2,1].
+	#print sa[0][1,1].
+
+	#print sa[1].
+	#print sa[1][0].
+
+	print c2 + s1 + c1,_n_.
+	print reverse s1,_n_.
+	print reverse "",_n_.
+	print reverse "a",_n_.
+	print reverse "abqweeewwrcsd",_n_.
+	print length "" == length reverse "";length s1 == length reverse s1.
+	#s1[1,2]:="12".
+	#s1[3]:=2.
+
+}

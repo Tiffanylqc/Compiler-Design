@@ -11,6 +11,7 @@ import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.ArrayTypeNode;
 import parseTree.nodeTypes.ForIndexStatementNode;
+import parseTree.nodeTypes.FunctionBodyNode;
 import parseTree.nodeTypes.FunctionDefinitionNode;
 import parseTree.nodeTypes.IdentifierNode;
 import parseTree.nodeTypes.LambdaParamTypeNode;
@@ -29,6 +30,10 @@ import semanticAnalyzer.types.VoidType;
 import symbolTable.Binding;
 import symbolTable.Scope;
 import tokens.Token;
+import static semanticAnalyzer.SemanticAnalysisVisitor.addBinding;
+import static semanticAnalyzer.SemanticAnalysisVisitor.addFuncBinding;
+import static semanticAnalyzer.SemanticAnalysisVisitor.logError;
+import static semanticAnalyzer.SemanticAnalysisVisitor.typeCheckError;
 
 public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 
@@ -36,9 +41,9 @@ public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 		// TODO Auto-generated constructor stub
 	}
 	@Override
-//	public void visitLeave(ParseNode node) {
-//		throw new RuntimeException("Node class unimplemented in SemanticAnalysisVisitor: " + node.getClass());
-//	}
+	public void visitLeave(ParseNode node) {
+		throw new RuntimeException("Node class unimplemented in SemanticAnalysisVisitor: " + node.getClass());
+	}
 	public void visitEnter(ProgramNode node){
 		createProgramScope(node);
 	}
@@ -71,7 +76,9 @@ public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 		node.setType(new LambdaType(signature));
 
 	}
-	
+	public void visitLeave(FunctionBodyNode node){
+		
+	}
 	public void visitLeave(OperatorNode node){
 		//Lambda
 		if(node.getToken().isLextant(Punctuator.LAMBDA)){
@@ -128,20 +135,20 @@ public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 		node.setType(new LambdaType(signature));
 	}	
 	
-	private void addFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
-		Scope scope = identifierNode.getLocalScope();
-		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel,false);
-		identifierNode.setBinding(binding);
-	}
-	
-	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
-		Token token = node.getToken();
-		
-		logError("operator " + token.getLexeme() + " not defined for types " 
-				 + operandTypes  + " at " + token.getLocation());	
-	}
-	private void logError(String message) {
-		PikaLogger log = PikaLogger.getLogger("compiler.semanticAnalyzer");
-		log.severe(message);
-	}
+//	private void addFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
+//		Scope scope = identifierNode.getLocalScope();
+//		Binding binding = scope.createFuncBinding(identifierNode, type, mutable, funcStartLabel,false);
+//		identifierNode.setBinding(binding);
+//	}
+//	
+//	private void typeCheckError(ParseNode node, List<Type> operandTypes) {
+//		Token token = node.getToken();
+//		
+//		logError("operator " + token.getLexeme() + " not defined for types " 
+//				 + operandTypes  + " at " + token.getLocation());	
+//	}
+//	private void logError(String message) {
+//		PikaLogger log = PikaLogger.getLogger("compiler.semanticAnalyzer");
+//		log.severe(message);
+//	}
 }

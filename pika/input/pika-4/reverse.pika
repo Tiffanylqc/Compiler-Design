@@ -1,0 +1,10 @@
+var s:="hello".
+var a:=[1,2,3,4].
+var aa:=[[1,2],[3,4,5],[6,7,8,9]].
+var as:=["qwe","ert",""," ","tyu"].
+exec{
+	print s;reverse s,_n_.
+	print a;reverse a,_n_.
+	print aa;reverse aa,_n_.
+	print as;reverse as,_n_.
+}

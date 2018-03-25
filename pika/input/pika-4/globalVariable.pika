@@ -1,0 +1,94 @@
+#var v1:=2.
+
+func f1 <int x1, int x2>->int{
+	print "v1 in f1";v1,_n_.
+	v1:= v1 + 2.
+	if(x1>x2){
+		return x1.
+	}
+	else{
+		return x2.
+	}
+}
+
+#const x:=y + 4.
+#const y:=10.
+#const s:=t + 4.
+#const t:=s - 4.
+
+var gf1:= <int x1, int x2>->int{
+	call f1(7,8).
+	print "v1 in gf1: ";v1,_n_.
+	v1:= v1 + 2.
+	if(x1>x2){
+		return x1.
+	}
+	else{
+		retur
+}.n x2.
+	}
+
+var v1:=2.
+
+exec{
+	call gf1(2,3).
+	call f1(1,2).
+	print "v1 in exec: ";v1,_n_.
+
+	static var l1:= <int v1,int v2>->int{
+		print "v1 in l1: ";v1,_n_.
+
+		#v1:=v1 + 2.
+		if(v1>v2){
+			return v1.
+		}
+		else{
+			return v2.
+		}
+	}.
+
+	call l1(v1,2).
+	print "v1 in exec after l1:";v1,_n_.
+
+	var l2:= <int x1,int x2>->int{
+		print "v1 in l2:";v1,_n_.
+		v1:=v1 + 2.
+		if(x1>x2){
+			return x1.
+		}
+		else{
+			return x2.
+		}
+	}.
+	call l2(5,6).
+	print "v1 in exec after l2:";v1,_n_.
+
+	var local:=3.
+	var l3:=< int x1,int x2 > -> int{
+		var v1:=1.
+		var ll1:= <int a1,int b1>->int{
+			print "v1 in ll1:";v1,_n_.
+			var v1:=3.
+			print "v1 in ll1:";v1,_n_.
+			return a1 + b1.
+		}.
+
+		call ll1(5,6).
+		#print local,_n_.
+		if(x1>x2){
+			#return f1(x1,x2).
+			return gf1(x1,x2).
+		}
+		else{
+			return l1(x1,x2).
+		}
+		#return l2(x1,x2).
+	}.
+	call l3(15,12).
+
+
+}
+
+
+
+

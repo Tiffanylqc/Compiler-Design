@@ -83,6 +83,7 @@ public class PrintStatementGenerator {
 			code.add(PushI,6);
 		
 		//[...arrAddr typeNum]
+//		code.add(PStack);
 		code.add(Call,RunTime.PRINT_ARRAY);
 	}
 	

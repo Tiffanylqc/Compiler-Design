@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import parseTree.nodeTypes.CallStatementNode;
+import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.LambdaParamTypeNode;
 import parseTree.nodeTypes.LambdaTypeNode;
 import parseTree.nodeTypes.ReturnStatementNode;
@@ -143,7 +144,15 @@ public class ParseNode {
 	}
 	// adds a new child to this node (as first child) and sets its parent link.
 	public void insertChild(ParseNode child) {
-		children.add(0, child);
+		int index;
+		for(index=0;index<nChildren();index++){
+			if(child(index) instanceof DeclarationNode)
+				continue;
+			else 
+				break;
+		}
+//		children.add(0, child);
+		children.add(index,child);
 		child.setParent(this);
 	}
 	// adds a new child to this node (as last child) and sets its parent link.

@@ -1,0 +1,86 @@
+var s:="rabbit".
+const a1:=[[1,2,3],[4,5,6],[7,8,9]].
+const a2:=[[3//4,4//5,5//6],[3//4,4//5,5//6]].
+const a3:=["first","second","third"].
+const a5:=[1.2,3.5,8.9].
+const a6:=[^r^,^a^,^b^].
+
+const add:= <int a,int b>->int{
+	return a + b.
+}.
+
+const minus:=<int a,int b>->int{
+	return a - b.
+}.
+
+const a7:=[add,minus].
+exec{
+	var i:=120.
+	for index i of s {
+		#i:=i + 1.
+		{
+			var i:=<int x,int y>->int{
+				return 1.
+			}.
+			print i(4,5);.
+		}
+		s:="BigRabbit".
+		print i,s[i];.
+	}
+	print ;i,_n_.
+	for index i of a1{
+		print a1[i];.
+		for index j of a1[i]{
+			if(j==1){
+				print "j==1",_n_.
+				continue.
+			}
+			if(j==0){
+				continue.
+			}
+			print i;j;a1[i][j];_n_.
+		}
+	}
+
+	for index i of a2{
+		print a2[i];.
+	}
+	print _n_.
+
+	for index i of a3{
+		print a3[i];.
+	}
+	print _n_.
+
+	const a4:=[["first","first","first"],a3,["four", "four","four","four"]].
+	print a4[0],_n_.
+	for index i of a4{
+		print a4[i];.
+	}
+	print _n_.
+
+	for index i of a5{
+		print a5[i];.
+	}
+	print _n_.
+
+	for index i of a6{
+		print a6[i];.
+	}
+	print _n_.
+
+	for index i of a7{
+		print a7[i](2,7);.
+	}
+
+	#var a8:=new [string](3).
+	#for index i of a8[1]{
+	#	print "no".
+	#}
+	#var a9:=new[[int]](3).
+	#for index i of a9[1]{
+	#	print "no".
+	#}
+}
+
+

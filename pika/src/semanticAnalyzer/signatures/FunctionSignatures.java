@@ -18,10 +18,12 @@ import asmCodeGenerator.FloatDivideCodeGenerator;
 import asmCodeGenerator.FloatingExpressOverCodeGenerator;
 import asmCodeGenerator.FloatingRationalizeCodeGenerator;
 import asmCodeGenerator.FloatingToRationalCodeGenerator;
+import asmCodeGenerator.FoldCodeGenerator;
 import asmCodeGenerator.FormRationalCodeGenerator;
 import asmCodeGenerator.IntToBoolCodeGenerator;
 import asmCodeGenerator.IntToCharCodeGenerator;
 import asmCodeGenerator.IntegerDivideCodeGenerator;
+import asmCodeGenerator.MapCodeGenerator;
 import asmCodeGenerator.RationalAddCodeGenerator;
 import asmCodeGenerator.RationalDivideCodeGenerator;
 import asmCodeGenerator.RationalExpressOverCodeGenerator;
@@ -30,6 +32,8 @@ import asmCodeGenerator.RationalRationalizeCodeGenerator;
 import asmCodeGenerator.RationalSubtractCodeGenerator;
 import asmCodeGenerator.RationalToFloatCodeGenerator;
 import asmCodeGenerator.RationalToIntCodeGenerator;
+import asmCodeGenerator.ReduceCodeGenerator;
+import asmCodeGenerator.ReverseArrayCodeGenerator;
 import asmCodeGenerator.ReverseCodeGenerator;
 import asmCodeGenerator.ShortCircuitAndCodeGenerator;
 import asmCodeGenerator.ShortCircuitOrCodeGenerator;
@@ -37,6 +41,7 @@ import asmCodeGenerator.StringCharAddCodeGenerator;
 import asmCodeGenerator.StringIndexingCodeGenerator;
 import asmCodeGenerator.StringSliceCodeGenerator;
 import asmCodeGenerator.StringStringAddCodeGenerator;
+import asmCodeGenerator.ZipCodeGenerator;
 import asmCodeGenerator.codeStorage.ASMOpcode;
 import lexicalAnalyzer.Keyword;
 import lexicalAnalyzer.Punctuator;
@@ -213,7 +218,62 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		
 		// Array Indexing
 		TypeVariable S = new TypeVariable("S");
+		TypeVariable U = new TypeVariable("U");
+		TypeVariable T = new TypeVariable("T");
+		
 		List<TypeVariable> setS = Arrays.asList(S);
+		List<TypeVariable> setTU = Arrays.asList(T,U);
+		List<TypeVariable> setU = Arrays.asList(U);
+		List<TypeVariable> setT = Arrays.asList(T);
+		List<TypeVariable> setSTU = Arrays.asList(S,T,U);
+		new FunctionSignatures(Keyword.MAP,
+				new FunctionSignature(
+						new MapCodeGenerator(),
+						setTU,
+						new Array(T),
+						new LambdaType(new FunctionSignature(1,setU,T,U)),
+						new Array(U)
+				)	
+		);
+		
+		new FunctionSignatures(Keyword.REDUCE,
+				new FunctionSignature(
+						new ReduceCodeGenerator(),
+						setT,
+						new Array(T),
+						new LambdaType(new FunctionSignature(1,T,PrimitiveType.BOOLEAN)),
+						new Array(T)
+				)
+		);
+		
+		new FunctionSignatures(Keyword.FOLD,
+				new FunctionSignature(
+						new FoldCodeGenerator(),
+						setT,
+						new Array(T),
+						new LambdaType(new FunctionSignature(1,T,T,T)),
+						T
+				),
+				new FunctionSignature(
+						new FoldCodeGenerator(),
+						setTU,
+						new Array(T),
+						U,
+						new LambdaType(new FunctionSignature(1,U,T,U)),
+						U
+				)
+		);
+		
+		new FunctionSignatures(Keyword.ZIP,
+				new FunctionSignature(
+						new ZipCodeGenerator(),
+						setSTU,
+						new Array(S),
+						new Array(T),
+						new LambdaType(new FunctionSignature(1,setU,S,T,U)),
+						new Array(U)
+				)
+		);
 		
 		new FunctionSignatures(Punctuator.ARRAY_INDEXING,
 				new FunctionSignature(
@@ -251,7 +311,14 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 				new FunctionSignature(
 						new ReverseCodeGenerator(),
 						PrimitiveType.STRING,PrimitiveType.STRING
-				));
+				),
+				new FunctionSignature(
+						new ReverseArrayCodeGenerator(),
+						setS,
+						new Array(S),
+						new Array(S)
+				)
+		);
 		new FunctionSignatures(Punctuator.OPEN_BRACKET,
 				new FunctionSignature(
 						new ArrayPopulateCreationCodeGenerator(),

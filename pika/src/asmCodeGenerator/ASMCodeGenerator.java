@@ -185,6 +185,7 @@ public class ASMCodeGenerator {
 			}
 			else if(node.getType() == PrimitiveType.STRING) {
 				code.add(LoadI);
+//				code.add(PStack);
 			}
 			else if(node.getType()==PrimitiveType.RATIONAL){
 				code.add(Nop);
@@ -452,41 +453,42 @@ public class ASMCodeGenerator {
 			//CALL the function
 			ASMCodeFragment funcAddr=removeValueCode(node.getParent().child(0));
 			code.append(funcAddr);
-			code.add(CallV);
-			
-			
-			//return from subroutine
-			
-			if(returnType instanceof VoidType){
-				;//do nothing
-			}
-			else{
-				int returnSize=returnType.getSize();
-				if(returnSize==1){
-					Macros.loadIFrom(code, RunTime.STACK_POINTER);
-					code.add(LoadC);
-				}
-				else if(returnSize==4){
-					Macros.loadIFrom(code, RunTime.STACK_POINTER);
-					code.add(LoadI);
-				}
-					
-				else if(returnSize==8 && returnType==PrimitiveType.FLOATING){
-					Macros.loadIFrom(code,RunTime.STACK_POINTER);
-					code.add(LoadF);
-				}
-				else{
-					Macros.loadIFrom(code, RunTime.STACK_POINTER);
-					code.add(PushI,4);
-					code.add(Add);
-					code.add(LoadI);
-					Macros.loadIFrom(code, RunTime.STACK_POINTER);
-					code.add(LoadI);
-				}
-					
-				code.add(PushI,returnSize);
-				Macros.addITo(code, RunTime.STACK_POINTER);
-			}
+			RunTime.callFunction(code, returnType);
+//			code.add(CallV);
+//			
+//			
+//			//return from subroutine
+//			
+//			if(returnType instanceof VoidType){
+//				;//do nothing
+//			}
+//			else{
+//				int returnSize=returnType.getSize();
+//				if(returnSize==1){
+//					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+//					code.add(LoadC);
+//				}
+//				else if(returnSize==4){
+//					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+//					code.add(LoadI);
+//				}
+//					
+//				else if(returnSize==8 && returnType==PrimitiveType.FLOATING){
+//					Macros.loadIFrom(code,RunTime.STACK_POINTER);
+//					code.add(LoadF);
+//				}
+//				else{
+//					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+//					code.add(PushI,4);
+//					code.add(Add);
+//					code.add(LoadI);
+//					Macros.loadIFrom(code, RunTime.STACK_POINTER);
+//					code.add(LoadI);
+//				}
+//					
+//				code.add(PushI,returnSize);
+//				Macros.addITo(code, RunTime.STACK_POINTER);
+//			}
 		}
 		
 		public void visitLeave(CallStatementNode node){
@@ -693,6 +695,12 @@ public class ASMCodeGenerator {
 			}
 			else if(operator==Punctuator.STRING_SLICE){
 				visitStringSliceOperatorNode(node);
+			}
+			else if(operator==Keyword.ZIP){
+				visitZipOperatorNode(node);
+			}
+			else if(operator==Keyword.FOLD){
+				visitFoldOperatorNode(node);
 			}
 			else {
 				visitNormalBinaryOperatorNode(node);
@@ -1283,6 +1291,7 @@ public class ASMCodeGenerator {
 				//check null array
 				code.add(Duplicate);
 				code.add(JumpFalse,RunTime.NULL_ARRAY_RUNTIME_ERROR);
+//				code.add(PStack);
 				readIOffset(code,Record.ARRAY_LENGTH_OFFSET);
 			}
 			
@@ -1333,6 +1342,52 @@ public class ASMCodeGenerator {
 			code.append(fragment);
 			
 			//[...(arrPtr+index)]
+			if(fragment.isAddress()) {
+				code.markAsAddress();
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		// zip
+		private void visitZipOperatorNode(OperatorNode node){
+			newValueCode(node);
+			ASMCodeFragment frag1 = removeValueCode(node.child(0));
+			ASMCodeFragment frag2 = removeValueCode(node.child(1));
+			ASMCodeFragment frag3 = removeValueCode(node.child(2));
+			code.append(frag1);
+			code.append(frag2);
+			code.append(frag3);
+			Object variant = node.getSignature().getVariant();
+			SimpleCodeGenerator generator=(SimpleCodeGenerator)variant;
+			ASMCodeFragment fragment=generator.generate(node);
+			code.append(fragment);
+			
+			if(fragment.isAddress()) {
+				code.markAsAddress();
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		// fold
+		private void visitFoldOperatorNode(OperatorNode node){
+			newValueCode(node);
+			
+			ASMCodeFragment frag1=removeValueCode(node.child(0));
+			ASMCodeFragment frag2 = removeValueCode(node.child(1));
+			
+			if(node.nChildren()==3){
+				ASMCodeFragment frag3 = removeValueCode(node.child(2));
+				code.append(frag2);
+				code.append(frag1);
+				code.append(frag3);
+			}
+			else{
+				code.append(frag1);
+				code.append(frag2);
+			}
+			Object variant = node.getSignature().getVariant();
+			SimpleCodeGenerator generator=(SimpleCodeGenerator)variant;
+			ASMCodeFragment fragment=generator.generate(node);
+			code.append(fragment);
+			
 			if(fragment.isAddress()) {
 				code.markAsAddress();
 			}

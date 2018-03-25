@@ -3,6 +3,7 @@ package symbolTable;
 import inputHandler.TextLocation;
 import logging.PikaLogger;
 import parseTree.nodeTypes.IdentifierNode;
+import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import tokens.Token;
 
@@ -11,6 +12,7 @@ public class Scope {
 	private MemoryAllocator allocator;
 	private SymbolTable symbolTable;
 	private int ParamSize;
+	private static int globalSequenceNum=0;
 //////////////////////////////////////////////////////////////////////
 // factories
 
@@ -94,25 +96,55 @@ public class Scope {
 
 ///////////////////////////////////////////////////////////////////////
 //bindings
-	public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable,boolean isStatic) {
+	public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
 		Token token = identifierNode.getToken();
 		symbolTable.errorIfAlreadyDefined(token,type);
 
 		String lexeme = token.getLexeme();
-		Binding binding = allocateNewBinding(type, token.getLocation(), lexeme,mutable,isStatic);	
+		Binding binding;
+		if(identifierNode.getStatic()){
+//			System.out.println(identifierNode.getParent().child(1).getToken().getLexeme());
+//			System.out.println(symbolTable);
+			Scope globalScope=identifierNode.getGlobalScope();
+			Binding globalBinding=globalScope.allocateNewBinding(type, token.getLocation(), "#"+lexeme+globalSequenceNum,mutable,identifierNode.getStatic());
+			globalSequenceNum++;
+			binding = allocateStaticBinding(globalBinding.getMemoryLocation(),type, token.getLocation(), lexeme,mutable,identifierNode.getStatic());	
+		}
+		else{
+			binding = allocateNewBinding(type, token.getLocation(), lexeme,mutable,identifierNode.getStatic());	
+		}
 		symbolTable.install(lexeme, binding);
 
 		return binding;
 	}
-	public Binding createFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel,boolean isStatic) {
+	public Binding createFuncBinding(IdentifierNode identifierNode, Type type, boolean mutable, String funcStartLabel) {
 		Token token = identifierNode.getToken();
 		symbolTable.errorIfAlreadyDefined(token,type);
 
 		String lexeme = token.getLexeme();
-		Binding binding = allocateNewFuncBinding(type, token.getLocation(), lexeme,mutable,funcStartLabel,isStatic);	
+		
+		Binding binding;
+		if(identifierNode.getStatic()){
+			Scope globalScope=identifierNode.getGlobalScope();
+			Binding globalBinding=globalScope.allocateNewBinding(type, token.getLocation(), "#"+lexeme+globalSequenceNum,mutable,identifierNode.getStatic());
+			globalSequenceNum++;
+			binding = allocateFuncStaticBinding(globalBinding.getMemoryLocation(),type, token.getLocation(), lexeme,mutable,funcStartLabel,identifierNode.getStatic());	
+		}
+		else{
+			binding = allocateNewFuncBinding(type, token.getLocation(), lexeme,mutable,funcStartLabel,identifierNode.getStatic());	
+		}
+		
 		symbolTable.install(lexeme, binding);
 
 		return binding;
+	}
+	private Binding allocateStaticBinding(MemoryLocation globalMemoryLocation,Type type,TextLocation textLocation, String lexeme,boolean mutable,boolean isStatic) {
+//		MemoryLocation memoryLocation = allocator.allocate(0);
+		return new Binding(type, textLocation, globalMemoryLocation, lexeme, mutable,isStatic);
+	}
+	private Binding allocateFuncStaticBinding(MemoryLocation globalMemoryLocation,Type type,TextLocation textLocation, String lexeme,boolean mutable,String funcStartLabel,boolean isStatic) {
+//		MemoryLocation memoryLocation = allocator.allocate(0);
+		return new Binding(type, textLocation, globalMemoryLocation, lexeme, mutable,funcStartLabel,isStatic);
 	}
 	private Binding allocateNewBinding(Type type, TextLocation textLocation, String lexeme,boolean mutable,boolean isStatic) {
 		MemoryLocation memoryLocation = allocator.allocate(type.getSize());
@@ -148,9 +180,9 @@ public class Scope {
 			return "scope: the-null-scope";
 		}
 		@Override
-		public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable,boolean isStatic) {
+		public Binding createBinding(IdentifierNode identifierNode, Type type, boolean mutable) {
 			unscopedIdentifierError(identifierNode.getToken());
-			return super.createBinding(identifierNode, type, true,isStatic);
+			return super.createBinding(identifierNode, type, true);
 		}
 		// subscopes of null scope need their own strategy.  Assumes global block is static.
 		public Scope createSubscope() {

@@ -47,6 +47,9 @@ public class FunctionSignature {
 	public Type resultType() {
 		return resultType.getConcreteType();
 	}
+	public Type rawResultType(){
+		return resultType;
+	}
 	public boolean isNull() {
 		return false;
 	}
@@ -86,9 +89,11 @@ public class FunctionSignature {
 	public boolean NoPromotionAccepts(List<Type> types) {
 		resetTypeVariables();
 		if(types.size() != paramTypes.length) {
+			
 			return false;
 		}
 		for(int i=0; i<paramTypes.length; i++) {
+			
 			if(!NoPromotionAssignableTo(paramTypes[i], types.get(i))) {
 				return false;
 			}

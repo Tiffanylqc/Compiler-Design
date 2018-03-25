@@ -17,8 +17,10 @@ import asmCodeGenerator.codeStorage.ASMCodeFragment;
 import asmCodeGenerator.codeStorage.ASMCodeFragment.CodeType;
 import parseTree.ParseNode;
 import semanticAnalyzer.types.Array;
+import semanticAnalyzer.types.LambdaType;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
+import semanticAnalyzer.types.VoidType;
 public class RunTime {
 	public static final String EAT_LOCATION_ZERO      = "$eat-location-zero";		// helps us distinguish null pointers from real ones.
 	public static final String INTEGER_PRINT_FORMAT   = "$print-format-integer";
@@ -55,6 +57,7 @@ public class RunTime {
 	public static final String RATIONALIZE_DIVIDE_BY_ZERO_RUNTIME_ERROR="$$rationalize-divide-by-zero";
 	public static final String NEGATIVE_LENGTH_ARRAY_RUNTIME_ERROR="$$negative-length-array";
 	public static final String NO_RETURN_RUNTIME_ERROR="$$no return";
+	public static final String ZIP_LENGTH_DIFF_RUNTIME_ERROR="$zip-length-different";
 	public static final String STRING_SLICE_INDEX_RUNTIME_ERROR="$$string-slice-index-error";
 	public static final String ARRAY_INDEXING_ARRAY	= "$a-indexing-array";
 	public static final String ARRAY_INDEXING_INDEX = "$a-indexing-index";
@@ -89,6 +92,8 @@ public class RunTime {
 	public static final String ARRAY_SUBTYPE_SIZE_TEMP = "$array-subtype-size-temp";
 	public static final String ARRAY_LENGTH_TEMP = "$array-length-temp";
 	public static final String ARRAY_ELEMENT_TEMP = "$array-element-temp";
+	public static final String ARRAY_ELEMENT_TEMP2 = "$array-element-temp2";
+	public static final String ARRAY_ELEMENT_TEMP3 = "$array-element-temp3";
 	public static final String CLONED_ARRAY_TEMP = "$cloned-array-temp";
 	
 	public static final String PRINT_STRING_TEMP = "$print-string-temp";
@@ -127,6 +132,12 @@ public class RunTime {
 	public static final String FOR_LENGTH = "$for-length";
 	public static final String FOR_SUBSIZE = "$for-subsize";
 	public static final String FOR_IDEN = "$for-identifier";
+	public static final String ARRAY_ADDR = "$array-address";
+	public static final String ARRAY_ADDRS = "$array-address-S";
+	public static final String ARRAY_ADDRT = "$array-address-T";
+	public static final String LAMBDA_ADDR = "$lambda-address";
+	public static final String REDUCE_COUNT = "$reduce-count";
+	public static final String PARAMU = "$param-u";
 //	public static final String FUNCTION_INVOCATION_PARAM_TEMP = "$function-invocation-parameter-temp";
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
@@ -190,6 +201,13 @@ public class RunTime {
 		Macros.declareI(frag, FOR_LENGTH);
 		Macros.declareI(frag, FOR_SUBSIZE);
 		Macros.declareI(frag, FOR_IDEN);
+		Macros.declareI(frag, ARRAY_ADDR);
+		Macros.declareI(frag, LAMBDA_ADDR);
+		Macros.declareI(frag, ARRAY_ELEMENT_TEMP2);
+		Macros.declareI(frag, ARRAY_ADDRS);
+		Macros.declareI(frag, ARRAY_ADDRT);
+		Macros.declareI(frag, ARRAY_ELEMENT_TEMP3);
+		Macros.declareI(frag, PARAMU);
 		
 		Macros.declareC(frag, CHAR_TEMP);
 		
@@ -252,6 +270,7 @@ public class RunTime {
 		nullStringError(frag);
 		noReturnError(frag);
 		stringSliceIndexError(frag);
+		zipLengthError(frag);
 		
 		return frag;
 	}
@@ -267,6 +286,15 @@ public class RunTime {
 		frag.add(Printf);
 		frag.add(Halt);
 		return frag;
+	}
+	private void zipLengthError(ASMCodeFragment frag){
+		String zipMessage = "$zip-array-length-different";
+		frag.add(DLabel,zipMessage);
+		frag.add(DataS, "zip array different error");
+		
+		frag.add(Label, ZIP_LENGTH_DIFF_RUNTIME_ERROR);
+		frag.add(PushD, zipMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	private void stringSliceIndexError(ASMCodeFragment frag){
 		String stringSliceMessage = "$string-slice-index-error";
@@ -423,6 +451,64 @@ public class RunTime {
 		writeIPtrOffset(code,RECORD_CREATION_TEMP,Record.ARRAY_LENGTH_OFFSET); // [...]
 	}
 	
+	public static void beforeCallSP(ASMCodeFragment frag, Type type, int size){
+		frag.add(PushI,(-1)*size);
+		Macros.addITo(frag, RunTime.STACK_POINTER);
+		if(size==1){
+			Macros.storeCToIndirect(frag, RunTime.STACK_POINTER);
+		}
+		else if(size==4){
+			Macros.storeIToIndirect(frag, RunTime.STACK_POINTER);
+		}
+		else if(size==8 && (type==PrimitiveType.FLOATING))
+			Macros.storeFToIndirect(frag, RunTime.STACK_POINTER);
+		else{
+			
+			Macros.loadIFrom(frag, RunTime.STACK_POINTER);
+			frag.add(PushI,4);
+			frag.add(Add);
+			frag.add(Exchange);
+			frag.add(StoreI);
+			Macros.storeIToIndirect(frag, RunTime.STACK_POINTER);
+		}
+	}
+	
+	public static void callFunction(ASMCodeFragment code, Type returnType){
+		code.add(CallV);	
+		//return from subroutine
+		
+		if(returnType instanceof VoidType){
+			;//do nothing
+		}
+		else{
+			int returnSize=returnType.getSize();
+			if(returnSize==1){
+				Macros.loadIFrom(code, RunTime.STACK_POINTER);
+				code.add(LoadC);
+			}
+			else if(returnSize==4){
+				Macros.loadIFrom(code, RunTime.STACK_POINTER);
+				code.add(LoadI);
+			}
+				
+			else if(returnSize==8 && returnType==PrimitiveType.FLOATING){
+				Macros.loadIFrom(code,RunTime.STACK_POINTER);
+				code.add(LoadF);
+			}
+			else{
+				Macros.loadIFrom(code, RunTime.STACK_POINTER);
+				code.add(PushI,4);
+				code.add(Add);
+				code.add(LoadI);
+				Macros.loadIFrom(code, RunTime.STACK_POINTER);
+				code.add(LoadI);
+			}
+				
+			code.add(PushI,returnSize);
+			Macros.addITo(code, RunTime.STACK_POINTER);
+		}
+	}
+	
 	// leaves new record in RECORD_CREATION_TEMPORARY
 	//[...clonedArrPtr]->[...newArrPtr]
 	public static void cloneArrayRecord(ASMCodeFragment code){
@@ -525,7 +611,7 @@ public class RunTime {
 		String charLabel=labeller.newLabel("char-label");
 		String ratLabel=labeller.newLabel("rat-label");
 		String strLabel=labeller.newLabel("string-label");
-		
+		String arrLabel=labeller.newLabel("array");
 		declareI(frag,returnAddressLabel);
 		storeITo(frag,returnAddressLabel);
 		declareI(frag,typeLabel);
@@ -533,6 +619,7 @@ public class RunTime {
 		declareI(frag,elemLabel);
 		declareI(frag,lengthLabel);
 		declareI(frag,elemSizeLabel);
+		declareI(frag,arrLabel);
 		
 		//[...arrAddr]->[...arrAddr]
 		//store the length of array and start address of elements
@@ -555,17 +642,44 @@ public class RunTime {
 		frag.add(Printf);
 		
 		//[...arrAddr]
-//		frag.add(Duplicate);
+		frag.add(Duplicate);
+		Macros.storeITo(frag, arrLabel);
+//		frag.add(PStack);
 		readIOffset(frag,Record.RECORD_STATUS_OFFSET);//[...status]
 		frag.add(PushI,2);
 		frag.add(BTAnd);//[...status&0x0010]
+//		frag.add(PStack);
 		frag.add(JumpFalse,oneDimArrayLabel);
+		
+//		Macros.loadIFrom(frag, arrLabel);
+//		readIOffset(frag, Record.RECORD_TYPEID_OFFSET);
+//		frag.add(PushI,6);
+//		frag.add(Subtract);
+////		frag.add(PStack);
+//		frag.add(JumpFalse,oneDimArrayLabel);
 		
 		//subtype is reference type for each element call PRINT_ARRAY again
 		frag.add(Label,loopLabel);
 		loadIFrom(frag,lengthLabel);
 		frag.add(JumpFalse,endLabel);
 		
+		
+//		loadIFrom(frag,returnAddressLabel);
+//		loadIFrom(frag,typeLabel);
+//		loadIFrom(frag,elemLabel);
+//		loadIFrom(frag,lengthLabel);
+//		loadIFrom(frag,elemSizeLabel);
+		
+		loadIFrom(frag,elemLabel);
+		frag.add(LoadI);
+		
+		//if it is string jump to oneDimArray
+//		frag.add(Duplicate);
+		readIOffset(frag, Record.RECORD_TYPEID_OFFSET);
+		frag.add(PushI,6);
+		frag.add(Subtract);
+//		frag.add(PStack);
+		frag.add(JumpFalse,oneDimArrayLabel);
 		
 		loadIFrom(frag,returnAddressLabel);
 		loadIFrom(frag,typeLabel);
@@ -575,14 +689,6 @@ public class RunTime {
 		
 		loadIFrom(frag,elemLabel);
 		frag.add(LoadI);
-		
-		//if it is string jump to oneDimArray
-		frag.add(Duplicate);
-		readIOffset(frag, Record.RECORD_TYPEID_OFFSET);
-		frag.add(PushI,6);
-		frag.add(Subtract);
-		frag.add(JumpFalse,oneDimArrayLabel);
-		
 		loadIFrom(frag,typeLabel);
 		frag.add(Call,PRINT_ARRAY);
 		
@@ -591,6 +697,7 @@ public class RunTime {
 		storeITo(frag,elemLabel);
 		storeITo(frag,typeLabel);
 		storeITo(frag,returnAddressLabel);
+//		frag.add(PStack);
 		
 		loadIFrom(frag,elemSizeLabel);
 		addITo(frag,elemLabel);
@@ -615,8 +722,9 @@ public class RunTime {
 //		frag.add(PStack);
 		frag.add(JumpFalse,endLabel);
 		loadIFrom(frag,elemLabel);//[...arrAddr elemAddr]
-		
+//		frag.add(PStack);
 		loadIFrom(frag,typeLabel);
+//		frag.add(PStack);
 		frag.add(PushI,1);
 		frag.add(Subtract);
 		frag.add(JumpFalse,intLabel);
@@ -678,6 +786,7 @@ public class RunTime {
 		
 		frag.add(Label,strLabel);
 		frag.add(LoadI);
+//		frag.add(PStack);
 		frag.add(Call,PRINT_STRING);
 		frag.add(Jump,joinLabel);
 		
