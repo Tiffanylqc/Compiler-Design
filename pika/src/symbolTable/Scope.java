@@ -107,6 +107,8 @@ public class Scope {
 //			System.out.println(symbolTable);
 			Scope globalScope=identifierNode.getGlobalScope();
 			Binding globalBinding=globalScope.allocateNewBinding(type, token.getLocation(), "#"+lexeme+globalSequenceNum,mutable,identifierNode.getStatic());
+			Binding isSetBinding=allocateNewBinding(type, token.getLocation(), "#"+lexeme, mutable, identifierNode.getStatic());
+			symbolTable.install("#"+lexeme, isSetBinding);
 			globalSequenceNum++;
 			binding = allocateStaticBinding(globalBinding.getMemoryLocation(),type, token.getLocation(), lexeme,mutable,identifierNode.getStatic());	
 		}
@@ -127,6 +129,8 @@ public class Scope {
 		if(identifierNode.getStatic()){
 			Scope globalScope=identifierNode.getGlobalScope();
 			Binding globalBinding=globalScope.allocateNewBinding(type, token.getLocation(), "#"+lexeme+globalSequenceNum,mutable,identifierNode.getStatic());
+			Binding isSetBinding=allocateNewFuncBinding(type, token.getLocation(), "#"+lexeme, mutable,funcStartLabel, identifierNode.getStatic());
+			symbolTable.install("#"+lexeme, isSetBinding);
 			globalSequenceNum++;
 			binding = allocateFuncStaticBinding(globalBinding.getMemoryLocation(),type, token.getLocation(), lexeme,mutable,funcStartLabel,identifierNode.getStatic());	
 		}

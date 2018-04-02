@@ -1,0 +1,54 @@
+exec {
+	var bool_arr := [_true_, _true_, _false_, _false_].
+	print "Original Boolean Array: ", bool_arr, _n_.
+	bool_arr := reverse bool_arr.
+	print "Reversed Boolean Array: ", bool_arr, _n_.
+	bool_arr := reverse bool_arr.
+	print "Reversed Again: ", bool_arr, _n_.
+	
+	var char_arr := [^1^, ^2^, ^3^].
+	print "Original Character Array: ", char_arr, _n_.
+	char_arr := reverse char_arr.
+	print "Reversed Character Array: ", char_arr, _n_.
+	char_arr := reverse char_arr.
+	print "Reversed Again: ", char_arr, _n_.
+	
+	var int_arr := [5].
+	print "Original Integer Array: ", int_arr, _n_.
+	int_arr := reverse int_arr.
+	print "Reversed Integer Array: ", int_arr, _n_.
+	int_arr := reverse int_arr.
+	print "Reversed Again: ", int_arr, _n_.
+	
+	var float_arr := [5, 8.2, 6, 72.8].
+	print "Original Floating Array: ", float_arr, _n_.
+	float_arr := reverse float_arr.
+	print "Reversed Floating Array: ", float_arr, _n_.
+	float_arr := reverse float_arr.
+	print "Reversed Again: ", float_arr, _n_.
+	
+	var str_arr := ["hello", "how", "are", "you", "?"].
+	print "Original String Array: ", str_arr, _n_.
+	str_arr := reverse str_arr.
+	print "Reversed String Array: ", str_arr, _n_.
+	str_arr := reverse str_arr.
+	print "Reversed Again: ", str_arr, _n_.
+	
+	var rat_arr := [1//2, 8//9, -3//6, -5].
+	print "Original Rational Array: ", rat_arr, _n_.
+	rat_arr := reverse rat_arr.
+	print "Reversed Rational Array: ", rat_arr, _n_.
+	rat_arr := reverse rat_arr.
+	print "Reversed Again: ", rat_arr, _n_.
+	
+	var multi_arr := [
+					 [[3.2, 6.8], [8.5, 7.2]],
+					 [[5.2, 8.2], [-100, 60.2]],
+					 [[90.3, -72], [-1.50, 7.2]]
+					].
+	print "Original Multi Array: ", multi_arr, _n_.
+	multi_arr := reverse multi_arr.
+	print "Reversed Multi Array: ", multi_arr, _n_.
+	multi_arr := reverse multi_arr.
+	print "Reversed Again: ", multi_arr, _n_.
+}

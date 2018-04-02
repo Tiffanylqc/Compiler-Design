@@ -105,6 +105,7 @@ public class FunctionSignature {
 		if(valueType == PrimitiveType.ERROR && ALL_TYPES_ACCEPT_ERROR_TYPES) {
 			return true;
 		}	
+
 		return variableType.equivalent(valueType);
 	}
 	private boolean PromotionAssignableTo(Type variableType, Type valueType){
@@ -113,6 +114,10 @@ public class FunctionSignature {
 		}
 		if(canConvert(valueType,variableType))
 			return true;
+
+		if(variableType instanceof TypeVariable){
+		return variableType.equivalent(valueType);
+		}
 		return false;
 	}
 	
@@ -143,7 +148,11 @@ public class FunctionSignature {
 		
 		assert types.size()>=2;
 		Type secondVariableType=paramTypes[1];
+//		System.out.println(secondVariableType);
 		if(PromotionAssignableTo(secondVariableType,types.get(1))){
+//			System.out.println("yyee");
+//			System.out.println(types.get(0));
+//			System.out.println(((Array)paramTypes[0]).getSubtype());
 			if(NoPromotionAssignableTo(paramTypes[0],types.get(0))){
 				for(int i=2;i<paramTypes.length;i++){
 					if(!NoPromotionAssignableTo(paramTypes[i],types.get(i)))

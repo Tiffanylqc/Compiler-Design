@@ -1,0 +1,98 @@
+func f1 <int x>-> void {
+	print x,_n_.
+	return.
+}
+
+func f2 <[int] x>-> int{
+	var sum:=0.
+	for elem i of x{
+		sum:=sum + i.
+	}
+	return sum.
+}
+
+func f3 <[char] x>-> [int]{
+	var result:=new [int](length x).
+	for index i of x{
+		result[i]:= x[i].
+	}
+	return result.
+}
+
+func f4 <[rat] x>->rat{
+	var r:= 1//1.
+	for index i of x{
+		r:=r*x[i].
+	}
+	return r.
+}
+
+var a1:= [1,2,3,4].
+var a2:= [[23,34,45,56,67],a1,[54,76,87,433,654,765]].
+var a3:= [[^i^,^a^,^m^],[^a^,^m^,^i^]].
+var a4:=[[3//4,4//5,5//6],[13//14,14//15,15//16]].
+
+const a5:=["first","second","third"].
+const a6:=[["first1","first2","first3"],a5,["four1", "four2","four3","four4"]].
+
+func f5 <string x>->string{
+	return x+^&^.
+}
+
+func f6 <[string] x>-> string{
+	var r:="new ".
+	for elem i of x{
+		r:=r+i+^#^.
+	}
+	return r.
+}
+
+var numbers:=[1,3,5,8,11,12].
+var parityString:=<int a>->string{
+	if((a/2)*2==a){
+		return "even".
+	}
+	else{
+		return "odd".
+	}
+}.
+var isOdd:=<int x>->bool {
+	return x!=(x/2)*2.
+}.
+exec{
+	#var m1:= a1 map f1.
+	#var parities:=new[int](2).
+	var parities := numbers map parityString.
+	print parities,_n_.
+
+	var Sum:= a2 map f2.
+	print Sum.
+
+	print a3 map f3,_n_.
+
+	print a4 map f4,_n_.
+
+	print a5 map f5,_n_.
+
+	print a6 map f6,_n_.
+
+	print numbers map isOdd,_n_.
+
+	var aa1:=[[1,3,5],[3,5,6],[2,4,6],[3,7,8],[1,3,5,7,9,11]].
+	var allOdd:= <[int] x>->bool{
+		for elem i of x{
+			if (!isOdd(i)){
+				print i,_n_.
+				return _false_.
+			}
+		}
+		print x,_n_.
+		return _true_.
+	}.
+	print aa1 map allOdd.
+
+	#var a:= new[[int]](3).
+	#var err:=a[0] map parityString.
+	#print err.
+	#print a1 map f4.
+}

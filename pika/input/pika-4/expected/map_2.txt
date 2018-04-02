@@ -1,0 +1,12 @@
+[odd, odd, odd, even, odd, even]
+[+, -, +, -, 0]
+[-2, _1/3, -_6/7, _1/2, 0]
+[true, false, true, false, false]
+[[8.2, 8.2], [7.5, 7.5], [-199, -199], [-0.3, -0.3]]
+[odd]
+[+]
+[true]
+[[8.2, 8.2]]
+3
+3
+Runtime error: array index out of bound

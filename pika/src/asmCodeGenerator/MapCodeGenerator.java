@@ -25,11 +25,24 @@ public class MapCodeGenerator implements SimpleCodeGenerator {
 		String loopLabel = labeller.newLabel("loop-start");
 		String exitLabel = labeller.newLabel("exit");
 		
+		String lambdaAddr= labeller.newLabel("lambda-addr");
+		String arrayAddr = labeller.newLabel("array-addr");
+		String arrayLengthTemp=labeller.newLabel("array-length-temp");
+		String recordCreationTemp=labeller.newLabel("record-creation-temp");
+		String arrayElementTemp=labeller.newLabel("array-element-temp");
+		String arrayElementTemp2=labeller.newLabel("array-element-temp2");
+		Macros.declareI(frag, lambdaAddr);
+		Macros.declareI(frag, arrayAddr);
+		Macros.declareI(frag, arrayLengthTemp);
+		Macros.declareI(frag, recordCreationTemp);
+		Macros.declareI(frag, arrayElementTemp);
+		Macros.declareI(frag, arrayElementTemp2);
+		
 		//[...arrayT, lambda]
-		Macros.storeITo(frag, RunTime.LAMBDA_ADDR);
+		Macros.storeITo(frag, lambdaAddr);
 		frag.add(Duplicate);
 		frag.add(JumpFalse, RunTime.NULL_ARRAY_RUNTIME_ERROR);
-		Macros.storeITo(frag, RunTime.ARRAY_ADDR);
+		Macros.storeITo(frag, arrayAddr);
 		
 		LambdaType lambda=(LambdaType) node.child(1).getType();
 		int statusFlags=0;
@@ -38,27 +51,29 @@ public class MapCodeGenerator implements SimpleCodeGenerator {
 		}
 		int oldSize=lambda.getFunctionSignature().getParamTypes()[0].getSize();
 		int newSize=lambda.getFunctionSignature().resultType().getSize();
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDR);
+		Macros.loadIFrom(frag, arrayAddr);
 		Macros.readIOffset(frag, Record.ARRAY_LENGTH_OFFSET);
-		Macros.storeITo(frag, RunTime.ARRAY_LENGTH_TEMP);
-		Macros.loadIFrom(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.storeITo(frag, arrayLengthTemp);
+		Macros.loadIFrom(frag, arrayLengthTemp);
 		//[..nElem]
 		RunTime.createEmptyArrayRecord(frag,statusFlags,newSize);
 		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDR);
+		Macros.storeITo(frag, recordCreationTemp);
+		
+		Macros.loadIFrom(frag, arrayAddr);
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
-		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
+		Macros.storeITo(frag, arrayElementTemp);
+		Macros.loadIFrom(frag, recordCreationTemp);
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+		Macros.storeITo(frag, arrayElementTemp2);
 		
 		frag.add(Label, loopLabel);
-		Macros.loadIFrom(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.loadIFrom(frag, arrayLengthTemp);
 		frag.add(JumpFalse, exitLabel);
 		
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.loadIFrom(frag, arrayElementTemp);
 //		RunTime.loadArrayElement(frag, lambda.getFunctionSignature().getParamTypes()[0], oldSize);
 		if(oldSize==1){
 			frag.add(LoadC);
@@ -71,7 +86,7 @@ public class MapCodeGenerator implements SimpleCodeGenerator {
 		}
 		else{
 			frag.add(LoadI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+			Macros.loadIFrom(frag, arrayElementTemp);
 			frag.add(PushI,4);
 			frag.add(Add);
 			frag.add(LoadI);
@@ -96,10 +111,27 @@ public class MapCodeGenerator implements SimpleCodeGenerator {
 //			frag.add(StoreI);
 //			Macros.storeIToIndirect(frag, RunTime.STACK_POINTER);
 //		}
-		Macros.loadIFrom(frag, RunTime.LAMBDA_ADDR);
+//		Macros.loadIFrom(frag, RunTime.LAMBDA_ADDR);
+//		Macros.loadIFrom(frag, RunTime.ARRAY_ADDR);
+//		Macros.loadIFrom(frag, RunTime.ARRAY_LENGTH_TEMP);
+//		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
+//		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+//		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+		
+		Macros.loadIFrom(frag, lambdaAddr);
 		RunTime.callFunction(frag, lambda.getFunctionSignature().resultType());
-
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+//		frag.add(PStack);
+//		Macros.storeITo(frag, RunTime.CALL_RESULT);
+		
+//		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+//		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
+//		Macros.storeITo(frag, RunTime.RECORD_CREATION_TEMP);
+//		Macros.storeITo(frag, RunTime.ARRAY_LENGTH_TEMP);
+//		Macros.storeITo(frag, RunTime.ARRAY_ADDR);
+//		Macros.storeITo(frag, RunTime.LAMBDA_ADDR);
+		
+//		Macros.loadIFrom(frag, RunTime.CALL_RESULT);
+		Macros.loadIFrom(frag, arrayElementTemp2);
 		if(newSize==1){
 			frag.add(Exchange);
 			frag.add(StoreC);
@@ -117,20 +149,21 @@ public class MapCodeGenerator implements SimpleCodeGenerator {
 			frag.add(Add);
 			frag.add(Exchange);
 			frag.add(StoreI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+			Macros.loadIFrom(frag, arrayElementTemp2);
 			frag.add(Exchange);
 			frag.add(StoreI);
 		}
 		
 		frag.add(PushI, oldSize);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.addITo(frag, arrayElementTemp);
 		frag.add(PushI, newSize);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP2);
-		Macros.decrementInteger(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.addITo(frag, arrayElementTemp2);
+		Macros.decrementInteger(frag, arrayLengthTemp);
+//		frag.add(PStack);
 		frag.add(Jump, loopLabel);
 		frag.add(Label,exitLabel);
 		
-//		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
+		Macros.loadIFrom(frag, recordCreationTemp);
 		return frag;
 	}
 

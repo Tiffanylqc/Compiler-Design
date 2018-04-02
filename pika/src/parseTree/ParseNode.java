@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lexicalAnalyzer.Punctuator;
 import parseTree.nodeTypes.CallStatementNode;
 import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.LambdaParamTypeNode;
 import parseTree.nodeTypes.LambdaTypeNode;
+import parseTree.nodeTypes.OperatorNode;
 import parseTree.nodeTypes.ReturnStatementNode;
+import semanticAnalyzer.types.LambdaType;
 import semanticAnalyzer.types.PrimitiveType;
 import semanticAnalyzer.types.Type;
 import semanticAnalyzer.types.VoidType;
@@ -143,17 +146,31 @@ public class ParseNode {
 		children = new ArrayList<ParseNode>();
 	}
 	// adds a new child to this node (as first child) and sets its parent link.
-	public void insertChild(ParseNode child) {
+	public void insertChild(ParseNode childNode) {
 		int index;
-		for(index=0;index<nChildren();index++){
-			if(child(index) instanceof DeclarationNode)
-				continue;
-			else 
-				break;
+		if(childNode instanceof DeclarationNode && childNode.child(1) instanceof OperatorNode && childNode.child(1).getToken().isLextant(Punctuator.LAMBDA)){
+			for(index=0;index<nChildren();index++){
+				if(child(index) instanceof DeclarationNode)
+					continue;
+				else 
+					break;
+			}
+			children.add(index,childNode);
+			childNode.setParent(this);
+		}
+		else{
+			for(index=0;index<nChildren();index++){
+				if(child(index) instanceof DeclarationNode && !(child(index).child(1) instanceof OperatorNode && child(index).child(1).getToken().isLextant(Punctuator.LAMBDA)))
+					continue;
+				else 
+					break;
+			}
+			children.add(index,childNode);
+			childNode.setParent(this);
 		}
 //		children.add(0, child);
-		children.add(index,child);
-		child.setParent(this);
+//		children.add(index,childNode);
+//		childNode.setParent(this);
 	}
 	// adds a new child to this node (as last child) and sets its parent link.
 	public void appendChild(ParseNode child) {

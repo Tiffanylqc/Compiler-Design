@@ -13,6 +13,7 @@ public class Binding {
 	private boolean mutable;
 	private String funcStartLabel;
 	private boolean isStatic;
+	private boolean isSet;
 	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, boolean mutable, boolean isStatic) {
 		super();
 		this.type = type;
@@ -21,6 +22,8 @@ public class Binding {
 		this.lexeme = lexeme;
 		this.mutable=mutable;
 		this.isStatic=isStatic;
+//		this.isSet=false;
+//		System.out.println(lexeme);
 	}
 	public Binding(Type type, TextLocation location, MemoryLocation memoryLocation, String lexeme, boolean mutable, String funcStartLabel, boolean isStatic) {
 		super();
@@ -31,6 +34,7 @@ public class Binding {
 		this.mutable=mutable;
 		this.funcStartLabel=funcStartLabel;
 		this.isStatic=isStatic;
+//		this.isSet=false;
 	} 
 	
 
@@ -64,6 +68,13 @@ public class Binding {
 	}
 	public boolean getIsStatic(){
 		return isStatic;
+	}
+	public boolean getIsSet(){
+		return isSet;
+	}
+	public void setIsSet(){
+		System.out.println(lexeme);
+		this.isSet=true;
 	}
 
 	

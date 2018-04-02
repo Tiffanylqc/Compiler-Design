@@ -44,12 +44,17 @@ public class LambdaType implements Type {
 			Type[] type2=this.getFunctionSignature().getParamTypes();
 			if(type1.length==type2.length){
 				for(int i=0;i<type1.length;i++){
+//					System.out.println(type1[i]);
+//					System.out.println(type2[i]);
 					if(!type2[i].equivalent(type1[i])){
+//						System.out.println("wrong:");
+//						System.out.println(type1[i]);
+//						System.out.println(type2[i]);
 						return false;
 					}
 				}
 				if(!this.getFunctionSignature().rawResultType().equivalent(signature.resultType())){
-					System.out.println("yes");
+//					System.out.println("yes");
 					return false;
 				}
 				return true;

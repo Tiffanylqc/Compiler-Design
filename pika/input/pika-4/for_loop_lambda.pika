@@ -1,0 +1,23 @@
+func ret_1<>->int {
+	return 1.
+}
+
+func ret_2<>->int {
+	return 2.
+}
+
+func ret_3<>->int {
+	return 3.
+}
+
+exec {
+	var a := [ret_1, ret_2, ret_3].
+	print "for index loop: ", _n_.
+	for index i of a {
+		print "a[", i, "](): ", a[i](), _n_.
+	}
+	print "for elem loop: ", _n_.
+	for elem e of a {
+		print e, "(): ", e(), _n_.
+	}
+}

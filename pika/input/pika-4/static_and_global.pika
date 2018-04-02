@@ -1,0 +1,44 @@
+func access<>->void {
+	print "global_var: ", global_var, _n_.
+	return.
+}
+
+func how_many_time_this_is_called<>->void {
+	static var times := 1.
+	print "The function has been called ", times, " times!", _n_.
+	times := times + 1.
+	return.
+}
+
+static var global_var := 3.
+
+#const s := t + 4.
+#const t := s - 4.
+
+exec {
+	call access().
+	var i := 0.
+	while (i < 10) {
+		static var x := 0.
+		x := x + 2.
+		print x, _n_.
+		static var y := "y is initialized".
+		print y, _n_.
+		y := "".
+		i := i + 1.
+	}
+	#print "I cannot access: ", x, _n_.
+	var global_var := 1//2.
+	print "Which global_var is there? ", global_var, _n_.
+	const access := <>->void {
+				print "lambda inside exec", _n_.
+				print "global_var: ", global_var, _n_.
+				#print "I cannot access: ", i, _n_.
+				return.
+			}.
+	call access().
+	
+	for index i of new [int] (20) {
+		call how_many_time_this_is_called().
+	}
+}

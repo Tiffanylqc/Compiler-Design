@@ -26,6 +26,9 @@ public class Array implements Type {
 	public boolean equivalent(Type otherType) {
 		if(otherType instanceof Array){
 			Array otherArray=(Array)otherType;
+//			System.out.println(subtype);
+//			System.out.println(otherArray.getSubtype());
+//			System.out.println(subtype.equivalent(otherArray.getSubtype()));
 			return subtype.equivalent(otherArray.getSubtype());
 		}
 		return false;

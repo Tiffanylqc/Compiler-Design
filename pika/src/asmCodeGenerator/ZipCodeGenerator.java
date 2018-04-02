@@ -23,6 +23,25 @@ public class ZipCodeGenerator implements SimpleCodeGenerator {
 		String loopLabel = labeller.newLabel("loop-start");
 		String exitLabel = labeller.newLabel("exit");
 		
+		String lambdaAddr= labeller.newLabel("lambda-addr");
+		String arrayAddrT = labeller.newLabel("array-addrt");
+		String arrayAddrS = labeller.newLabel("array-addrs");
+		String arrayLengthTemp=labeller.newLabel("array-length-temp");
+		String recordCreationTemp=labeller.newLabel("record-creation-temp");
+		String arrayElementTemp=labeller.newLabel("array-element-temp");
+		String arrayElementTemp2=labeller.newLabel("array-element-temp2");
+		String arrayElementTemp3=labeller.newLabel("array-element-temp3");
+		String reduceCount=labeller.newLabel("reduce-count");
+		Macros.declareI(frag, lambdaAddr);
+		Macros.declareI(frag, arrayAddrT);
+		Macros.declareI(frag, arrayAddrS);
+		Macros.declareI(frag, arrayLengthTemp);
+		Macros.declareI(frag, recordCreationTemp);
+		Macros.declareI(frag, arrayElementTemp);
+		Macros.declareI(frag, arrayElementTemp2);
+		Macros.declareI(frag, arrayElementTemp3);
+		Macros.declareI(frag, reduceCount);
+		
 		LambdaType lambda=(LambdaType) node.child(2).getType();
 		Type paraType1=lambda.getFunctionSignature().getParamTypes()[0];
 		int paraSize1=paraType1.getSize();
@@ -36,50 +55,51 @@ public class ZipCodeGenerator implements SimpleCodeGenerator {
 			statusFlags+=2;
 		}
 		//[..arrS arrT lambda]
-		Macros.storeITo(frag, RunTime.LAMBDA_ADDR);
+		Macros.storeITo(frag, lambdaAddr);
 		frag.add(Duplicate);
 		frag.add(JumpFalse, RunTime.NULL_ARRAY_RUNTIME_ERROR);
-		Macros.storeITo(frag, RunTime.ARRAY_ADDRT);
+		Macros.storeITo(frag, arrayAddrT);
 		frag.add(Duplicate);
 		frag.add(JumpFalse, RunTime.NULL_ARRAY_RUNTIME_ERROR);
-		Macros.storeITo(frag, RunTime.ARRAY_ADDRS);
+		Macros.storeITo(frag, arrayAddrS);
 		
 		//compare the length
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDRS);
+		Macros.loadIFrom(frag, arrayAddrS);
 		Macros.readIOffset(frag, Record.ARRAY_LENGTH_OFFSET);
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDRT);
+		Macros.loadIFrom(frag, arrayAddrT);
 		Macros.readIOffset(frag, Record.ARRAY_LENGTH_OFFSET);
 		frag.add(Subtract);
 		frag.add(JumpTrue, RunTime.ZIP_LENGTH_DIFF_RUNTIME_ERROR);
 		
 		//store length
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDRS);
+		Macros.loadIFrom(frag, arrayAddrS);
 		Macros.readIOffset(frag, Record.ARRAY_LENGTH_OFFSET);
-		Macros.storeITo(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.storeITo(frag, arrayLengthTemp);
 		
-		Macros.loadIFrom(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.loadIFrom(frag, arrayLengthTemp);
 		//[...nELem]
 		RunTime.createEmptyArrayRecord(frag,statusFlags,resultSize);
 		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
+		Macros.storeITo(frag, recordCreationTemp);
 		
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDRS);
+		Macros.loadIFrom(frag, arrayAddrS);
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDRT);
+		Macros.storeITo(frag, arrayElementTemp);
+		Macros.loadIFrom(frag, arrayAddrT);
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP2);
-		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
+		Macros.storeITo(frag, arrayElementTemp2);
+		Macros.loadIFrom(frag, recordCreationTemp);
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP3);
+		Macros.storeITo(frag, arrayElementTemp3);
 		
 		frag.add(Label, loopLabel);
-		Macros.loadIFrom(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.loadIFrom(frag, arrayLengthTemp);
 		frag.add(JumpFalse, exitLabel);
 		//first parameter
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.loadIFrom(frag, arrayElementTemp);
 		if(paraSize1==1){
 			frag.add(LoadC);
 		}
@@ -91,7 +111,7 @@ public class ZipCodeGenerator implements SimpleCodeGenerator {
 		}
 		else{
 			frag.add(LoadI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+			Macros.loadIFrom(frag, arrayElementTemp);
 			frag.add(PushI,4);
 			frag.add(Add);
 			frag.add(LoadI);
@@ -99,7 +119,7 @@ public class ZipCodeGenerator implements SimpleCodeGenerator {
 		RunTime.beforeCallSP(frag, paraType1, paraSize1);
 		
 		//second parameter
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+		Macros.loadIFrom(frag, arrayElementTemp2);
 		if(paraSize2==1){
 			frag.add(LoadC);
 		}
@@ -111,16 +131,16 @@ public class ZipCodeGenerator implements SimpleCodeGenerator {
 		}
 		else{
 			frag.add(LoadI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+			Macros.loadIFrom(frag, arrayElementTemp2);
 			frag.add(PushI,4);
 			frag.add(Add);
 			frag.add(LoadI);
 		}
 		RunTime.beforeCallSP(frag, paraType2, paraSize2);
-		Macros.loadIFrom(frag, RunTime.LAMBDA_ADDR);
+		Macros.loadIFrom(frag, lambdaAddr);
 		RunTime.callFunction(frag, resultType);
 		
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP3);
+		Macros.loadIFrom(frag, arrayElementTemp3);
 		if(resultSize==1){
 			frag.add(Exchange);
 			frag.add(StoreC);
@@ -138,20 +158,22 @@ public class ZipCodeGenerator implements SimpleCodeGenerator {
 			frag.add(Add);
 			frag.add(Exchange);
 			frag.add(StoreI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP3);
+			Macros.loadIFrom(frag, arrayElementTemp3);
 			frag.add(Exchange);
 			frag.add(StoreI);
 		}
 		
 		frag.add(PushI, paraSize1);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.addITo(frag, arrayElementTemp);
 		frag.add(PushI, paraSize2);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+		Macros.addITo(frag, arrayElementTemp2);
 		frag.add(PushI, resultSize);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP3);
-		Macros.decrementInteger(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.addITo(frag, arrayElementTemp3);
+		Macros.decrementInteger(frag, arrayLengthTemp);
 		frag.add(Jump, loopLabel);
 		frag.add(Label,exitLabel);
+		
+		Macros.loadIFrom(frag, recordCreationTemp);
 		
 		return frag;
 	}

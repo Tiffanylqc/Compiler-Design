@@ -45,4 +45,34 @@ exec{
 	#s1[1,2]:="12".
 	#s1[3]:=2.
 
+	var str := "hello world!".
+	print "length of ", ^"^, str, ^"^, " is: ", length str, _n_.
+	var a := length "hi".
+	print a, _n_.
+	
+	var i := 0.
+	# Can not modify a character in a string: at (input/currentTest.pika line 8, character 8)
+	# str[3] := ^2^. 
+	while (i < length str) {
+		print str[i], _n_.
+		i := i + 1.
+	}
+	# SEVERE: Can not modify a substring: at (input/currentTest.pika line 14, character 20)
+	#str[1, length str] := "23".
+	
+	var str1 := " AHH!".
+	var res := str + str1.
+	print res, _n_.
+	
+	res := "234" + res.
+	print res, _n_.
+	
+	
+	res := res + ^#^ + ^!^.
+	print res, _n_.
+	
+	print reverse res, _n_.
+	
+	print reverse reverse reverse str, _n_.
+
 }

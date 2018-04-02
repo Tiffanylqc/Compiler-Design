@@ -1,0 +1,9 @@
+1 r1 a1 b1 b1 i1 t 120
+[1, 2, 3] 2 3 [4, 5, 6] 4 5 6 [7, 8, 9] 7 
+[_3/4, _4/5, _5/6] _3/4 _4/5 _5/6 [_13/14, _14/15, _15/16] _13/14 _14/15 _15/16 
+first second third 
+[first1, first2, first3] first1 first2 first3 [first, second, third] first second third [four1, four2, four3, four4] four1 four2 four3 four4 
+[1.2, 3.5, 8.9] 1.2 3.5 8.9 [34.5, 11.3, 45.6] 34.5 11.3 45.6 [46.5, 22.4] 46.5 22.4 
+[r, a, b] rBigRabbit aBigRabbit bBigRabbit [b, a, t] bBigRabbit aBigRabbit tBigRabbit 
+13 -5 
+[1, 2, 3] 2 2 [4, 5, 6] 2 4 2 4 2 4 [7, 8, 9] 2 4 2 4 2 4 

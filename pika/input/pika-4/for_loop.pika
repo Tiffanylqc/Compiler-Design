@@ -1,0 +1,93 @@
+exec {
+	var str := "rabbit".
+	for index i of str {
+		print "str[", i, "]: ", str[i], _n_.
+		# i := 3.
+	}
+	var i := 0.
+	print "We can still declare i after the loop!", _n_.
+	for elem ch of str {
+		print ch, _n_.
+		# ch := ^5^.
+	}
+	var ch := 8.
+	print "We can still declare ch after the loop!", _n_.
+	
+
+	var bool_arr := [_true_, _true_, _false_, _false_].
+	print "for index loop", _n_.
+	for index i of bool_arr {
+		print bool_arr[i], _n_.
+	}
+	print "for elem loop", _n_.
+	for elem e of bool_arr {
+		print e, _n_.
+	}
+	
+	var char_arr := [^1^, ^2^, ^3^].
+	print "for index loop", _n_.
+	for index i of char_arr {
+		print char_arr[i], _n_.
+	}
+	print "for elem loop", _n_.
+	for elem e of char_arr {
+		print e, _n_.
+	}
+	
+	var int_arr := [5].
+	print "for index loop", _n_.
+	for index i of int_arr {
+		print int_arr[i], _n_.
+	}
+	print "for elem loop", _n_.
+	for elem e of int_arr {
+		print e, _n_.
+	}
+	
+	var float_arr := [5, 8.2, 6, 72.8].
+	print "for index loop", _n_.
+	for index i of float_arr {
+		print float_arr[i], _n_.
+	}
+	print "for elem loop", _n_.
+	for elem e of float_arr {
+		print e, _n_.
+	}
+	
+	var str_arr := ["hello", "how", "are", "you", "?"].
+	print "for index loop", _n_.
+	for index i of str_arr {
+		print str_arr[i], _n_.
+	}
+	print "for elem loop", _n_.
+	for elem e of str_arr {
+		print e, _n_.
+	}
+	
+	
+	var rat_arr := [1//2, 8//9, -3//6, -5].
+	print "for index loop", _n_.
+	for index i of rat_arr {
+		print rat_arr[i], _n_.
+	}
+	print "for elem loop", _n_.
+	for elem e of rat_arr {
+		print e, _n_.
+	}
+	
+	
+	var multi_arr := [
+					 [[3.2, 6.8], [8.5, 7.2]],
+					 [[5.2, 8.2], [-100, 60.2]],
+					 [[90.3, -72], [-1.50, 7.2]]
+					].
+	print "for index loop", _n_.
+	for index i of multi_arr {
+		print multi_arr[i], _n_.
+	}
+	print "for elem loop", _n_.
+	for elem e of multi_arr {
+		print e, _n_.
+	}
+	
+}

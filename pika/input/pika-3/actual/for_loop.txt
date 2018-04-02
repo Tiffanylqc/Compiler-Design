@@ -1,0 +1,76 @@
+str[0]: r
+str[1]: a
+str[2]: b
+str[3]: b
+str[4]: i
+str[5]: t
+We can still declare i after the loop!
+r
+a
+b
+b
+i
+t
+We can still declare ch after the loop!
+for index loop
+true
+true
+false
+false
+for elem loop
+true
+true
+false
+false
+for index loop
+1
+2
+3
+for elem loop
+1
+2
+3
+for index loop
+5
+for elem loop
+5
+for index loop
+5
+8.2
+6
+72.8
+for elem loop
+5
+8.2
+6
+72.8
+for index loop
+hello
+how
+are
+you
+?
+for elem loop
+hello
+how
+are
+you
+?
+for index loop
+_1/2
+_8/9
+-_1/2
+-5
+for elem loop
+_1/2
+_8/9
+-_1/2
+-5
+for index loop
+[[3.2, 6.8], [8.5, 7.2]]
+[[5.2, 8.2], [-100, 60.2]]
+[[90.3, -72], [-1.5, 7.2]]
+for elem loop
+[[3.2, 6.8], [8.5, 7.2]]
+[[5.2, 8.2], [-100, 60.2]]
+[[90.3, -72], [-1.5, 7.2]]

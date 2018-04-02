@@ -1,0 +1,68 @@
+var numbers := [1, 5, 3, 9, 2].
+var max := <int x, int y>->int { if(x>y) {return x.} else {return y.}}.
+var min:=<int x, int y>->int { if(x<y) {return x.} else {return y.}}.
+var maxity := numbers fold max.
+
+var minity:=numbers fold min.
+var a2:= [[^i^,^a^,^m^],[^a^,^m^,^i^]].
+
+var f2:= <char x, char y>->char{
+	return y.
+}.
+
+var f1:= <[char] x, [char] y>->[char]{
+	return zip x,y,f2.
+}.
+
+var bad:=<int x,int y>->void{
+	return.
+}.
+
+exec{
+	print maxity,_n_.
+	print minity,_n_.
+
+	var a1:=[3].
+	print a1 fold max,_n_.
+
+	print a2[1] fold f2,_n_.
+
+	print a2 fold f1,_n_.
+
+	#var a:=new[int](0).
+	#print a fold max.
+	#print numbers fold bad.
+	
+	var aa:= new[[int]](10).
+	aa[0]:=new[int](0).
+	print a1 fold [24] min,_n_.
+	print aa[0] fold [25] min,_n_.
+	print numbers fold[12] max,_n_.
+	print numbers fold[-1] min,_n_.
+
+	var catNumber := <string s, int x>->string { return s + ^ ^ + [x + 48|char]. }.
+	print numbers fold [ "list:"] catNumber,_n_.
+
+	var f3:=<rat x,int y>->rat{return x*y.}.
+	print numbers fold [3//4]f3,_n_.
+
+	var a4:=[3//4,44//5,5//6,13//14,15//15,22//16].
+	var f4:=<int x,rat y>->int{return x + [y|int].}.
+	print a4 fold [2] f4,_n_.
+
+	var f5:=<int x, float y>->int{return x + [y|int].}.
+	var a5:=[1.2,7.8,4.5,5.5].
+	print a5 fold [1+ 3] f5,_n_.
+
+	var f6:= <string x ,[char] y>->string{
+		var r:=x.
+		for elem i of y{
+			r:=r+i.
+		}
+		return r.
+	}.
+	print a2 fold ["this is :"] f6.
+
+}
+
+

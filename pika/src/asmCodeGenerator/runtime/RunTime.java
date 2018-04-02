@@ -59,6 +59,7 @@ public class RunTime {
 	public static final String NO_RETURN_RUNTIME_ERROR="$$no return";
 	public static final String ZIP_LENGTH_DIFF_RUNTIME_ERROR="$zip-length-different";
 	public static final String STRING_SLICE_INDEX_RUNTIME_ERROR="$$string-slice-index-error";
+	public static final String FOLD_ZERO_LENGTH="$$fold-zero-length";
 	public static final String ARRAY_INDEXING_ARRAY	= "$a-indexing-array";
 	public static final String ARRAY_INDEXING_INDEX = "$a-indexing-index";
 	
@@ -138,6 +139,7 @@ public class RunTime {
 	public static final String LAMBDA_ADDR = "$lambda-address";
 	public static final String REDUCE_COUNT = "$reduce-count";
 	public static final String PARAMU = "$param-u";
+	public static final String CALL_RESULT = "$call-result";
 //	public static final String FUNCTION_INVOCATION_PARAM_TEMP = "$function-invocation-parameter-temp";
 	private ASMCodeFragment environmentASM() {
 		ASMCodeFragment result = new ASMCodeFragment(GENERATES_VOID);
@@ -208,6 +210,8 @@ public class RunTime {
 		Macros.declareI(frag, ARRAY_ADDRT);
 		Macros.declareI(frag, ARRAY_ELEMENT_TEMP3);
 		Macros.declareI(frag, PARAMU);
+		Macros.declareI(frag, CALL_RESULT);
+		
 		
 		Macros.declareC(frag, CHAR_TEMP);
 		
@@ -271,6 +275,7 @@ public class RunTime {
 		noReturnError(frag);
 		stringSliceIndexError(frag);
 		zipLengthError(frag);
+		foldLengthError(frag);
 		
 		return frag;
 	}
@@ -286,6 +291,15 @@ public class RunTime {
 		frag.add(Printf);
 		frag.add(Halt);
 		return frag;
+	}
+	private void foldLengthError(ASMCodeFragment frag){
+		String foldMessage = "$fold-zero-length";
+		frag.add(DLabel,foldMessage);
+		frag.add(DataS, "fold-zero-length");
+		
+		frag.add(Label, FOLD_ZERO_LENGTH);
+		frag.add(PushD, foldMessage);
+		frag.add(Jump, GENERAL_RUNTIME_ERROR);
 	}
 	private void zipLengthError(ASMCodeFragment frag){
 		String zipMessage = "$zip-array-length-different";

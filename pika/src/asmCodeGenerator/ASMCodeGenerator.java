@@ -318,6 +318,29 @@ public class ASMCodeGenerator {
 //			Macros.loadIFrom(code, RunTime.FRAME_POINTER);
 //			code.add(PStack);
 //			code.add(Pop);
+//			Scope scope=node.child(0).getLocalScope();
+//			System.out.println(scope);
+//			Binding binding=scope.getSymbolTable().lookup(node.child(0).getToken().getLexeme());
+//			
+//			if(binding.getIsSet()){
+//				return;
+//			}
+//				
+//			else
+//				binding.setIsSet();
+			Labeller declarelabeller = new Labeller("declaration");
+			String notDeclare=declarelabeller.newLabel(node.getToken().getLexeme());
+			IdentifierNode identifier=(IdentifierNode) node.child(0);
+			if(identifier.getStatic()){
+				Scope scope=identifier.getDeclarationScope();
+				Binding binding = scope.getSymbolTable().lookup("#"+identifier.getToken().getLexeme());
+				binding.generateAddress(code);
+				code.add(LoadI);
+				code.add(JumpTrue, notDeclare);
+				binding.generateAddress(code);
+				code.add(PushI,1);
+				code.add(StoreI);
+			}
 			
 			Type type = node.getType();
 			if(type==PrimitiveType.RATIONAL){
@@ -346,6 +369,7 @@ public class ASMCodeGenerator {
 				
 				code.add(opcodeForStore(type));
 			}
+			code.add(Label, notDeclare);
 		}
 		
 		private ASMOpcode opcodeForStore(Type type) {

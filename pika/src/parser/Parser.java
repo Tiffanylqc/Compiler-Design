@@ -82,10 +82,11 @@ public class Parser {
 			}
 			else{
 				ParseNode globalDeclare=parseDeclaration();
-				if(globalDeclare.child(1) instanceof OperatorNode && globalDeclare.child(1).getToken().isLextant(Punctuator.LAMBDA))
-					program.appendChild(globalDeclare);
-				else
-					program.insertChild(globalDeclare);
+				program.appendChild(globalDeclare);
+//				if(globalDeclare.child(1) instanceof OperatorNode && globalDeclare.child(1).getToken().isLextant(Punctuator.LAMBDA))
+//					program.appendChild(globalDeclare);
+//				else
+//				program.insertChild(globalDeclare);
 //				IdentifierNode child=(IdentifierNode) globalDeclare.child(0);
 //				child.setStatic();
 			}

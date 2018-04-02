@@ -24,6 +24,22 @@ public class FoldCodeGenerator implements SimpleCodeGenerator {
 		Labeller labeller=new Labeller("zip");
 		String loopLabel = labeller.newLabel("loop-start");
 		String exitLabel = labeller.newLabel("exit");
+		
+		String lambdaAddr= labeller.newLabel("lambda-addr");
+		String arrayAddr = labeller.newLabel("array-addr");
+		String arrayLengthTemp=labeller.newLabel("array-length-temp");
+		String recordCreationTemp=labeller.newLabel("record-creation-temp");
+		String arrayElementTemp=labeller.newLabel("array-element-temp");
+		String arrayElementTemp2=labeller.newLabel("array-element-temp2");
+		String reduceCount=labeller.newLabel("reduce-count");
+		Macros.declareI(frag, lambdaAddr);
+		Macros.declareI(frag, arrayAddr);
+		Macros.declareI(frag, arrayLengthTemp);
+		Macros.declareI(frag, recordCreationTemp);
+		Macros.declareI(frag, arrayElementTemp);
+		Macros.declareI(frag, arrayElementTemp2);
+		Macros.declareI(frag, reduceCount);
+		
 		LambdaType lambda;
 		
 		if(node.nChildren()==3)
@@ -36,25 +52,29 @@ public class FoldCodeGenerator implements SimpleCodeGenerator {
 		Type paraTypeT=lambda.getFunctionSignature().getParamTypes()[1];
 		int paraSizeT=paraTypeT.getSize();
 		// [... U arrT lambda]
-		Macros.storeITo(frag, RunTime.LAMBDA_ADDR);
+		Macros.storeITo(frag, lambdaAddr);
 		frag.add(Duplicate);
 		frag.add(JumpFalse, RunTime.NULL_ARRAY_RUNTIME_ERROR);
-		Macros.storeITo(frag, RunTime.ARRAY_ADDR);
+		Macros.storeITo(frag, arrayAddr);
 		//store length
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDR);
+		Macros.loadIFrom(frag, arrayAddr);
 		Macros.readIOffset(frag, Record.ARRAY_LENGTH_OFFSET);
-		Macros.storeITo(frag, RunTime.ARRAY_LENGTH_TEMP);
+		if(node.nChildren()==2){
+			frag.add(Duplicate);
+			frag.add(JumpFalse, RunTime.FOLD_ZERO_LENGTH);
+		}
+		Macros.storeITo(frag, arrayLengthTemp);
 		
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDR);
+		Macros.loadIFrom(frag, arrayAddr);
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.storeITo(frag, arrayElementTemp);
 		
 		if(node.nChildren()==3){
 //			RunTime.beforeCallSP(frag, paraTypeU, paraSizeU);
 		}
 		else{			
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+			Macros.loadIFrom(frag, arrayElementTemp);
 			if(paraSizeT==1){
 				frag.add(LoadC);
 			}
@@ -66,23 +86,31 @@ public class FoldCodeGenerator implements SimpleCodeGenerator {
 			}
 			else{
 				frag.add(LoadI);
-				Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+				Macros.loadIFrom(frag, arrayElementTemp);
 				frag.add(PushI,4);
 				frag.add(Add);
 				frag.add(LoadI);
 			}
 			frag.add(PushI, paraSizeT);
-			Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
-			Macros.decrementInteger(frag, RunTime.ARRAY_LENGTH_TEMP);
+			Macros.addITo(frag, arrayElementTemp);
+			Macros.decrementInteger(frag, arrayLengthTemp);
 //			RunTime.beforeCallSP(frag, paraTypeT, paraSizeT);
 		}
+//		Macros.loadIFrom(frag, arrayLengthTemp);
+//		frag.add(JumpFalse, exitLabel);
+//		if(node.nChildren()==3){
+//			RunTime.beforeCallSP(frag, paraTypeU, paraSizeU);
+//		}
+//		else{
+//			RunTime.beforeCallSP(frag, paraTypeT, paraSizeT);
+//		}
 		
 		frag.add(Label, loopLabel);
-		Macros.loadIFrom(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.loadIFrom(frag, arrayLengthTemp);
 		frag.add(JumpFalse, exitLabel);
 		
-		RunTime.beforeCallSP(frag, paraTypeT, paraSizeT);
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		RunTime.beforeCallSP(frag, paraTypeU, paraSizeU);
+		Macros.loadIFrom(frag, arrayElementTemp);
 		if(paraSizeT==1){
 			frag.add(LoadC);
 		}
@@ -94,18 +122,21 @@ public class FoldCodeGenerator implements SimpleCodeGenerator {
 		}
 		else{
 			frag.add(LoadI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+			Macros.loadIFrom(frag, arrayElementTemp);
 			frag.add(PushI,4);
 			frag.add(Add);
 			frag.add(LoadI);
 		}
 		RunTime.beforeCallSP(frag, paraTypeT, paraSizeT);
-		Macros.loadIFrom(frag, RunTime.LAMBDA_ADDR);
+		Macros.loadIFrom(frag, lambdaAddr);
 		RunTime.callFunction(frag, paraTypeU);
 				
 		frag.add(PushI, paraSizeT);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
-		Macros.decrementInteger(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.addITo(frag, arrayElementTemp);
+		Macros.decrementInteger(frag, arrayLengthTemp);
+//		Macros.loadIFrom(frag, arrayLengthTemp);
+//		frag.add(JumpFalse, exitLabel);
+//		RunTime.beforeCallSP(frag, paraTypeU, paraSizeU);
 		frag.add(Jump, loopLabel);
 		frag.add(Label,exitLabel);
 		

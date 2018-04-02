@@ -1,0 +1,25 @@
+exec {
+	var numbers := [1, 5, 3, 9, 2].
+	var max := <int x, int y>->int { if(x>y){return x.}else{return y.}}.
+	var maxity := numbers fold [^a^] max.
+	print maxity, _n_.
+	var rats := [2, -1//3, 6//7, -8//16, 0].
+	var minRat := <rat x, rat y>->rat { if(x<y){return x.}else{return y.}}.
+	var minityRat := rats fold [^2^] minRat.
+	print minityRat, _n_.
+	
+	var len1_int := [3].
+	maxity := len1_int fold [^a^] max.
+	print maxity, _n_.
+	
+	var len1_rat := [1//2].
+	minityRat := len1_rat fold [^a^] minRat.
+	print minityRat, _n_.
+	
+	var len0_arr := new [int](0).
+	maxity := len0_arr fold [^a^] max.
+	
+	var catNumber := <string s, int x>->string {return s + ^ ^ + [x + ^0^|char].}.
+	var numList := numbers fold ["list:"] catNumber.
+	print numList.
+}

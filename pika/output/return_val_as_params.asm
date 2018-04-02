@@ -348,6 +348,86 @@
         Label        $$no return               
         PushD        $no-return                
         Jump         $$general-runtime-error   
+        DLabel       $string-slice-index-error 
+        DataC        115                       %% "string slice index error"
+        DataC        116                       
+        DataC        114                       
+        DataC        105                       
+        DataC        110                       
+        DataC        103                       
+        DataC        32                        
+        DataC        115                       
+        DataC        108                       
+        DataC        105                       
+        DataC        99                        
+        DataC        101                       
+        DataC        32                        
+        DataC        105                       
+        DataC        110                       
+        DataC        100                       
+        DataC        101                       
+        DataC        120                       
+        DataC        32                        
+        DataC        101                       
+        DataC        114                       
+        DataC        114                       
+        DataC        111                       
+        DataC        114                       
+        DataC        0                         
+        Label        $$string-slice-index-error 
+        PushD        $string-slice-index-error 
+        Jump         $$general-runtime-error   
+        DLabel       $zip-array-length-different 
+        DataC        122                       %% "zip array different error"
+        DataC        105                       
+        DataC        112                       
+        DataC        32                        
+        DataC        97                        
+        DataC        114                       
+        DataC        114                       
+        DataC        97                        
+        DataC        121                       
+        DataC        32                        
+        DataC        100                       
+        DataC        105                       
+        DataC        102                       
+        DataC        102                       
+        DataC        101                       
+        DataC        114                       
+        DataC        101                       
+        DataC        110                       
+        DataC        116                       
+        DataC        32                        
+        DataC        101                       
+        DataC        114                       
+        DataC        114                       
+        DataC        111                       
+        DataC        114                       
+        DataC        0                         
+        Label        $zip-length-different     
+        PushD        $zip-array-length-different 
+        Jump         $$general-runtime-error   
+        DLabel       $fold-zero-length         
+        DataC        102                       %% "fold-zero-length"
+        DataC        111                       
+        DataC        108                       
+        DataC        100                       
+        DataC        45                        
+        DataC        122                       
+        DataC        101                       
+        DataC        114                       
+        DataC        111                       
+        DataC        45                        
+        DataC        108                       
+        DataC        101                       
+        DataC        110                       
+        DataC        103                       
+        DataC        116                       
+        DataC        104                       
+        DataC        0                         
+        Label        $$fold-zero-length        
+        PushD        $fold-zero-length         
+        Jump         $$general-runtime-error   
         DLabel       $a-indexing-array         
         DataZ        4                         
         DLabel       $a-indexing-index         
@@ -392,6 +472,50 @@
         DataZ        4                         
         DLabel       $stack-pointer            
         DataZ        4                         
+        DLabel       $slice-string-index1      
+        DataZ        4                         
+        DLabel       $slice-string-index2      
+        DataZ        4                         
+        DLabel       $slice-string-address     
+        DataZ        4                         
+        DLabel       $string-element-temp1     
+        DataZ        4                         
+        DLabel       $string-element-temp2     
+        DataZ        4                         
+        DLabel       $string-length-temp       
+        DataZ        4                         
+        DLabel       $string-addr-temp1        
+        DataZ        4                         
+        DLabel       $string-addr-temp2        
+        DataZ        4                         
+        DLabel       $for-index                
+        DataZ        4                         
+        DLabel       $for-expression           
+        DataZ        4                         
+        DLabel       $for-length               
+        DataZ        4                         
+        DLabel       $for-subsize              
+        DataZ        4                         
+        DLabel       $for-identifier           
+        DataZ        4                         
+        DLabel       $array-address            
+        DataZ        4                         
+        DLabel       $lambda-address           
+        DataZ        4                         
+        DLabel       $array-element-temp2      
+        DataZ        4                         
+        DLabel       $array-address-S          
+        DataZ        4                         
+        DLabel       $array-address-T          
+        DataZ        4                         
+        DLabel       $array-element-temp3      
+        DataZ        4                         
+        DLabel       $param-u                  
+        DataZ        4                         
+        DLabel       $call-result              
+        DataZ        4                         
+        DLabel       $char-temp                
+        DataZ        1                         
         Label        $lowest-term-subroutine   
         DLabel       $lowest-term-return       
         DataZ        4                         
@@ -528,6 +652,8 @@
         DataZ        4                         
         DLabel       -print-array-recursive-6-elem-size 
         DataZ        4                         
+        DLabel       -print-array-recursive-6-array 
+        DataZ        4                         
         Duplicate                              
         JumpFalse    $$null-array              
         Duplicate                              
@@ -554,6 +680,9 @@
         PushD        $print-format-string      
         Printf                                 
         Duplicate                              
+        PushD        -print-array-recursive-6-array 
+        Exchange                               
+        StoreI                                 
         PushI        4                         
         Add                                    
         LoadI                                  
@@ -564,6 +693,15 @@
         PushD        -print-array-recursive-6-length 
         LoadI                                  
         JumpFalse    -print-array-recursive-6-end 
+        PushD        -print-array-recursive-6-element 
+        LoadI                                  
+        LoadI                                  
+        PushI        0                         
+        Add                                    
+        LoadI                                  
+        PushI        6                         
+        Subtract                               
+        JumpFalse    -print-array-recursive-6-one-dim 
         PushD        -print-array-recursive-6-return-address 
         LoadI                                  
         PushD        -print-array-recursive-6-type 
@@ -577,13 +715,6 @@
         PushD        -print-array-recursive-6-element 
         LoadI                                  
         LoadI                                  
-        Duplicate                              
-        PushI        0                         
-        Add                                    
-        LoadI                                  
-        PushI        6                         
-        Subtract                               
-        JumpFalse    -print-array-recursive-6-one-dim 
         PushD        -print-array-recursive-6-type 
         LoadI                                  
         Call         $print-array-subroutine   
@@ -1086,7 +1217,7 @@
         DLabel       -function-body-12-return-addr 
         DataZ        4                         
         Jump         -function-body-12--end    
-        Label        -function-definition-1-return_1-start 
+        Label        -function-body-12--anonymous-start 
         PushD        $frame-pointer            
         LoadI                                  
         PushD        $stack-pointer            
@@ -1155,7 +1286,7 @@
         LoadI                                  
         Return                                 
         Label        -function-body-12--end    
-        PushD        -function-definition-1-return_1-start 
+        PushD        -function-body-12--anonymous-start 
         StoreI                                 
         PushD        $global-memory-block      
         PushI        4                         
@@ -1163,7 +1294,7 @@
         DLabel       -function-body-14-return-addr 
         DataZ        4                         
         Jump         -function-body-14--end    
-        Label        -function-definition-2-return_3-start 
+        Label        -function-body-14--anonymous-start 
         PushD        $frame-pointer            
         LoadI                                  
         PushD        $stack-pointer            
@@ -1232,7 +1363,7 @@
         LoadI                                  
         Return                                 
         Label        -function-body-14--end    
-        PushD        -function-definition-2-return_3-start 
+        PushD        -function-body-14--anonymous-start 
         StoreI                                 
         PushD        $global-memory-block      
         PushI        8                         
@@ -1240,7 +1371,7 @@
         DLabel       -function-body-16-return-addr 
         DataZ        4                         
         Jump         -function-body-16--end    
-        Label        -function-definition-3-add_1-start 
+        Label        -function-body-16--anonymous-start 
         PushD        $frame-pointer            
         LoadI                                  
         PushD        $stack-pointer            
@@ -1504,7 +1635,7 @@
         LoadI                                  
         Return                                 
         Label        -function-body-16--end    
-        PushD        -function-definition-3-add_1-start 
+        PushD        -function-body-16--anonymous-start 
         StoreI                                 
         PushD        $global-memory-block      
         PushI        0                         

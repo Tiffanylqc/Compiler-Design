@@ -72,7 +72,24 @@ exec{
 	for index i of a7{
 		print a7[i](2,7);.
 	}
-
+	print _n_.
+	for index i of a1{
+		for elem j of a1[i]{
+			print "j= : ";j,_n_.
+			var x:=3.
+			while(x<j){
+				
+				x:=x + 1.
+				if(x==7){
+					break.
+				}
+				if(x==5){
+					continue.
+				}
+				print "x=: ";x,_n_.
+			}
+		}
+	}
 	#var a8:=new [string](3).
 	#for index i of a8[1]{
 	#	print "no".

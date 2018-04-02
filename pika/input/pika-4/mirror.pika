@@ -1,0 +1,32 @@
+func mirror <string p>->bool {
+	var n := length p.
+	var i := 0.
+	while (i <= n / 2) {
+		if (p[i] != p[n - 1]) {
+			return _false_.
+		}
+		i := i + 1.
+		n := n - 1.
+	}
+	return _true_.
+}
+
+exec {
+	var repeat := 2.
+	var ri := 1.
+	var s := "".
+	while (ri <= repeat) {
+		if (ri == 1) {
+			s := "abcddcba".
+		} else {
+			s := "abcddcb".
+		}
+		if (mirror(s)) {
+			print "YES", _n_.
+		} else {
+			print "NO", _n_.
+		}
+		
+		ri := ri + 1.
+	}
+}

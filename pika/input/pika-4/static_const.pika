@@ -1,0 +1,22 @@
+static const b := ";".
+const f := <> -> void
+{
+	print b;.
+	return.
+}.
+
+exec
+{
+	static const a := [1,2,3].
+	for index i of a
+	{
+		static const a := reverse a.
+		a[i] := a[i] + 1.
+		print a;b;.
+	}
+	print a;.
+	static var b := [3].
+	b := [5,6].
+	print b;_n_.
+	call f().
+}

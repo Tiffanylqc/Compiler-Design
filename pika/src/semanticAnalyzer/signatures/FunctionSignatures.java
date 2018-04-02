@@ -147,6 +147,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		if(types.size()<2||this.getKey()==Punctuator.ASSIGN)
 			return FunctionSignature.nullInstance();
 			
+//		System.out.println("yes");
 		//then check whether promoting second arguments satisfy
 		acceptableSignatures.clear();
 		for(FunctionSignature functionSignature: this){
@@ -158,7 +159,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 		finalSignature=chooseSignature(acceptableSignatures);
 		if(!finalSignature.isNull())
 			return finalSignature;
-		
+
 		//last check promoting both operand
 		acceptableSignatures.clear();
 		for(FunctionSignature functionSignature: this){
@@ -270,7 +271,7 @@ public class FunctionSignatures extends ArrayList<FunctionSignature> {
 						setSTU,
 						new Array(S),
 						new Array(T),
-						new LambdaType(new FunctionSignature(1,setU,S,T,U)),
+						new LambdaType(new FunctionSignature(1,setSTU,S,T,U)),
 						new Array(U)
 				)
 		);

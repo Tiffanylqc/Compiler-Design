@@ -46,6 +46,7 @@ public class TypeVariable implements Type {
 			throw new RuntimeException("equals attempted on two types containing type variables.");
 		}
 		if(this.getType()==PrimitiveType.NO_TYPE){
+//			System.out.println(toString());
 			setType(otherType);
 			return true;
 		}

@@ -25,33 +25,50 @@ public class ReduceCodeGenerator implements SimpleCodeGenerator {
 		String exitLabel = labeller.newLabel("exit");
 		String exit2Label = labeller.newLabel("exit-2");
 		String falseLabel = labeller.newLabel("false");
+		
+		String lambdaAddr= labeller.newLabel("lambda-addr");
+		String arrayAddr = labeller.newLabel("array-addr");
+		String arrayLengthTemp=labeller.newLabel("array-length-temp");
+		String recordCreationTemp=labeller.newLabel("record-creation-temp");
+		String arrayElementTemp=labeller.newLabel("array-element-temp");
+		String arrayElementTemp2=labeller.newLabel("array-element-temp2");
+		String reduceCount=labeller.newLabel("reduce-count");
+		Macros.declareI(frag, lambdaAddr);
+		Macros.declareI(frag, arrayAddr);
+		Macros.declareI(frag, arrayLengthTemp);
+		Macros.declareI(frag, recordCreationTemp);
+		Macros.declareI(frag, arrayElementTemp);
+		Macros.declareI(frag, arrayElementTemp2);
+		Macros.declareI(frag, reduceCount);
+		
 		//[...arrayT, lambda]
-		Macros.storeITo(frag, RunTime.LAMBDA_ADDR);
+		Macros.storeITo(frag, lambdaAddr);
 		frag.add(Duplicate);
 		frag.add(JumpFalse, RunTime.NULL_ARRAY_RUNTIME_ERROR);
-		Macros.storeITo(frag, RunTime.ARRAY_ADDR);
+		Macros.storeITo(frag, arrayAddr);
 		
 		LambdaType lambda=(LambdaType) node.child(1).getType();
 		int statusFlags=0;
 		int size=lambda.getFunctionSignature().getParamTypes()[0].getSize();
-		
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDR);
+		if(lambda.getFunctionSignature().getParamTypes()[0] instanceof Array || lambda.getFunctionSignature().getParamTypes()[0] ==PrimitiveType.STRING)
+			statusFlags+=2;
+		Macros.loadIFrom(frag, arrayAddr);
 		Macros.readIOffset(frag, Record.ARRAY_LENGTH_OFFSET);
-		Macros.storeITo(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.storeITo(frag, arrayLengthTemp);
 		//clear out count
 		frag.add(PushI, 0);
-		Macros.storeITo(frag, RunTime.REDUCE_COUNT);
+		Macros.storeITo(frag, reduceCount);
 		//start function
-		Macros.loadIFrom(frag, RunTime.ARRAY_ADDR);
+		Macros.loadIFrom(frag, arrayAddr);
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.storeITo(frag, arrayElementTemp);
 		
 		frag.add(Label, loopLabel);
-		Macros.loadIFrom(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.loadIFrom(frag, arrayLengthTemp);
 		frag.add(JumpFalse, exitLabel);
 		
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.loadIFrom(frag, arrayElementTemp);
 		if(size==1){
 			frag.add(LoadC);
 		}
@@ -63,7 +80,7 @@ public class ReduceCodeGenerator implements SimpleCodeGenerator {
 		}
 		else{
 			frag.add(LoadI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+			Macros.loadIFrom(frag, arrayElementTemp);
 			frag.add(PushI,4);
 			frag.add(Add);
 			frag.add(LoadI);
@@ -88,15 +105,16 @@ public class ReduceCodeGenerator implements SimpleCodeGenerator {
 //			frag.add(StoreI);
 //			Macros.storeIToIndirect(frag, RunTime.STACK_POINTER);
 //		}
-		Macros.loadIFrom(frag, RunTime.LAMBDA_ADDR);
+		Macros.loadIFrom(frag, lambdaAddr);
 		RunTime.callFunction(frag, lambda.getFunctionSignature().resultType());
 		frag.add(JumpFalse,falseLabel);
-		Macros.incrementInteger(frag, RunTime.REDUCE_COUNT);
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+		Macros.incrementInteger(frag, reduceCount);
+		Macros.loadIFrom(frag, arrayElementTemp);
 		if(size==1){
 			frag.add(LoadC);
 		}
 		else if(size==4){
+//			System.out.println("yes");
 			frag.add(LoadI);
 		}
 		else if(size==8&&lambda.getFunctionSignature().getParamTypes()[0]==PrimitiveType.FLOATING){
@@ -104,7 +122,7 @@ public class ReduceCodeGenerator implements SimpleCodeGenerator {
 		}
 		else{
 			frag.add(LoadI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP);
+			Macros.loadIFrom(frag, arrayElementTemp);
 			frag.add(PushI,4);
 			frag.add(Add);
 			frag.add(LoadI);
@@ -112,28 +130,33 @@ public class ReduceCodeGenerator implements SimpleCodeGenerator {
 		frag.add(Label, falseLabel);
 		
 		frag.add(PushI, size);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP);
-		Macros.decrementInteger(frag, RunTime.ARRAY_LENGTH_TEMP);
+		Macros.addITo(frag, arrayElementTemp);
+		Macros.decrementInteger(frag, arrayLengthTemp);
 		frag.add(Jump, loopLabel);
 		frag.add(Label,exitLabel);
 		////////////////////////////////////////
-		Macros.loadIFrom(frag, RunTime.REDUCE_COUNT);
+		Macros.loadIFrom(frag, reduceCount);
 		//[..nElem]
 		RunTime.createEmptyArrayRecord(frag,statusFlags,size);
 		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
+		Macros.storeITo(frag, recordCreationTemp);
+		Macros.loadIFrom(frag, recordCreationTemp);
+		
 		frag.add(PushI, Record.ARRAY_HEADER_SIZE);
 		frag.add(Add);
-		frag.add(PushI, size-1);
-		Macros.loadIFrom(frag, RunTime.REDUCE_COUNT);
+		frag.add(PushI, size);
+		Macros.loadIFrom(frag, reduceCount);
+		frag.add(PushI,1);
+		frag.add(Subtract);
 		frag.add(Multiply);
 		frag.add(Add);
-		Macros.storeITo(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+		Macros.storeITo(frag, arrayElementTemp2);
 		
 		frag.add(Label,loop2Label);
 		
-		Macros.loadIFrom(frag, RunTime.REDUCE_COUNT);
+		Macros.loadIFrom(frag, reduceCount);
 		frag.add(JumpFalse,exit2Label);
-		Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+		Macros.loadIFrom(frag, arrayElementTemp2);
 		if(size==1){
 			frag.add(Exchange);
 			frag.add(StoreC);
@@ -151,17 +174,17 @@ public class ReduceCodeGenerator implements SimpleCodeGenerator {
 			frag.add(Add);
 			frag.add(Exchange);
 			frag.add(StoreI);
-			Macros.loadIFrom(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+			Macros.loadIFrom(frag, arrayElementTemp2);
 			frag.add(Exchange);
 			frag.add(StoreI);
 		}
-		Macros.decrementInteger(frag, RunTime.REDUCE_COUNT);
+		Macros.decrementInteger(frag, reduceCount);
 		frag.add(PushI, (-1)*size);
-		Macros.addITo(frag, RunTime.ARRAY_ELEMENT_TEMP2);
+		Macros.addITo(frag, arrayElementTemp2);
 		frag.add(Jump,loop2Label);
 		frag.add(Label,exit2Label);
 		
-		Macros.loadIFrom(frag, RunTime.RECORD_CREATION_TEMP);
+		Macros.loadIFrom(frag, recordCreationTemp);
 		return frag;
 	}
 

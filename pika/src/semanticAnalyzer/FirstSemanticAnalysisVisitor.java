@@ -10,6 +10,7 @@ import logging.PikaLogger;
 import parseTree.ParseNode;
 import parseTree.ParseNodeVisitor;
 import parseTree.nodeTypes.ArrayTypeNode;
+import parseTree.nodeTypes.DeclarationNode;
 import parseTree.nodeTypes.ForIndexStatementNode;
 import parseTree.nodeTypes.FunctionBodyNode;
 import parseTree.nodeTypes.FunctionDefinitionNode;
@@ -34,6 +35,7 @@ import static semanticAnalyzer.SemanticAnalysisVisitor.addBinding;
 import static semanticAnalyzer.SemanticAnalysisVisitor.addFuncBinding;
 import static semanticAnalyzer.SemanticAnalysisVisitor.logError;
 import static semanticAnalyzer.SemanticAnalysisVisitor.typeCheckError;
+import semanticAnalyzer.SemanticAnalysisVisitor;
 
 public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 
@@ -66,6 +68,13 @@ public class FirstSemanticAnalysisVisitor extends ParseNodeVisitor.Default{
 //		System.out.println(funcStartLabel);
 		addFuncBinding(identifier, declarationType, false, funcStartLabel);
 	}
+	//////////////////change begin
+
+	
+	
+	
+	//////////////////change end
+	
 	public void visitLeave(LambdaParamTypeNode node){
 		int numOfParameter=node.nChildren();
 		Type[] parameterList=new Type[numOfParameter];

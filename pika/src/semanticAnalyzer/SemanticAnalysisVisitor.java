@@ -163,6 +163,8 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 	}
 	@Override
 	public void visitLeave(DeclarationNode node) {
+		if(node.getParent() instanceof ProgramNode)
+			return;
 		IdentifierNode identifier = (IdentifierNode) node.child(0);
 		ParseNode initializer = node.child(1);
 		
@@ -554,6 +556,25 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			ParseNode left  = node.child(0);
 			ParseNode right = node.child(1);
 			childTypes = Arrays.asList(left.getType().getConcreteType(), right.getType().getConcreteType());
+			if(node.getToken().isLextant(Keyword.MAP)){
+				if(right.getType().getConcreteType() instanceof LambdaType){
+					LambdaType type=(LambdaType) right.getType().getConcreteType();
+					if(type.getFunctionSignature().resultType() instanceof VoidType){
+						typeCheckError(node, Arrays.asList(type));
+						node.setType(PrimitiveType.ERROR);
+						return;
+					}
+//					if(type.getFunctionSignature().resultType() instanceof Array){
+//						Array a=(Array)(type.getFunctionSignature().resultType());
+//						System.out.println(a.getSubtype());
+//					}	
+				}
+				else{
+					typeCheckError(node, childTypes);
+					node.setType(PrimitiveType.ERROR);
+					return;
+				}
+			}
 		}
 		else if(node.nChildren()==3){
 			ParseNode first  = node.child(0);
@@ -561,6 +582,22 @@ public class SemanticAnalysisVisitor extends ParseNodeVisitor.Default {
 			ParseNode second = node.child(1);
 			ParseNode third = node.child(2);
 			childTypes = Arrays.asList(first.getType().getConcreteType(), second.getType().getConcreteType(),third.getType().getConcreteType());
+			
+			if(node.getToken().isLextant(Keyword.ZIP)){
+				if(third.getType().getConcreteType() instanceof LambdaType){
+					LambdaType type=(LambdaType) third.getType().getConcreteType();
+					if(type.getFunctionSignature().resultType() instanceof VoidType){
+						typeCheckError(node, Arrays.asList(type));
+						node.setType(PrimitiveType.ERROR);
+						return;
+					}
+				}
+				else{
+					typeCheckError(node, childTypes);
+					node.setType(PrimitiveType.ERROR);
+					return;
+				}
+			}
 		}
 		else{//unary operator
 			ParseNode child=node.child(0);

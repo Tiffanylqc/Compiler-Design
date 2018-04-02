@@ -1,0 +1,4 @@
+exec
+{
+	print zip 1 && 5, zip 7 + 8, 5 * 9, !clone reverse 6, reverse !5 map 6.
+}

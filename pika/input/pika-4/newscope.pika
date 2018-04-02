@@ -1,0 +1,24 @@
+static var a := 5.
+static var b := a + 7.
+
+func f<int x> -> void
+{
+	static var x := x.
+	print x;.
+	return.
+}
+
+exec
+{
+	while (_true_)
+	{
+		static var test := 2.
+		if (test > 0) { print 999;. }
+		test := test - 1.
+		if (test < 0) { break. }
+	}
+	call f(2).
+	call f(3).
+	call f(00).
+	print a;b;_n_.
+}

@@ -1,0 +1,44 @@
+global_var: 3
+2
+y is initialized
+4
+
+6
+
+8
+
+10
+
+12
+
+14
+
+16
+
+18
+
+20
+
+Which global_var is there? _1/2
+lambda inside exec
+global_var: 3
+The function has been called 1 times!
+The function has been called 2 times!
+The function has been called 3 times!
+The function has been called 4 times!
+The function has been called 5 times!
+The function has been called 6 times!
+The function has been called 7 times!
+The function has been called 8 times!
+The function has been called 9 times!
+The function has been called 10 times!
+The function has been called 11 times!
+The function has been called 12 times!
+The function has been called 13 times!
+The function has been called 14 times!
+The function has been called 15 times!
+The function has been called 16 times!
+The function has been called 17 times!
+The function has been called 18 times!
+The function has been called 19 times!
+The function has been called 20 times!
