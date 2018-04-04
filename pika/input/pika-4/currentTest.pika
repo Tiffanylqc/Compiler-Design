@@ -1,4 +1,10 @@
-exec
-{
-	print zip 1 && 5, zip 7 + 8, 5 * 9, !clone reverse 6, reverse !5 map 6.
+static const ar:=[[1,2],[3,4]].
+exec{
+	for elem a of ar{
+		print a;.
+		static const b:=a.
+		for elem b of b{
+			print b;.
+		}
+	}
 }

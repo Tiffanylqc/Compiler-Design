@@ -899,9 +899,11 @@ public class Parser {
 			Token unaryToken=nowReading;
 			readToken();
 			if(previouslyRead.isLextant(Keyword.ZIP)){
-				ParseNode expr1=parseUnaryExpression();
+//				ParseNode expr1=parseUnaryExpression();
+				ParseNode expr1=parseExpression();
 				expect(Punctuator.SEPARATOR);
-				ParseNode expr2=parseUnaryExpression();
+//				ParseNode expr2=parseUnaryExpression();
+				ParseNode expr2=parseExpression();
 				expect(Punctuator.SEPARATOR);
 				ParseNode expr3=parseUnaryExpression();
 				result=OperatorNode.withChildren(unaryToken, expr1, expr2, expr3);
